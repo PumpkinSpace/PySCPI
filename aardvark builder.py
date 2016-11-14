@@ -25,7 +25,7 @@ filename = 'aardvark_script.xml'
 Delay = 100
 
 # Slave Address as text
-address = '0x51'
+address = '0x53'
 dec_addr = int(address,0)
 
 ########################## SCPI Commands #######################################
@@ -44,16 +44,22 @@ dec_addr = int(address,0)
 # commands = ['WRITE',    'SUP:LED ON',
 #             'READ 21',  'SUP:TEL? 2,length'] 
 
-commands = ['READ 6',   'SUP:TEL? 4,length',
-            'READ 13',   'SUP:TEL? 4,ascii',
-            'READ 13',   'SUP:TEL? 4,data',
-            'READ 13',   'SUP:TEL? 4,name']
+commands = ['READ 15',   'PIM:TEL? 0,data',
+            'READ 39',   'PIM:TEL? 1,data',
+            'READ 15',   'PIM:TEL? 2,data',
+            'READ 39',   'PIM:TEL? 3,data',
+            'READ 39',   'PIM:TEL? 4,data',
+            'READ 8',    'PIM:TEL? 5,data',
+            'READ 15',   'PIM:TEL? 6,data'
+            ]
+            
 ################################################################################
 
 # Start XML
 aardvark = ET.Element('aardvark')
 
 aardvark.append(ET.Comment('Configuration (Need pullups, not sure why...)'))
+
 
 # configure Aardvark if available
 Aardvark_port = aa_find_devices(1)[1][0]
@@ -62,14 +68,14 @@ if Aardvark_port >= 8<<7:
     print ' *** Aardvark is being used ***'
     Aardvark_free = False
 else:
-    # Aardvark is available
+    # Aardvark is available so configure it
     Aardvark_in_use = aa_open(Aardvark_port)
     aa_configure(Aardvark_in_use, AA_CONFIG_SPI_I2C)
     aa_i2c_pullup(Aardvark_in_use, AA_I2C_PULLUP_BOTH)
     aa_i2c_bitrate(Aardvark_in_use, Bitrate)
     aa_i2c_free_bus(Aardvark_in_use)
     aa_sleep_ms(Delay)    
-    print "Starting Aardvark communications\n\n"
+    print "Starting Aardvark communications\n"
 # end
 
 
@@ -79,10 +85,8 @@ config_attributes = {'i2c':     str(int(I2C)),
                      'gpio':    str(int(GPIO)),
                      'pullups': str(int(Pullups))}
 
-if I2C and SPI:
-    aa_configure
-                     
 config = ET.SubElement(aardvark, 'configure', config_attributes)
+
 
 # Bitrate
 rate_attributes = {'khz': str(Bitrate)}
@@ -121,11 +125,14 @@ while i < len(commands):
         # add hexidecimal null terminated command as text to the write element
         scpi.text = ' '.join("{:02x}".format(ord(c)) for c in commands[i+1]) + ' 0a'
         
+        # See if the Aardvark is free
         if Aardvark_free:
+            # Prepare the data for transmission
             write_data = list(commands[i+1])
             write_data = [ord(item) for item in write_data]
             write_data.append(0x0a)
-            data = array('B', write_data)        
+            data = array('B', write_data)  
+            # Write the data to the slave device
             aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
             aa_sleep_ms(Delay)
             if not (commands[i].startswith('READ')):
@@ -144,6 +151,7 @@ while i < len(commands):
                                'count': commands[i].split(' ')[1],
                                'radix': str(radix)}        
             
+            # check the length of the command desired
             if int(read_attributes['count']) != read_length(commands[i+1]):
                 aardvark.append(ET.Comment('*** requested length does not match that specified in dictionary ***'))
                 print '*** requested length does not match that specified in dictionary ***'
@@ -152,13 +160,16 @@ while i < len(commands):
             # create the read element
             read = ET.SubElement(aardvark, 'i2c_read', read_attributes) 
             
+            # if the Aardvark is free read from it
             if Aardvark_free:
-                data = array('B', [1]*read_length(commands[i+1]))   
+                data = array('B', [1]*read_length(commands[i+1])) 
+                # read from the slave device
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
                 print_read(commands[i+1], list(read_data[1]))
                 aa_sleep_ms(Delay)
-            # end            
-        print '\n'
+            # end  
+        # end
+        print ''
     else:
         # command was not valid
         print('Error in read/write declaration')
@@ -167,8 +178,6 @@ while i < len(commands):
     # Iterate to next command
     i+=2
 #end loop
-
-
 
 
 # convert XML file to modifiable string to beautify it
@@ -185,8 +194,6 @@ file_string4 = file_string3.replace('><', '>\n\t<')
 
 # remove header
 file_string5 = file_string4.replace('<?xml version=\'1.0\' encoding=\'utf8\'?>\n', '')
-
-
 
 
 # open file for writing
