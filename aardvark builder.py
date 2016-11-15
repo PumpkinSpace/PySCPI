@@ -24,8 +24,22 @@ filename = 'aardvark_script.xml'
 # Intermessage delay in milliseconds
 Delay = 100
 
+# I2C address dictionary
+address_of = {'PIM':        '0x53',
+              'BM2':        '0x5C',
+              'GPSRM':      '0x51',
+              'SIM':        '0x54',
+              'BIM':        '0x52',
+              'BSM':        '0x58',
+              # Non-SCPI Devices
+              'CS EPS':     '0x2B',
+              'ADCS CTRL':  '0x1F',
+              'CS BAT':     '0x2A',
+              'EXT_LIGHT':  '0x60',
+              }
+              
 # Slave Address as text
-address = '0x53'
+address = address_of['PIM']
 dec_addr = int(address,0)
 
 ########################## SCPI Commands #######################################
@@ -44,13 +58,10 @@ dec_addr = int(address,0)
 # commands = ['WRITE',    'SUP:LED ON',
 #             'READ 21',  'SUP:TEL? 2,length'] 
 
-commands = ['READ 15',   'PIM:TEL? 0,data',
+commands = ['WRITE',     'PIM:PORT:POW ON,4',
             'READ 39',   'PIM:TEL? 1,data',
-            'READ 15',   'PIM:TEL? 2,data',
             'READ 39',   'PIM:TEL? 3,data',
             'READ 39',   'PIM:TEL? 4,data',
-            'READ 8',    'PIM:TEL? 5,data',
-            'READ 15',   'PIM:TEL? 6,data'
             ]
             
 ################################################################################
