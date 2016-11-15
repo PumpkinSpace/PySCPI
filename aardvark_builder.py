@@ -61,7 +61,7 @@ commands = ['SUP:TEL? 0,name',
             
 ################################################################################
 
-def write_aardvark(commands):
+def write_aardvark(commands, dec_addr, Delay):
     # configure Aardvark if available
     Aardvark_port = aa_find_devices(1)[1][0]
     Aardvark_free = True
@@ -123,7 +123,7 @@ def write_aardvark(commands):
     # end
 # end
 
-def create_XML(commands):
+def create_XML(commands, addr, Delay, filename):
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -214,17 +214,17 @@ def create_XML(commands):
     print 'XML file \'' + filename + '\' written'
 # end
 
-def write_I2C():
+def write_I2C(commands, dec_addr, Delay, write_aardvark, create_XML, filename):
     if use_aardvark:
-        write_aardvark(commands)
+        write_aardvark(commands, dec_addr, Delay)
     # end
     if use_XML:
-        create_XML(commands)
+        create_XML(commands, address, Delay, filename)
     # end
 # end
 
 
-write_I2C()
+#write_I2C()
 ## Incase of error, write this in shell
 # aa_close(Aardvark_port)
 
