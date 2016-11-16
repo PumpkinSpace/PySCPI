@@ -79,11 +79,15 @@ def print_read(command, raw_data):
  
             # print the data in the appropriate format given by the dictionary
             if print_format == 'ascii':
-                print 'Data:\t\t' + ''.join([chr(x) for x in data[0:data.index(0)]])
-                if command.endswith('ascii'):
-                    stop_index = data.index(0)
+                if 0 in data:
+                    print 'Data:\t\t' + ''.join([chr(x) for x in data[0:data.index(0)]])
+                    if command.endswith('ascii'):
+                        stop_index = data.index(0)
+                    else:
+                        stop_index = data.index(0) + 5
+                    # end
                 else:
-                    stop_index = data.index(0) + 5
+                    print 'Data:\t\t' + ''.join([chr(x) for x in data])
                 # end
                 
             elif print_format == 'int':
