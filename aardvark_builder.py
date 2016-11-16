@@ -5,7 +5,7 @@
 import xml.etree.ElementTree as ET
 
 from aardvark_py import *
-from SCPI_Commands import *
+from SCPI_formatting import *
 
 # Configure I2C (DO NOT MODIFY)
 I2C = True
@@ -95,9 +95,9 @@ def write_aardvark(commands, dec_addr, Delay):
             aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
             aa_sleep_ms(Delay)
             if 'TEL?' in commands[i]:
-                print 'Read: ' + commands[i]
+                print 'Read:\t\t' + commands[i]
             else:
-                print 'Write: ' + commands[i]
+                print 'Write:\t\t' + commands[i]
             # end
         # end
         

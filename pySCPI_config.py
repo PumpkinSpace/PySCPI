@@ -1,21 +1,33 @@
-# Dictionary of SCPI Commands for Pumpkin Projects
-#
-# Each entry is a follows
-#
-# 'Command': [int length, 'format'],
-#
-# where format can be one of:
-#     ascii
-#     hex
-#     int
-#     uint
-#     double
-#     long
-#     long long
-#     char
-#     list of any combination of the above without brackets and separated by ', '
+# Configurable inputs to the PySCPI program
 
-from struct import unpack
+# defauult filename used in the GUI
+default_filename = 'aardvark_script.xml'
+
+# default intermessage delay used in the GUI
+default_delay = 200
+
+# I2C address dictionary
+address_of = {'PIM':        '0x53',
+              'BM2':        '0x5C',
+              'GPSRM':      '0x51',
+              'SIM':        '0x54',
+              'BIM':        '0x52',
+              'BSM':        '0x58',
+              # Non-SCPI Devices
+              'CS EPS':     '0x2B',
+              'ADCS CTRL':  '0x1F',
+              'CS BAT':     '0x2A',
+              'EXT_LIGHT':  '0x60',
+              }
+
+
+# commands loaded into the GUI on startup
+default_commands = ['SUP:TEL? 0,name',
+                    'SUP:TEL? 0,length',
+                    'SUP:TEL? 0,data',
+                    'SUP:TEL? 0,ascii',
+                    ]
+
 
 # constants that define the structure of telemetry data
 name_size = 32
@@ -23,6 +35,7 @@ chksum_size = 0
 wflag_size = 1
 time_size = 4
 length_size = 1
+
 
 # Dictionary of all telemetry Commands
 SCPI_Data = {
@@ -42,7 +55,7 @@ SCPI_Data = {
     'SUP:TEL? 1,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],
     
     # SCPI Command Errors
-    'SUP:TEL? 2,data':    [wflag_size + time_size + chksum_size + 1,             'uint'],
+    'SUP:TEL? 2,data':    [wflag_size + time_size + chksum_size + 8,             'long long'],
     'SUP:TEL? 2,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'SUP:TEL? 2,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'SUP:TEL? 2,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],    
@@ -166,147 +179,3 @@ SCPI_Data = {
     'BSM:TEL? 6,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BSM:TEL? 6,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],     
     }
-
-
-
-# Find the number of bytes to be read by a command if it is present in the dictionary
-def read_length(command):
-    if SCPI_Data.has_key(command):
-        # extract the length from the dictionary
-        return SCPI_Data[command][0]
-    else:
-        # command isn't in library so use the default length
-        print '*** Command not found in dictionary, length defaults to 16, data shown in hex ***'
-        return 16
-    # end
-# end
-
-
-# print the data array in the format specified 
-def print_read(command, raw_data):
-    
-    # is the command in the dictionary
-    if SCPI_Data.has_key(command):
-        # extract the format of the command from the dictionary
-        print_format = SCPI_Data[command][1]
-        
-        # split the incoming command into its respective parts
-        write_flag = raw_data[0:wflag_size]
-        timestamp = raw_data[wflag_size:wflag_size+time_size]
-        
-        # index to stop printing at
-        stop_index = len(raw_data)
-        
-        
-        if chksum_size != 0:
-            checksum = raw_data[-chksum_size:]
-            data = raw_data[wflag_size+time_size:-chksum_size]
-        else:
-            data = raw_data[wflag_size+time_size:]
-        # end
-        
-        if write_flag[0] == 0:
-            # The command was sent too fast, bad data was recieved
-            print '*** Read failed, Write flag = 0 ***'
-            
-        # else the data is good
-        elif ',' not in print_format:
-            # the data is just a single peice of data, not a list.
-            
-            # print the timestamp
-            print 'Timestamp: ' + ' '.join(['0x%02x' % x for x in timestamp]) + '\nData:'
- 
-            # print the data in the appropriate format given by the dictionary
-            if print_format == 'ascii':
-                print ''.join([chr(x) for x in data[0:data.index(0)]])
-                stop_index = data.index(0) + 5
-                
-            elif print_format == 'int':
-                print unpack('<h', ''.join([chr(x) for x in data]))[0]
-                
-            elif print_format == 'long':
-                print unpack('<l', ''.join([chr(x) for x in data]))[0]
-                
-            elif print_format == 'long long':
-                print unpack('<q', ''.join([chr(x) for x in data]))[0]        
-                
-            elif print_format == 'uint':
-                print unpack('<H', ''.join([chr(x) for x in data]))[0]  
-                
-            elif print_format == 'double':
-                print unpack('<d', ''.join([chr(x) for x in data]))[0]
-                
-            elif print_format == 'char':
-                print unpack('<B', ''.join([chr(x) for x in data]))[0] 
-            
-            elif print_format == 'hex':
-                print ' '.join(['0x%02x' % x for x in data])
-            
-            else:
-                # the format in the dictionary does not match one of the supported types
-                print '*** No valid format for data ***'
-            # end
-            
-            # print checksum if present
-            if chksum_size != 0:
-                print 'Checksum: ' + ' '.join(['0x%02x' % x for x in checksum])
-            # end
-            
-        else:
-            # the data received is a list so process each piece individually
-            # does not accept hex or ascii parts in the list
-            
-            # print the timestamp
-            print 'Timestamp: ' + ' '.join(['0x%02x' % x for x in timestamp]) + '\nData:'
-            
-            # split the list into individual formats
-            formats = print_format.split(', ')
-            start_index = 0
-            output = [None]*len(formats)
-            i = 0
-            # for each item in the list print it according to the associated specification
-            for spec in formats:
-                if spec == 'int':
-                    output[i] =  unpack('<h', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0]
-                    start_index += 2
-                    
-                elif spec == 'long':
-                    output[i] =  unpack('<l', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0]
-                    start_index += 4
-                    
-                elif spec == 'long long':
-                    output[i] =  unpack('<q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
-                    start_index += 8
-                    
-                elif spec == 'uint':
-                    output[i] =  unpack('<H', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0]  
-                    start_index += 2
-                    
-                elif spec == 'double':
-                    output[i] =  unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
-                    start_index += 8
-                    
-                elif spec == 'char':
-                    output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index]]))[0]
-                    start_index += 1
-                else:
-                    # the format is not accepted by this code
-                    print '*** No valid format at list entry ' + str(i) + '***' 
-                    
-                # end and iterate
-                i += 1
-            # end
-            print output
-            
-            # print checksum if present
-            if chksum_size != 0:
-                print 'Checksum: ' + ' '.join(['0x%02x' % x for x in checksum])
-            # end            
-        #end
-    else:
-        print '*** This command is not in the library ***\nHex:'
-    # end
-    
-    # print the Hex data at the end, also print in hex by default
-    print 'Hex:\n' + ' '.join(['%02x' % x for x in raw_data[0:stop_index]])
-# end

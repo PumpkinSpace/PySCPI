@@ -6,12 +6,27 @@
 	<i2c_free_bus />
 	<sleep ms="200" />
 
-<!--SUP:LED ON-->
-	<i2c_write addr="0x53" count="11" radix="16">53 55 50 3a 4c 45 44 20 4f 4e 0a</i2c_write>
+<!--SUP:TEL? 0,name-->
+	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="200" />
+	<i2c_read addr="0x53" count="37" radix="16" />
 	<sleep ms="200" />
 
-<!--SUP:TEL? 2,length-->
-	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 32 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<i2c_read addr="0x53" count="21" radix="16" />
+<!--SUP:TEL? 0,length-->
+	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 6c 65 6e 67 74 68 0a</i2c_write>
+	<sleep ms="200" />
+	<i2c_read addr="0x53" count="6" radix="16" />
+	<sleep ms="200" />
+
+<!--SUP:TEL? 0,data-->
+	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="200" />
+	<i2c_read addr="0x53" count="53" radix="16" />
+	<sleep ms="200" />
+
+<!--SUP:TEL? 0,ascii-->
+	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 61 73 63 69 69 0a</i2c_write>
+	<sleep ms="200" />
+	<i2c_read addr="0x53" count="133" radix="16" />
 
 </aardvark>
