@@ -63,13 +63,21 @@ commands = ['SUP:TEL? 0,name',
 
 def write_aardvark(commands, dec_addr, Delay):
     # configure Aardvark if available
-    Aardvark_port = aa_find_devices(1)[1][0]
+    AA_Devices = aa_find_devices(1)
     Aardvark_free = True
-    if Aardvark_port >= 8<<7:
+    Aardvark_port = 8<<7
+    if (AA_Devices[0] < 1):
+        print ' *** No Aardvark is present ***'
+        Aardvark_free = False
+    else:
+        Aardvark_port = AA_Devices[1][0]
+    # end
+    
+    if Aardvark_port >= 8<<7 and Aardvark_free:
         print ' *** Aardvark is being used ***'
         aa_close(Aardvark_port)
         Aardvark_free = False
-    else:
+    elif Aardvark_free:
         # Aardvark is available so configure it
         Aardvark_in_use = aa_open(Aardvark_port)
         aa_configure(Aardvark_in_use, AA_CONFIG_SPI_I2C)
