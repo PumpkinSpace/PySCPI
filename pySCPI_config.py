@@ -62,6 +62,8 @@ SCPI_Data = {
     
     # Voltstat
     'SUP:TEL? 3,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'SUP:TEL? 3,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'SUP:TEL? 3,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],     
     
     # SupMCU CPU Selftests
     'SUP:TEL? 4,data':    [wflag_size + time_size + chksum_size + 22,            'long, long, int, int, int'],

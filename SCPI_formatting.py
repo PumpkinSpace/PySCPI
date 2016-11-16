@@ -41,6 +41,9 @@ def has_preamble(command):
 # print the data array in the format specified 
 def print_read(command, raw_data):
     
+    # index to stop printing at
+    stop_index = len(raw_data)    
+    
     # is the command in the dictionary
     if SCPI_Data.has_key(command):
         # extract the format of the command from the dictionary
@@ -48,11 +51,7 @@ def print_read(command, raw_data):
               
         # split the incoming command into its respective parts
         write_flag = raw_data[0:wflag_size]
-        timestamp = raw_data[wflag_size:wflag_size+time_size]
-        
-        # index to stop printing at
-        stop_index = len(raw_data)
-        
+        timestamp = raw_data[wflag_size:wflag_size+time_size]       
         
         if chksum_size != 0:
             checksum = raw_data[-chksum_size:]
@@ -61,8 +60,8 @@ def print_read(command, raw_data):
             data = raw_data[wflag_size+time_size:]
         # end
         
-        if command.endswith('ascii'):
-            data = raw_data
+        if not has_preamble(command):
+            data = raw_data[0:-(wflag_size + time_size + chksum_size)]
         # end
         
         if (write_flag[0] != 1) and has_preamble(command):
@@ -169,8 +168,6 @@ def print_read(command, raw_data):
                 print 'Checksum: ' + ' '.join(['0x%02X' % x for x in checksum])
             # end            
         #end
-    else:
-        print '*** This command is not in the library ***\nHex:'
     # end
     
     # print the Hex data at the end, also print in hex by default

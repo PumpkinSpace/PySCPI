@@ -243,7 +243,7 @@ output_label.config(font=("Courier", 16))
 output_label.grid(row = 2, column=2, columnspan = 2, pady = 10)
 output_text = Text(root, height = 20, width = 100)
 output_text.grid(row = 3, column=2, columnspan = 2, rowspan = current_row-2, padx = 5, pady = 5, sticky = 'NESW')
-output_text.config(state=DISABLED)
+output_text.config(state=DISABLED, wrap=WORD)
 
 root.columnconfigure(3, weight = 2)
 root.rowconfigure(current_row-1, weight = 2)

@@ -74,7 +74,7 @@ def write_aardvark(commands, dec_addr, Delay):
     # end
     
     if Aardvark_port >= 8<<7 and Aardvark_free:
-        print ' *** Aardvark is being used ***'
+        print ' *** Aardvark is being used, disconnect other application or Aardvark device ***'
         aa_close(Aardvark_port)
         Aardvark_free = False
     elif Aardvark_free:

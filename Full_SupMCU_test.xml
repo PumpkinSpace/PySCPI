@@ -4,221 +4,221 @@
 	<configure gpio="0" i2c="1" pullups="1" spi="1" />
 	<i2c_bitrate khz="100" />
 	<i2c_free_bus />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 0,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 0,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 0,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="53" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 0,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 30 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 1,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 31 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 1,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 31 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 1,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 31 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 1,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 31 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 2,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 32 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 2,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 32 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 2,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 32 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 2,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 32 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 3,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 33 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 3,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 33 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="16" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 3,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 33 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="16" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 3,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 33 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="16" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 4,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 34 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 4,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 34 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 4,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 34 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="27" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 4,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 34 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 5,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 35 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 5,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 35 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 5,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 35 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 5,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 35 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 6,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 36 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 6,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 36 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 6,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 36 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 6,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 36 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 7,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 37 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 7,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 37 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 7,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 37 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 7,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 37 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 8,name-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 38 2c 6e 61 6d 65 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="37" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 8,length-->
 	<i2c_write addr="0x53" count="18" radix="16">53 55 50 3a 54 45 4c 3f 20 38 2c 6c 65 6e 67 74 68 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="6" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 8,data-->
 	<i2c_write addr="0x53" count="16" radix="16">53 55 50 3a 54 45 4c 3f 20 38 2c 64 61 74 61 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="13" radix="16" />
-	<sleep ms="200" />
+	<sleep ms="100" />
 
 <!--SUP:TEL? 8,ascii-->
 	<i2c_write addr="0x53" count="17" radix="16">53 55 50 3a 54 45 4c 3f 20 38 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="200" />
+	<sleep ms="100" />
 	<i2c_read addr="0x53" count="133" radix="16" />
 
 </aardvark>
