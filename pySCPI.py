@@ -7,20 +7,13 @@ from Tkinter import *
 from aardvark_builder import *
 from pySCPI_config import *       
 
-# Send all print commands to the GUI
-def redirector(inputStr):
-    output_text.config(state=NORMAL)
-    output_text.insert(INSERT, inputStr)
-    output_text.config(state=DISABLED)
-# end
-
 # Function to call:
 def Write_SCPI():
     
-    # clear output 
+    # clear output
     output_text.config(state=NORMAL)
     output_text.delete('1.0', END)
-    output_text.config(state=DISABLED)
+    output_text.config(state=DISABLED) 
     
     # determine delay
     delay_text = delay.get()
@@ -139,7 +132,6 @@ delay.grid(row = current_row, column=1)
 delay.insert(0, str(default_delay))
 current_row += 1
 
-
 # Command input text frame
 Command_label = Label(root, text = 'Commands to be sent', anchor = S)
 Command_label.config(font=("Courier", 16))
@@ -164,5 +156,14 @@ output_text = Text(root, height = 20, width = 100)
 output_text.grid(row = 3, column=2, columnspan = 2, rowspan = current_row-2, padx = 5)
 output_text.config(state=DISABLED)
 
-sys.stdout.write = redirector 
+class GUI_Writer(object):
+    def __init__(self, widget):
+        self.output_text = widget
+
+    def write(self, string):
+        self.output_text.config(state=NORMAL)
+        self.output_text.insert(INSERT, string)
+        self.output_text.config(state=DISABLED)
+
+sys.stdout = GUI_Writer(output_text)
 mainloop()

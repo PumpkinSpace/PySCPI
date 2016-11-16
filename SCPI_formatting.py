@@ -28,6 +28,16 @@ def get_time(timestamp):
     return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
 # end
 
+# check if preamble is required
+def has_preamble(command):
+    if command.endswith('ascii') or command.endswith('name') or command.endswith('length'):
+        return False
+    else:
+        return True
+    # end
+# end
+
+
 # print the data array in the format specified 
 def print_read(command, raw_data):
     
@@ -55,7 +65,7 @@ def print_read(command, raw_data):
             data = raw_data
         # end
         
-        if (write_flag[0] != 1) and not command.endswith('ascii'):
+        if (write_flag[0] != 1) and has_preamble(command):
             # The command was sent too fast, bad data was recieved
             print '*** Read failed, Write flag = 0 ***'
             
@@ -63,7 +73,7 @@ def print_read(command, raw_data):
         elif ',' not in print_format:
             # the data is just a single peice of data, not a list.
             
-            if not command.endswith('ascii'):
+            if has_preamble(command):
                 # print the timestamp
                 print 'Timestamp:\t\t' + get_time(timestamp)
             # end
@@ -104,7 +114,7 @@ def print_read(command, raw_data):
             # end
             
             # print checksum if present
-            if (chksum_size != 0) and not command.endswith('ascii'):
+            if (chksum_size != 0) and has_preamble(command):
                 print 'Checksum:\t\t' + ' '.join(['0x%02X' % x for x in checksum])
             # end
             
