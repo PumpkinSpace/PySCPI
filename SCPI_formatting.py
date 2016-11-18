@@ -28,16 +28,6 @@ def get_time(timestamp):
     return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
 # end
 
-# check if preamble is required
-def has_preamble(command):
-    if command.endswith('ascii') or command.endswith('name') or command.endswith('length'):
-        return False
-    else:
-        return True
-    # end
-# end
-
-
 # print the data array in the format specified 
 def print_read(command, raw_data):
     
@@ -91,7 +81,7 @@ def print_read(command, raw_data):
                 # end
                 
             elif print_format == 'int':
-                print 'Data:\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0])
+                print 'Data:\t\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0])
                 
             elif print_format == 'long':
                 print 'Data:\t\t' + str(unpack('<l', ''.join([chr(x) for x in data]))[0])

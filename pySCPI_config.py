@@ -36,6 +36,15 @@ wflag_size = 1
 time_size = 4
 length_size = 1
 
+# check if preamble is required
+def has_preamble(command):
+    if command.endswith('ascii') or command.endswith('name') or command.endswith('length'):
+        return False
+    else:
+        return True
+    # end
+# end
+
 
 # Dictionary of all telemetry Commands
 SCPI_Data = {
@@ -270,7 +279,7 @@ SCPI_Data = {
     'BM2:TEL? 21,ascii':  [wflag_size + time_size + chksum_size + 128,           'ascii'], 
     
     # Battery Status register
-    'BM2:TEL? 22,data':   [wflag_size + time_size + chksum_size + 2,             'uint'],
+    'BM2:TEL? 22,data':   [wflag_size + time_size + chksum_size + 2,             'hex'],
     'BM2:TEL? 22,name':   [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BM2:TEL? 22,length': [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BM2:TEL? 22,ascii':  [wflag_size + time_size + chksum_size + 128,           'ascii'],   
@@ -486,4 +495,18 @@ SCPI_Data = {
     'BM2:TEL? 114,name':  [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BM2:TEL? 114,length':[wflag_size + time_size + length_size + chksum_size,   'char'],
     'BM2:TEL? 114,ascii': [wflag_size + time_size + chksum_size + 128,           'ascii'],    
+    
+    ############################### BIM Commands ########################################
+    
+    # Temperature
+    'BIM:TEL? 0,data':    [wflag_size + time_size + chksum_size + 20,            'double, int, int, int, int, int, int'],
+    'BIM:TEL? 0,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BIM:TEL? 0,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BIM:TEL? 0,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],   
+    
+    # Temperature
+    'BIM:TEL? 1,data':    [wflag_size + time_size + chksum_size + 8,             'int, int, int, int'],
+    'BIM:TEL? 1,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BIM:TEL? 1,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BIM:TEL? 1,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],     
 }   
