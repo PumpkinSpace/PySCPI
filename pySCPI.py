@@ -5,6 +5,7 @@
 import sys
 sys.path.insert(0, 'src/')
 from Tkinter import *
+from tkFileDialog import *
 from aardvark_builder import *
 from pySCPI_config import *       
 
@@ -25,14 +26,6 @@ def Write_I2C():
         print '*** Requested delay is not valid, reverting to default ***'
         delay.delete(0,END)
         delay.insert(0, str(default_delay))
-    # end
-    
-    # determine filename
-    name_text = name.get()
-    if not name_text.endswith('.xml'):
-        print '*** Requested file name is not valid, reverting to default ***'
-        name.delete(0,END)
-        name.insert(0,default_filename)
     # end
     
     # determine I2C address to write to
@@ -78,15 +71,7 @@ def Write_XML():
         delay.delete(0,END)
         delay.insert(0, str(default_delay))
     # end
-    
-    # determine filename
-    name_text = name.get()
-    if not name_text.endswith('.xml'):
-        print '*** Requested file name is not valid, reverting to default ***'
-        name.delete(0,END)
-        name.insert(0,default_filename)
-    # end
-    
+      
     # determine I2C address to write to
     addr_string = addr_text.get()
     addr_num = 0
@@ -109,56 +94,56 @@ def Write_XML():
         # end
     # end
             
-    create_XML(command_list, addr_string, delay_time, name_text)
+    create_XML(command_list, addr_string, delay_time)
 # end
 
 # Function to load commands from an XML file
 def Load_XML():
-    filename = name.get()
+   
+    file_opt = options = {}
+    options['defaultextension'] = '.xml'
+    options['filetypes'] = [('xml files', '.xml')]
+    options['initialdir'] = os.getcwd() + '\\xml_files'
+    options['initialfile'] = 'aardvark_script.xml'
+    options['title'] = 'Select .xml file to open'   
+    
+    filename = askopenfilename(**file_opt)
 
     commands = []
     config_found = False
      
     # extract all commands from XML if present
-    if filename in os.listdir(os.getcwd() + '//xml_files'):
-        xml = open(os.getcwd() + '\\xml_files\\' + filename, 'r')
-        xml_strip = [line.strip() for line in xml]
-        for line in xml_strip:
-            if line.startswith('<!--'):
-                if config_found:
-                    commands = commands + [line[4:-3]]
-                else:
-                    config_found = True
-                # end
-            elif line.startswith('<sleep'):
-                # delay found
-                slices = [s for s in line.split('"') if s.isdigit()]
-                delay.delete(0,END)
-                delay.insert(0, slices[0])
-            elif line.startswith('<i2c_write'):
-                #finding address
-                index = line.index('"')
-                address = '0x' + line[index+3:index+5]
-                addr_var.set(address)
-                if address in address_of.values():
-                    slave_var.set(address_of.keys()[address_of.values().index(address)])
-                else:
-                    addr_text.config(background = 'yellow')    
-                # end
+    xml = open(filename, 'r')
+    xml_strip = [line.strip() for line in xml]
+    for line in xml_strip:
+        if line.startswith('<!--'):
+            if config_found:
+                commands = commands + [line[4:-3]]
+            else:
+                config_found = True
+            # end
+        elif line.startswith('<sleep'):
+            # delay found
+            slices = [s for s in line.split('"') if s.isdigit()]
+            delay.delete(0,END)
+            delay.insert(0, slices[0])
+        elif line.startswith('<i2c_write'):
+            #finding address
+            index = line.index('"')
+            address = '0x' + line[index+3:index+5]
+            addr_var.set(address)
+            if address in address_of.values():
+                slave_var.set(address_of.keys()[address_of.values().index(address)])
+            else:
+                addr_text.config(background = 'yellow')    
             # end
         # end
-        
-        # empty command box and add new commands
-        Command_text.delete('1.0', END)
-        Command_text.insert(INSERT, '\n'.join(commands))
-        xml.close()
-    else:
-        # clear output
-        output_text.config(state=NORMAL)
-        output_text.delete('1.0', END)
-        output_text.config(state=DISABLED)        
-        print '*** Requested XML file not found ***'
     # end
+    
+    # empty command box and add new commands
+    Command_text.delete('1.0', END)
+    Command_text.insert(INSERT, '\n'.join(commands))
+    xml.close()
 # end
                     
 root = Tk()
@@ -180,34 +165,24 @@ def update_addr(value):
     addr_text.config(background = 'white')
 # end
     
+# Load XML Button
+execute = Button(root, text = 'Load XML', command = Load_XML, activebackground = 'green')
+execute.grid(row = current_row, column=0, columnspan = 2)
+current_row += 1
+
 # Slave Device selector
 slave_label = Label(root, text = 'Slave Device:')
-slave_label.grid(row = current_row, column=0, rowspan = 1)
+slave_label.grid(row = current_row, column=0, rowspan = 1, pady = 5)
 devices = get_devices()
 slave_var = StringVar(root)
 slave_var.set(devices[0])
 addr_var = StringVar(root)
 addr_var.set(address_of[devices[0]])
 addr_text = Entry(root, textvariable=addr_var, width = 60, justify = RIGHT)
-#addr_text.insert(INSERT, address_of[devices[0]])
-addr_text.grid(row = current_row, column = 1, ipadx=20)
+addr_text.grid(row = current_row, column = 1, ipadx=20, pady = 5)
 
 slave_menu = OptionMenu(root, slave_var, *tuple(devices), command = update_addr)
 slave_menu.grid(in_=addr_text, sticky=E)
-current_row += 1
-
-
-# filename textbox
-name_label = Label(root, text = 'XML Filename:')
-name_label.grid(row = current_row, column=0)
-name = Entry(root, justify = CENTER)
-name.grid(row = current_row, column=1)
-name.insert(0,default_filename)
-current_row += 1
-
-# Load XML Button
-execute = Button(root, text = 'Load XML', command = Load_XML, activebackground = 'green')
-execute.grid(row = current_row, column=0, columnspan = 2, pady = 5)
 current_row += 1
 
 # delay text_box

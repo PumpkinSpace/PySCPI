@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import sys
 from aardvark_py import *
 from SCPI_formatting import *
+from tkFileDialog import *
 
 # Configure I2C (DO NOT MODIFY)
 I2C = True
@@ -131,7 +132,7 @@ def write_aardvark(commands, dec_addr, Delay):
     # end
 # end
 
-def create_XML(commands, addr, Delay, filename):
+def create_XML(commands, addr, Delay):
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -208,9 +209,17 @@ def create_XML(commands, addr, Delay, filename):
     # remove header
     file_string5 = file_string4.replace('<?xml version=\'1.0\' encoding=\'utf8\'?>\n', '')
     
+    file_opt = options = {}
+    options['defaultextension'] = '.xml'
+    options['filetypes'] = [('xml files', '.xml')]
+    options['initialdir'] = os.getcwd() + '\\xml_files'
+    options['initialfile'] = 'aardvark_script.xml'
+    options['title'] = 'Save .xml file as:'     
+    
+    filename_full = asksaveasfilename(**file_opt)
     
     # open file for writing
-    myfile = open(os.getcwd() + '\\xml_files\\' + filename, 'w+')
+    myfile = open(filename_full, 'w+')
     
     # write file
     myfile.write(file_string5)
@@ -219,7 +228,7 @@ def create_XML(commands, addr, Delay, filename):
     # close file
     myfile.close()    
     
-    print 'XML file \'' + filename + '\' written'
+    print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
 # end
 
 def write_I2C(commands, dec_addr, Delay, write_aardvark, create_XML, filename):
