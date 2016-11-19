@@ -6,6 +6,9 @@ default_filename = 'aardvark_script.xml'
 # default intermessage delay used in the GUI
 default_delay = 200
 
+# default data length for unrecognised commands
+default_length = 16
+
 # I2C address dictionary
 address_of = {'PIM':        '0x53',
               'BM2':        '0x5C',

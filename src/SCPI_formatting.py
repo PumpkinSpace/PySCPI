@@ -1,7 +1,7 @@
 # Functions that format the SCPI Command output
 
 from struct import unpack
-
+import sys
 from pySCPI_config import *
 
 # Find the number of bytes to be read by a command if it is present in the dictionary
@@ -11,8 +11,8 @@ def read_length(command):
         return SCPI_Data[command][0]
     else:
         # command isn't in library so use the default length
-        print '*** Command not found in dictionary, length defaults to 16, data shown in hex ***'
-        return 16
+        print '*** Command \"' + command + '\" not found in dictionary, length defaults to ' + str(default_length) + ' ***'
+        return default_length
     # end
 # end
 

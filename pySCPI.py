@@ -2,7 +2,8 @@
 # Aardvark batch script writer
 # Pumpkin Inc.
 # David Wright 2016
-
+import sys
+sys.path.insert(0, 'src/')
 from Tkinter import *
 from aardvark_builder import *
 from pySCPI_config import *       
@@ -119,8 +120,8 @@ def Load_XML():
     config_found = False
      
     # extract all commands from XML if present
-    if filename in os.listdir(os.getcwd()):
-        xml = open(filename, 'r')
+    if filename in os.listdir(os.getcwd() + '//xml_files'):
+        xml = open(os.getcwd() + '\\xml_files\\' + filename, 'r')
         xml_strip = [line.strip() for line in xml]
         for line in xml_strip:
             if line.startswith('<!--'):
@@ -163,7 +164,7 @@ def Load_XML():
 root = Tk()
 current_row = 0
 # Header Image
-image_file = PhotoImage(file = 'Pumpkin_Inc_Logo-medium.gif')
+image_file = PhotoImage(file = 'src\\Pumpkin_Inc_Logo-medium.gif')
 image_label = Label(root, image=image_file)
 image_label.grid(row = current_row, column = 0, columnspan = 4)
 current_row += 1
@@ -258,4 +259,12 @@ class GUI_Writer(object):
         self.output_text.config(state=DISABLED)
 
 sys.stdout = GUI_Writer(output_text)
+
+# define icon
+root.iconbitmap(r'src\cubesatkit.ico')
+
+# define title
+root.title("PySCPI: PC control of pumpkin SCPI modules")
+
+# start
 mainloop()

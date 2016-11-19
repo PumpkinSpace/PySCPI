@@ -3,7 +3,7 @@
 # David Wright 2016
 
 import xml.etree.ElementTree as ET
-
+import sys
 from aardvark_py import *
 from SCPI_formatting import *
 
@@ -210,7 +210,7 @@ def create_XML(commands, addr, Delay, filename):
     
     
     # open file for writing
-    myfile = open(filename, 'w+')
+    myfile = open(os.getcwd() + '\\xml_files\\' + filename, 'w+')
     
     # write file
     myfile.write(file_string5)
