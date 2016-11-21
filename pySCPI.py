@@ -54,6 +54,23 @@ def Write_I2C():
 # end
 
 # Function to call to write XML:
+def View_Readme():
+    
+    # clear output
+    output_text.config(state=NORMAL)
+    output_text.delete('1.0', END)
+    output_text.config(state=DISABLED) 
+    
+    with open('src\\pySCPI README.txt') as f:
+        content = f.readlines()    
+    # end
+    
+    for line in content:
+        print line.strip()
+    # end
+# end
+
+# Function to call to write XML:
 def Write_XML():
     
     # clear output
@@ -167,7 +184,11 @@ def update_addr(value):
     
 # Load XML Button
 execute = Button(root, text = 'Load XML', command = Load_XML, activebackground = 'green')
-execute.grid(row = current_row, column=0, columnspan = 2)
+execute.grid(row = current_row, column=0, columnspan = 1)
+
+# View README Button
+execute = Button(root, text = 'View ReadMe', command = View_Readme, activebackground = 'green')
+execute.grid(row = current_row, column=1, columnspan = 2)
 current_row += 1
 
 # Slave Device selector
@@ -178,11 +199,11 @@ slave_var = StringVar(root)
 slave_var.set(devices[0])
 addr_var = StringVar(root)
 addr_var.set(address_of[devices[0]])
-addr_text = Entry(root, textvariable=addr_var, width = 60, justify = RIGHT)
+addr_text = Entry(root, textvariable=addr_var, width = 20, justify = RIGHT)
 addr_text.grid(row = current_row, column = 1, ipadx=20, pady = 5)
 
 slave_menu = OptionMenu(root, slave_var, *tuple(devices), command = update_addr)
-slave_menu.grid(in_=addr_text, sticky=E)
+slave_menu.grid(row = current_row, column = 1, ipadx=20, pady = 5, sticky=W)
 current_row += 1
 
 # delay text_box
