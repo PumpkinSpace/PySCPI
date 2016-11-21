@@ -168,13 +168,18 @@ current_row = 0
 # Header Image
 image_file = PhotoImage(file = 'src\\Pumpkin_Inc_Logo-medium.gif')
 image_label = Label(root, image=image_file)
-image_label.grid(row = current_row, column = 0, columnspan = 4)
-current_row += 1
+image_label.grid(row = current_row, column = 3, columnspan = 2, rowspan = 2, sticky = W)
 
 # Header
-header = Label(root, text = 'I2C Command Writer')
-header.config(font=("Courier", 22))
-header.grid(row = current_row, column = 0, columnspan = 4)
+header = Label(root, text = 'pySCPI', justify = RIGHT)
+header.config(font="Courier 26 bold")
+header.grid(row = current_row, column = 0, columnspan = 2)
+current_row += 1
+
+# Header 2
+header = Label(root, text = 'I2C Command Writer', justify = RIGHT)
+header.config(font="Courier 22")
+header.grid(row = current_row, column = 0, columnspan = 2)
 current_row += 1
 
 def update_addr(value):
