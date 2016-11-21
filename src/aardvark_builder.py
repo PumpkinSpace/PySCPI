@@ -7,6 +7,8 @@ import sys
 from aardvark_py import *
 from SCPI_formatting import *
 from tkFileDialog import *
+import time
+from pySCPI_config import *
 
 # Configure I2C (DO NOT MODIFY)
 I2C = True
@@ -22,47 +24,7 @@ use_XML = True
 # Bitrate in kHz
 Bitrate = 100
 
-#Filename to save as
-filename = 'aardvark_script.xml'
-
-# Intermessage delay in milliseconds
-Delay = 300
-
-# I2C address dictionary
-address_of = {'PIM':        '0x53',
-              'BM2':        '0x5C',
-              'GPSRM':      '0x51',
-              'SIM':        '0x54',
-              'BIM':        '0x52',
-              'BSM':        '0x58',
-              # Non-SCPI Devices
-              'CS EPS':     '0x2B',
-              'ADCS CTRL':  '0x1F',
-              'CS BAT':     '0x2A',
-              'EXT_LIGHT':  '0x60',
-              }
-              
-# Slave Address as text
-address = address_of['PIM']
-dec_addr = int(address,0)
-
-########################## SCPI Commands #######################################
-# commands is a list of SCPI Commands to be sent, TELEM requests will have all
-# appropriate reading steps done following sending the command
-#
-# Example:
-# commands = ['SUP:LED ON',
-#             'SUP:TEL? 2,length'] 
-
-commands = ['SUP:TEL? 0,name',
-            'SUP:TEL? 0,length',
-            'SUP:TEL? 0,data',
-            'SUP:TEL? 0,ascii',
-            ]
-            
-################################################################################
-
-def write_aardvark(commands, dec_addr, Delay):
+def write_aardvark(commands, dec_addr, Delay, root):
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
@@ -102,7 +64,6 @@ def write_aardvark(commands, dec_addr, Delay):
             data = array('B', write_data)  
             # Write the data to the slave device
             aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-            aa_sleep_ms(Delay)
             if 'TEL?' in commands[i]:
                 print 'Read:\t\t' + commands[i]
             else:
@@ -113,14 +74,16 @@ def write_aardvark(commands, dec_addr, Delay):
         if 'TEL?' in commands[i]:
             # if the Aardvark is free read from it
             if Aardvark_free:
+                aa_sleep_ms(Delay)
                 data = array('B', [1]*read_length(commands[i])) 
                 # read from the slave device
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
                 print_read(commands[i], list(read_data[1]))
-                aa_sleep_ms(Delay)
             # end  
         # end
         print ''
+        time.sleep(Delay/1000)
+        root.update_idletasks()
         
         # Iterate to next command
         i+=1
@@ -167,7 +130,7 @@ def create_XML(commands, addr, Delay):
         aardvark.append(ET.Comment(commands[i]))
         
         # define attributes for write element
-        write_attributes = {'addr':  address,
+        write_attributes = {'addr':  addr,
                             'count': str(len(commands[i])+1),
                             'radix': str(radix)}
         
@@ -182,7 +145,7 @@ def create_XML(commands, addr, Delay):
             ET.SubElement(aardvark, 'sleep', delay_attributes)
             
             # define attributes for read element extracting length from command
-            read_attributes = {'addr':  address,
+            read_attributes = {'addr':  addr,
                                'count': str(read_length(commands[i])),
                                'radix': str(radix)}        
                 

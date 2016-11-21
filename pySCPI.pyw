@@ -50,7 +50,7 @@ def Write_I2C():
         # end
     # end
     
-    write_aardvark(command_list, addr_num, delay_time)
+    write_aardvark(command_list, addr_num, delay_time, root)
 # end
 
 # Function to call to write XML:
@@ -165,27 +165,37 @@ def Load_XML():
                     
 root = Tk()
 current_row = 0
-# Header Image
-image_file = PhotoImage(file = 'src\\Pumpkin_Inc_Logo-medium.gif')
-image_label = Label(root, image=image_file)
-image_label.grid(row = current_row, column = 3, columnspan = 2, rowspan = 2, sticky = W)
 
 # Header
-header = Label(root, text = 'pySCPI', justify = RIGHT)
-header.config(font="Courier 26 bold")
-header.grid(row = current_row, column = 0, columnspan = 2)
-current_row += 1
+Header = Frame(root)
+Header.grid(row = current_row, column = 0, columnspan = 4)
+
+# Header Image
+image_file = PhotoImage(file = 'src\\Pumpkin_Inc_Logo-medium.gif')
+image_label = Label(Header, image=image_file)
+image_label.grid(row = 0, column = 1, rowspan = 2, sticky = W)
+
+# Header
+header = Label(Header, text = 'pySCPI', justify = RIGHT, anchor = E)
+header.config(font="Courier 32 bold")
+header.grid(row = 0)
 
 # Header 2
-header = Label(root, text = 'I2C Command Writer', justify = RIGHT)
+header = Label(Header, text = 'I2C SCPI Command Writer', justify = RIGHT, anchor = E)
 header.config(font="Courier 22")
-header.grid(row = current_row, column = 0, columnspan = 2)
+header.grid(row = 1, column = 0)
 current_row += 1
 
 def update_addr(value):
     addr_var.set(address_of[value])
     addr_text.config(background = 'white')
 # end
+    
+# Input block
+input_header = Label(root, text = 'Inputs:')
+input_header.config(font="Courier 16 bold")
+input_header.grid(row = 1, column = 0, columnspan = 2)
+current_row += 1    
     
 # Load XML Button
 execute = Button(root, text = 'Load XML', command = Load_XML, activebackground = 'green')
@@ -221,15 +231,18 @@ delay.insert(0, str(default_delay))
 current_row += 1
 
 # Command input text frame
-Command_label = Label(root, text = 'Commands to be sent', anchor = S)
-Command_label.config(font=("Courier", 16))
+Command_label = Label(root, text = 'Commands to be sent:', anchor = S)
+Command_label.config(font="Courier 16 bold")
 Command_label.grid(row = current_row, column=0, columnspan = 2, pady = 10)
 current_row += 1
-command_scroll = Scrollbar(root)
-#command_scroll.pack(side=RIGHT, fill = Y)
-Command_text = Text(root, height = 10, width = 40, yscrollcommand=command_scroll.set)
+command_frame = Frame(root)
+command_frame.grid(row = current_row, column = 0, columnspan = 2, sticky = 'NESW')
+Command_text = Text(command_frame, height = 10, width = 40)
 Command_text.insert(INSERT, '\n'.join(default_commands))
-Command_text.grid(row = current_row, column=0, columnspan = 2, padx = 5, sticky = 'NESW')
+Command_text.grid(row = 0, column=0, padx = 5, sticky = 'NESW')
+command_scroll = Scrollbar(command_frame, command = Command_text.yview)
+command_scroll.grid(column = 1, row = 0, sticky = 'NESW')
+Command_text['yscrollcommand'] = command_scroll.set
 current_row += 1
 
 # Use Aardvark Button
@@ -241,15 +254,26 @@ execute = Button(root, text = 'Write XML', command = Write_XML, activebackground
 execute.grid(row = current_row, column=0, pady = 5)
 
 # Output text frame
-output_label = Label(root, text = 'Output')
-output_label.config(font=("Courier", 16))
-output_label.grid(row = 2, column=2, columnspan = 2, pady = 10)
-output_text = Text(root, height = 20, width = 100)
-output_text.grid(row = 3, column=2, columnspan = 2, rowspan = current_row-2, padx = 5, pady = 5, sticky = 'NESW')
+output_label = Label(root, text = 'Output:')
+output_label.config(font="Courier 16 bold")
+output_label.grid(row = 1, column=2, columnspan = 2, pady = 10)
+output_frame = Frame(root)
+output_frame.grid(row = 2, column=2, columnspan = 2, rowspan = current_row-1, padx = 5, pady = 5, sticky = 'NESW')
+output_text = Text(output_frame, height = 20, width = 100)
+output_text.grid(row = 0, column=0, padx = 5, sticky = 'NESW')
 output_text.config(state=DISABLED, wrap=WORD)
+output_scroll = Scrollbar(output_frame, command = output_text.yview)
+output_scroll.grid(column = 1, row = 0, sticky = 'NESW')
+output_text['yscrollcommand'] = output_scroll.set
 
+# allow for resizing)
+command_frame.rowconfigure(0, weight = 2)
+command_frame.columnconfigure(0, weight = 2)
+output_frame.rowconfigure(0, weight = 2)
+output_frame.columnconfigure(0, weight = 2)
 root.columnconfigure(3, weight = 2)
 root.rowconfigure(current_row-1, weight = 2)
+root.minsize(width = 800, height = 500)
 
 class GUI_Writer(object):
     def __init__(self, widget):
