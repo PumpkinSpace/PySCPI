@@ -66,7 +66,7 @@ def View_Readme():
     # end
     
     for line in content:
-        print line.strip()
+        print line.rstrip()
     # end
 # end
 
@@ -199,10 +199,11 @@ slave_var = StringVar(root)
 slave_var.set(devices[0])
 addr_var = StringVar(root)
 addr_var.set(address_of[devices[0]])
-addr_text = Entry(root, textvariable=addr_var, width = 20, justify = RIGHT)
-addr_text.grid(row = current_row, column = 1, ipadx=20, pady = 5)
+addr_text = Entry(root, textvariable=addr_var, width = 5, justify = CENTER)
+addr_text.grid(row = current_row, column = 1, ipadx=20, pady = 5, sticky = E, ipady = 3)
 
 slave_menu = OptionMenu(root, slave_var, *tuple(devices), command = update_addr)
+slave_menu.config(width = 1)
 slave_menu.grid(row = current_row, column = 1, ipadx=20, pady = 5, sticky=W)
 current_row += 1
 
@@ -210,7 +211,7 @@ current_row += 1
 delay_label = Label(root, text = 'Intermessage Delay (ms):')
 delay_label.grid(row = current_row, column=0)
 delay = Entry(root, justify = CENTER)
-delay.grid(row = current_row, column=1)
+delay.grid(row = current_row, column=1, ipady = 3)
 delay.insert(0, str(default_delay))
 current_row += 1
 
