@@ -82,7 +82,7 @@ def write_aardvark(commands, dec_addr, Delay, root):
             # end  
         # end
         print ''
-        time.sleep(Delay/1000)
+        aa_sleep_ms(Delay)
         root.update_idletasks()
         
         # Iterate to next command

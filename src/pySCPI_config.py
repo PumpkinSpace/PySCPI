@@ -228,13 +228,13 @@ SCPI_Data = {
     ## Skip entry 12
     
     # Relative State of Chrage
-    'BM2:TEL? 13,data':   [wflag_size + time_size + chksum_size + 1,             'char'],
+    'BM2:TEL? 13,data':   [wflag_size + time_size + chksum_size + 2,             'uint'],
     'BM2:TEL? 13,name':   [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BM2:TEL? 13,length': [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BM2:TEL? 13,ascii':  [wflag_size + time_size + chksum_size + 128,           'ascii'],  
     
     # Absolute State of Chrage
-    'BM2:TEL? 14,data':   [wflag_size + time_size + chksum_size + 1,             'char'],
+    'BM2:TEL? 14,data':   [wflag_size + time_size + chksum_size + 2,             'uint'],
     'BM2:TEL? 14,name':   [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BM2:TEL? 14,length': [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BM2:TEL? 14,ascii':  [wflag_size + time_size + chksum_size + 128,           'ascii'],  
@@ -502,14 +502,26 @@ SCPI_Data = {
     ############################### BIM Commands ########################################
     
     # Temperature
-    'BIM:TEL? 0,data':    [wflag_size + time_size + chksum_size + 20,            'double, int, int, int, int, int, int'],
+    'BIM:TEL? 0,data':    [wflag_size + time_size + chksum_size + 48,            'double, double, double, double, double, double'],
     'BIM:TEL? 0,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BIM:TEL? 0,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BIM:TEL? 0,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],   
     
-    # Temperature
-    'BIM:TEL? 1,data':    [wflag_size + time_size + chksum_size + 8,             'int, int, int, int'],
+    # Uart Status
+    'BIM:TEL? 1,data':    [wflag_size + time_size + chksum_size + 6,             'int, int, int'],
     'BIM:TEL? 1,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'BIM:TEL? 1,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BIM:TEL? 1,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],     
+    
+    # IMU Data
+    'BIM:TEL? 2,data':    [wflag_size + time_size + chksum_size + 12,            'int, int, int, int, int, int'],
+    'BIM:TEL? 2,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BIM:TEL? 2,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BIM:TEL? 2,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],       
+    
+    # Tini Status
+    'BIM:TEL? 3,data':    [wflag_size + time_size + chksum_size + 1,            'char'],
+    'BIM:TEL? 3,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BIM:TEL? 3,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BIM:TEL? 3,ascii':   [wflag_size + time_size + chksum_size + 128,           'ascii'],           
 }   
