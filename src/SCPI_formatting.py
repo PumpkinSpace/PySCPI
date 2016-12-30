@@ -29,7 +29,7 @@ def get_time(timestamp):
 # end
 
 # print the data array in the format specified 
-def print_read(command, raw_data):
+def print_read(command, raw_data, double_dp):
     
     # index to stop printing at
     stop_index = len(raw_data)    
@@ -93,7 +93,7 @@ def print_read(command, raw_data):
                 print 'Data:\t\t' + str(unpack('<H', ''.join([chr(x) for x in data]))[0]) 
                 
             elif print_format == 'double':
-                print 'Data:\t\t' + str(unpack('<d', ''.join([chr(x) for x in data]))[0])
+                print 'Data:\t\t' + '{:.{dp}f}'.format(unpack('<d', ''.join([chr(x) for x in data]))[0], dp=double_dp) 
                 
             elif print_format == 'char':
                 print 'Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
@@ -155,7 +155,20 @@ def print_read(command, raw_data):
                 # end and iterate
                 i += 1
             # end
-            print 'Data:\t\t' + str(output)
+            
+            # construct an output string
+            output_string = 'Data:\t\t['
+            array_len = len(output)
+            for i in range(array_len):
+                if type(output[i]) is float:
+                    # if the object is a float, format accordingly
+                    output_string = output_string  + '{:.{dp}f}'.format(output[i], dp = double_dp)
+                else:
+                    output_string = output_string  + str(output[i])
+                    
+                if i < array_len - 1:
+                    output_string = output_string + ', '
+            print output_string + ']'
             
             # print checksum if present
             if chksum_size != 0:

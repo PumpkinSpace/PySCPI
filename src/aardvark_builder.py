@@ -24,7 +24,7 @@ use_XML = True
 # Bitrate in kHz
 Bitrate = 100
 
-def write_aardvark(commands, dec_addr, Delay, root):
+def write_aardvark(commands, dec_addr, Delay, root, float_var):
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
@@ -78,7 +78,7 @@ def write_aardvark(commands, dec_addr, Delay, root):
                 data = array('B', [1]*read_length(commands[i])) 
                 # read from the slave device
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                print_read(commands[i], list(read_data[1]))
+                print_read(commands[i], list(read_data[1]), float_var.get())
             # end  
         # end
         print ''

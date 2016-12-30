@@ -50,7 +50,7 @@ def Write_I2C():
         # end
     # end
     
-    write_aardvark(command_list, addr_num, delay_time, root)
+    write_aardvark(command_list, addr_num, delay_time, root, float_var)
 # end
 
 # Function to call to write XML:
@@ -156,6 +156,13 @@ def Load_XML():
             # end
         # end
     # end
+    file_window.config(state = NORMAL)
+    file_window.delete('1.0', END)
+    file_window.insert(INSERT, filename.split('/')[-1])
+    file_window.config(state = DISABLED)
+    file_window.tag_configure('center', justify = 'center')
+    file_window.tag_add('center', '1.0', END)    
+    
     
     # empty command box and add new commands
     Command_text.delete('1.0', END)
@@ -230,6 +237,21 @@ delay.grid(row = current_row, column=1, ipady = 3)
 delay.insert(0, str(default_delay))
 current_row += 1
 
+# file text_box
+file_label = Label(root, text = 'File Loaded:')
+file_label.grid(row = current_row, column=0, columnspan= 2, pady = 3)
+current_row += 1
+file_window = Text(root, height = 1, width = 40)
+file_window.config(bg = root.cget('bg'), state = DISABLED)
+file_window.grid(row = current_row, column=0, columnspan = 2, ipady = 3)
+current_row += 1
+
+def key(event):
+    # when a key is pressed within the command text frame, wipe the filename
+    file_window.config(state = NORMAL)
+    file_window.delete('1.0', END)
+    file_window.config(state = DISABLED)  
+
 # Command input text frame
 Command_label = Label(root, text = 'Commands to be sent:', anchor = S)
 Command_label.config(font="Courier 16 bold")
@@ -239,11 +261,13 @@ command_frame = Frame(root)
 command_frame.grid(row = current_row, column = 0, columnspan = 2, sticky = 'NESW')
 Command_text = Text(command_frame, height = 10, width = 40)
 Command_text.insert(INSERT, '\n'.join(default_commands))
+Command_text.bind('<Key>', key)
 Command_text.grid(row = 0, column=0, padx = 5, sticky = 'NESW')
 command_scroll = Scrollbar(command_frame, command = Command_text.yview)
 command_scroll.grid(column = 1, row = 0, sticky = 'NESW')
 Command_text['yscrollcommand'] = command_scroll.set
 current_row += 1
+
 
 # Use Aardvark Button
 execute = Button(root, text = 'Use Aardvark', command = Write_I2C, activebackground = 'red')
@@ -266,7 +290,16 @@ output_scroll = Scrollbar(output_frame, command = output_text.yview)
 output_scroll.grid(column = 1, row = 0, sticky = 'NESW')
 output_text['yscrollcommand'] = output_scroll.set
 
-# allow for resizing)
+# ouput float size selector
+float_label = Label(root, text = 'Float DP:')
+float_label.grid(row = 1, column=3, padx = 100, sticky = E)
+float_var = IntVar(root)
+float_var.set(default_dp)
+float_menu = OptionMenu(root, float_var, 1,2,3,4,5,6,7,8,9,10,11,12)
+float_menu.config(width = 1)
+float_menu.grid(row = 1, column = 3, padx = 40, sticky=E)
+
+# allow for resizing
 command_frame.rowconfigure(0, weight = 2)
 command_frame.columnconfigure(0, weight = 2)
 output_frame.rowconfigure(0, weight = 2)
