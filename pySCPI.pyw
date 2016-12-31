@@ -111,7 +111,14 @@ def Write_XML():
         # end
     # end
             
-    create_XML(command_list, addr_string, delay_time)
+    filename = create_XML(command_list, addr_string, delay_time)
+    
+    file_window.config(state = NORMAL)
+    file_window.delete('1.0', END)
+    file_window.insert(INSERT, filename.split('/')[-1])
+    file_window.config(state = DISABLED)
+    file_window.tag_configure('center', justify = 'center')
+    file_window.tag_add('center', '1.0', END)        
 # end
 
 # Function to load commands from an XML file

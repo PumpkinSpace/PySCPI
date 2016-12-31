@@ -192,6 +192,8 @@ def create_XML(commands, addr, Delay):
     myfile.close()    
     
     print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
+    
+    return filename_full
 # end
 
 def write_I2C(commands, dec_addr, Delay, write_aardvark, create_XML, filename):
