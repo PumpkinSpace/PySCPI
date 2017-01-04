@@ -379,7 +379,7 @@ class GUI_Writer(object):
 sys.stdout = GUI_Writer(output_text)
 
 # define icon
-root.iconbitmap(r'src\cubesatkit.ico')
+root.iconbitmap(r'src/cubesatkit.ico')
 
 # define title
 root.title("PySCPI: PC control of pumpkin SCPI modules")
