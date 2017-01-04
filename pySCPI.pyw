@@ -9,6 +9,7 @@ from tkFileDialog import *
 from aardvark_builder import *
 from pySCPI_config import *       
 
+
 # Function to call to write through the AArdvark:
 def Write_I2C():
     
@@ -61,8 +62,8 @@ def View_Readme():
     output_text.delete('1.0', END)
     output_text.config(state=DISABLED) 
     
-    with open('src\\pySCPI README.txt') as f:
-        content = f.readlines()    
+    with open('src/pySCPI README.txt') as f:
+        content = f.readlines() 
     # end
     
     for line in content:
@@ -127,7 +128,7 @@ def Load_XML():
     file_opt = options = {}
     options['defaultextension'] = '.xml'
     options['filetypes'] = [('xml files', '.xml')]
-    options['initialdir'] = os.getcwd() + '\\xml_files'
+    options['initialdir'] = os.getcwd() + '/xml_files'
     options['initialfile'] = 'aardvark_script.xml'
     options['title'] = 'Select .xml file to open'   
     
