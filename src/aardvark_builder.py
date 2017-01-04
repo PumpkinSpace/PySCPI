@@ -192,17 +192,22 @@ def create_XML(commands, addr, Delay, Ascii_delay):
     
     filename_full = asksaveasfilename(**file_opt)
     
-    # open file for writing
-    myfile = open(filename_full, 'w+')
+    if (filename_full != ''):    
+        # open file for writing
+        myfile = open(filename_full, 'w+')
+        
+        # write file
+        myfile.write(file_string5)
+        myfile.write('\n')
+        
+        # close file
+        myfile.close()    
+        
+        print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
     
-    # write file
-    myfile.write(file_string5)
-    myfile.write('\n')
-    
-    # close file
-    myfile.close()    
-    
-    print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
+    else:
+        print '*** No XML file written ***'
+    # end
     
     return filename_full
 # end

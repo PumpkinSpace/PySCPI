@@ -161,64 +161,68 @@ def Load_XML():
     ascii_last = 0
     ascii_delay = '0'
     message_delay = '0'
-     
-    # extract all commands from XML if present
-    xml = open(filename, 'r')
-    xml_strip = [line.strip() for line in xml]
-    for line in xml_strip:
-        if line.startswith('<!--'):
-            if config_found:
-                commands = commands + [line[4:-3]]
-            else:
-                config_found = True
+    
+    if (filename != ''): 
+        # extract all commands from XML if present
+        xml = open(filename, 'r')
+        xml_strip = [line.strip() for line in xml]
+        for line in xml_strip:
+            if line.startswith('<!--'):
+                if config_found:
+                    commands = commands + [line[4:-3]]
+                else:
+                    config_found = True
+                # end
+                if ('ascii' in line):
+                    ascii_last = 1
+                else:
+                    ascii_last = 0
+                # end            
+            elif line.startswith('<sleep'):
+                # delay found
+                slices = [s for s in line.split('"') if s.isdigit()]
+                if (ascii_last == 0):
+                    delay.delete(0,END)
+                    message_delay = slices[0]
+                    delay.insert(0, message_delay)
+                else:
+                    ascii_delay = slices[0]
+                # end
+            elif line.startswith('<i2c_write'):
+                #finding address
+                index = line.index('"')
+                address = '0x' + line[index+3:index+5]
+                addr_var.set(address)
+                if address in address_of.values():
+                    slave_var.set(address_of.keys()[address_of.values().index(address)])
+                else:
+                    addr_text.config(background = 'yellow')    
+                # end
+    
             # end
-            if ('ascii' in line):
-                ascii_last = 1
-            else:
-                ascii_last = 0
-            # end            
-        elif line.startswith('<sleep'):
-            # delay found
-            slices = [s for s in line.split('"') if s.isdigit()]
-            if (ascii_last == 0):
-                delay.delete(0,END)
-                message_delay = slices[0]
-                delay.insert(0, message_delay)
-            else:
-                ascii_delay = slices[0]
-            # end
-        elif line.startswith('<i2c_write'):
-            #finding address
-            index = line.index('"')
-            address = '0x' + line[index+3:index+5]
-            addr_var.set(address)
-            if address in address_of.values():
-                slave_var.set(address_of.keys()[address_of.values().index(address)])
-            else:
-                addr_text.config(background = 'yellow')    
-            # end
-
         # end
-    # end
-    
-    if (ascii_delay == '0') or (ascii_delay == message_delay):
-        ascii_delay = 4*int(message_delay)
-    # end
-    ascii.delete(0,END)
-    ascii.insert(0, ascii_delay)    
         
-    file_window.config(state = NORMAL)
-    file_window.delete('1.0', END)
-    file_window.insert(INSERT, filename.split('/')[-1])
-    file_window.config(state = DISABLED)
-    file_window.tag_configure('center', justify = 'center')
-    file_window.tag_add('center', '1.0', END)    
-    
-    
-    # empty command box and add new commands
-    Command_text.delete('1.0', END)
-    Command_text.insert(INSERT, '\n'.join(commands))
-    xml.close()
+        if (ascii_delay == '0') or (ascii_delay == message_delay):
+            ascii_delay = 4*int(message_delay)
+        # end
+        ascii.delete(0,END)
+        ascii.insert(0, ascii_delay)    
+            
+        file_window.config(state = NORMAL)
+        file_window.delete('1.0', END)
+        file_window.insert(INSERT, filename.split('/')[-1])
+        file_window.config(state = DISABLED)
+        file_window.tag_configure('center', justify = 'center')
+        file_window.tag_add('center', '1.0', END)    
+        
+        
+        # empty command box and add new commands
+        Command_text.delete('1.0', END)
+        Command_text.insert(INSERT, '\n'.join(commands))
+        xml.close()
+    else:
+        print '*** No file given to Load ***'
+    # end
 # end
                     
 root = Tk()
