@@ -112,6 +112,10 @@ SCPI_Data = {
     'SUP:TEL? 8,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
     'SUP:TEL? 8,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'SUP:TEL? 8,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],
+
+    ############################### GPSRM Commands #######################################
+
+    'GPS:TEL? 2,data':    [wflag_size + time_size + chksum_size + 57,             'char, double, double, double, double, double, double, double'],
     
     ############################### PIM Commands ########################################
     
