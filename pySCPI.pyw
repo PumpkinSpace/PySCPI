@@ -29,6 +29,17 @@ def Write_I2C():
         delay.insert(0, str(default_delay))
     # end
     
+    # determine ascii delay
+    ascii_text = ascii.get()
+    ascii_time = default_delay*4;
+    if ascii_text.isdigit():
+        ascii_time = int(ascii_text)
+    else:
+        print '*** Requested ascii delay is not valid, reverting to default ***'
+        ascii.delete(0,END)
+        ascii.insert(0, str(default_delay*4))
+    # end    
+    
     # determine I2C address to write to
     addr_string = addr_text.get()
     addr_num = 0
@@ -51,7 +62,7 @@ def Write_I2C():
         # end
     # end
     
-    write_aardvark(command_list, addr_num, delay_time, root, float_var)
+    write_aardvark(command_list, addr_num, delay_time, ascii_time, root, float_var)
 # end
 
 # Function to call to write XML:
@@ -89,6 +100,17 @@ def Write_XML():
         delay.delete(0,END)
         delay.insert(0, str(default_delay))
     # end
+    
+    # determine ascii delay
+    ascii_text = ascii.get()
+    ascii_time = default_delay*4;
+    if ascii_text.isdigit():
+        ascii_time = int(ascii_text)
+    else:
+        print '*** Requested ascii delay is not valid, reverting to default ***'
+        ascii.delete(0,END)
+        ascii.insert(0, str(default_delay*4))
+    # end       
       
     # determine I2C address to write to
     addr_string = addr_text.get()
@@ -112,7 +134,7 @@ def Write_XML():
         # end
     # end
             
-    filename = create_XML(command_list, addr_string, delay_time)
+    filename = create_XML(command_list, addr_string, delay_time, ascii_time)
     
     file_window.config(state = NORMAL)
     file_window.delete('1.0', END)
@@ -136,6 +158,9 @@ def Load_XML():
 
     commands = []
     config_found = False
+    ascii_last = 0
+    ascii_delay = '0'
+    message_delay = '0'
      
     # extract all commands from XML if present
     xml = open(filename, 'r')
@@ -147,11 +172,21 @@ def Load_XML():
             else:
                 config_found = True
             # end
+            if ('ascii' in line):
+                ascii_last = 1
+            else:
+                ascii_last = 0
+            # end            
         elif line.startswith('<sleep'):
             # delay found
             slices = [s for s in line.split('"') if s.isdigit()]
-            delay.delete(0,END)
-            delay.insert(0, slices[0])
+            if (ascii_last == 0):
+                delay.delete(0,END)
+                message_delay = slices[0]
+                delay.insert(0, message_delay)
+            else:
+                ascii_delay = slices[0]
+            # end
         elif line.startswith('<i2c_write'):
             #finding address
             index = line.index('"')
@@ -162,8 +197,16 @@ def Load_XML():
             else:
                 addr_text.config(background = 'yellow')    
             # end
+
         # end
     # end
+    
+    if (ascii_delay == '0') or (ascii_delay == message_delay):
+        ascii_delay = 4*int(message_delay)
+    # end
+    ascii.delete(0,END)
+    ascii.insert(0, ascii_delay)    
+        
     file_window.config(state = NORMAL)
     file_window.delete('1.0', END)
     file_window.insert(INSERT, filename.split('/')[-1])
@@ -243,6 +286,14 @@ delay_label.grid(row = current_row, column=0)
 delay = Entry(root, justify = CENTER)
 delay.grid(row = current_row, column=1, ipady = 3)
 delay.insert(0, str(default_delay))
+current_row += 1
+
+# ASCII Delay box
+ascii_label = Label(root, text = 'Ascii Delay (ms):')
+ascii_label.grid(row = current_row, column=0)
+ascii = Entry(root, justify = CENTER)
+ascii.grid(row = current_row, column=1, ipady = 3)
+ascii.insert(0, str(default_delay*4))
 current_row += 1
 
 # file text_box

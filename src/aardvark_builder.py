@@ -24,7 +24,7 @@ use_XML = True
 # Bitrate in kHz
 Bitrate = 100
 
-def write_aardvark(commands, dec_addr, Delay, root, float_var):
+def write_aardvark(commands, dec_addr, Delay, Ascii_delay, root, float_var):
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
@@ -74,7 +74,11 @@ def write_aardvark(commands, dec_addr, Delay, root, float_var):
         if 'TEL?' in commands[i]:
             # if the Aardvark is free read from it
             if Aardvark_free:
-                aa_sleep_ms(Delay)
+                if commands[i].endswith('ascii'):
+                    aa_sleep_ms(Ascii_delay)
+                else:
+                    aa_sleep_ms(Delay)
+                # end
                 data = array('B', [1]*read_length(commands[i])) 
                 # read from the slave device
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
@@ -95,7 +99,7 @@ def write_aardvark(commands, dec_addr, Delay, root, float_var):
     # end
 # end
 
-def create_XML(commands, addr, Delay):
+def create_XML(commands, addr, Delay, Ascii_delay):
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -120,6 +124,7 @@ def create_XML(commands, addr, Delay):
     
     # delay attributes
     delay_attributes = {'ms': str(Delay)}    
+    ascii_delay_attributes = {'ms': str(Ascii_delay)}  
     
     i = 0
     while i < len(commands):    
@@ -142,7 +147,13 @@ def create_XML(commands, addr, Delay):
         
         if 'TEL?' in commands[i]:
             # Read command was issued so a read needs to be performed
-            ET.SubElement(aardvark, 'sleep', delay_attributes)
+            
+            if commands[i].endswith('ascii'):
+                ET.SubElement(aardvark, 'sleep', ascii_delay_attributes)
+            else:
+                ET.SubElement(aardvark, 'sleep', delay_attributes)
+            # end
+            
             
             # define attributes for read element extracting length from command
             read_attributes = {'addr':  addr,
