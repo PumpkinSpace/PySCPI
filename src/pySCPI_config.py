@@ -45,7 +45,7 @@ ascii_size = 128
 
 # check if preamble is required
 def has_preamble(command):
-    if command.endswith('ascii') or command.endswith('name') or command.endswith('length'):
+    if command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
         return False
     else:
         return True
