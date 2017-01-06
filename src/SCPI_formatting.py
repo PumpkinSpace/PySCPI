@@ -191,6 +191,7 @@ def get_devices():
             devices = devices + [key]
         # end
     # end
+    devices = ['GPSRM' if device == 'GPS' else device for device in devices]
     return devices
 #end
         
