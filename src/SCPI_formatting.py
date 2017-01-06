@@ -146,7 +146,7 @@ def print_read(command, raw_data, double_dp):
                     start_index += 8
                     
                 elif spec == 'char':
-                    output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index]]))[0]
+                    output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
                     start_index += 1
                 else:
                     # the format is not accepted by this code

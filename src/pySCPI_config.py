@@ -115,8 +115,11 @@ SCPI_Data = {
 
     ############################### GPSRM Commands #######################################
 
-    'GPS:TEL? 2,data':    [wflag_size + time_size + chksum_size + 57,             'char, double, double, double, double, double, double, double'],
-    
+    'GPS:TEL? 2,data':    [wflag_size + time_size + chksum_size + 56,            'double, double, double, double, double, double, double'],
+    'GPS:TEL? 2,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'GPS:TEL? 2,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'GPS:TEL? 2,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],
+
     ############################### PIM Commands ########################################
     
     # Channel Currents
