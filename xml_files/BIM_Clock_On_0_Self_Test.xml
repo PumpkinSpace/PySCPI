@@ -1,0 +1,16 @@
+<aardvark>
+
+<!--Configuration (Need pullups, not sure why...)-->
+	<configure gpio="0" i2c="1" pullups="1" spi="1" />
+	<i2c_bitrate khz="100" />
+	<i2c_free_bus />
+	<sleep ms="15" />
+
+<!--SUP:CLOCK ON,0-->
+	<i2c_write addr="0x52" count="15" radix="16">53 55 50 3a 43 4c 4f 43 4b 20 4f 4e 2c 30 0a</i2c_write>
+	<sleep ms="15" />
+
+<!--SUP:SELF START-->
+	<i2c_write addr="0x52" count="15" radix="16">53 55 50 3a 53 45 4c 46 20 53 54 41 52 54 0a</i2c_write>
+
+</aardvark>

@@ -20,11 +20,11 @@ def read_length(command):
 def get_time(timestamp):
     ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
     sec = ticks/100
-    dd = sec/86400
-    hh = sec/3600 - dd*24
-    mm = sec/60 - hh*60 - dd*1440
-    ss = sec - mm*60 - hh*3600 - dd*84400
-    tt = ticks - ss*100 - mm*6000 - hh*360000 - dd*8640000
+    dd = sec/(60*60*24)
+    hh = sec/(60*60) - dd*24
+    mm = sec/60 - hh*60 - dd*60*24
+    ss = sec - mm*60 - hh*60*60 - dd*60*60*24
+    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
     return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
 # end
 
@@ -71,7 +71,7 @@ def print_read(command, raw_data, double_dp):
             if print_format == 'ascii':
                 if 0 in data:
                     print 'Data:\t\t' + ''.join([chr(x) for x in data[0:data.index(0)]])
-                    if command.endswith('ascii'):
+                    if not has_preamble(command):
                         stop_index = data.index(0)
                     else:
                         stop_index = data.index(0) + 5
@@ -191,6 +191,7 @@ def get_devices():
             devices = devices + [key]
         # end
     # end
+    devices = ['GPSRM' if device == 'GPS' else device for device in devices]
     return devices
 #end
         

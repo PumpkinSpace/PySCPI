@@ -293,7 +293,7 @@ delay.insert(0, str(default_delay))
 current_row += 1
 
 # ASCII Delay box
-ascii_label = Label(root, text = 'Ascii Delay (ms):')
+ascii_label = Label(root, text = 'ASCII Delay (ms):')
 ascii_label.grid(row = current_row, column=0)
 ascii = Entry(root, justify = CENTER)
 ascii.grid(row = current_row, column=1, ipady = 3)
