@@ -1,6 +1,6 @@
 # Configurable inputs to the PySCPI program
 
-# defauult filename used in the GUI
+# defauult filename to be used in the GUI
 default_filename = 'aardvark_script.xml'
 
 # default intermessage delay used in the GUI
