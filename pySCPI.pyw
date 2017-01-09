@@ -239,7 +239,7 @@ image_label = Label(Header, image=image_file)
 image_label.grid(row = 0, column = 1, rowspan = 2, sticky = W)
 
 # Header
-header = Label(Header, text = 'pySCPI', justify = RIGHT, anchor = E)
+header = Label(Header, text = 'Pumpkin SCPI', justify = RIGHT, anchor = E)
 header.config(font="Courier 32 bold")
 header.grid(row = 0)
 
