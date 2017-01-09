@@ -1,0 +1,26 @@
+Instructions for updating the installer for a Release:
+
+ensure you have py2exe and Inno Setup 5 installed.
+If you don't you can get them from here:
+py2exe:
+https://sourceforge.net/projects/py2exe/files/py2exe/0.6.9/py2exe-0.6.9.win32-py2.7.exe/download
+Inno Setup 5:
+http://www.jrsoftware.org/download.php/is.exe
+
+If the file structure has not changed ie. there are no new program files and no files have moved this is easy:
+1. run install_builder.py
+2. The installer will be in \pySCPI\dist\Output
+
+If the file structure has changed in some way there are two things you need to do before this:
+1. Talk to David Wright if he is available
+2. update the setup.py file to add the new files that you need: 
+	Code file: add it to the options -> includes list
+	.dll file: add it to dll_files as a tuple with this format -> (relative destination directory, [absolute source directory])
+	.xml file: add it to xml_files as a tuple with this format -> (relative destination directory, [absolute source directory])
+				if it is an example SCPI command file name it anything_example.xml and it will be automatically imported
+	others: for image files and other files located in the source directory add them directly to the data_files list as a tuple -> (relative destination directory, [absolute source directory])
+3. update dist/install_setup.iss to add the files that you need:
+	This is only needed for new files that are used by the .exe file such as .pyd files
+	xml_files and other non-code files in the src directory should be added automatically
+	for toher files, regardless of file that you are adding add it the same way as the others under the [Files] header.
+	

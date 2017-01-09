@@ -12,7 +12,7 @@ sys.path.append("C:\\Program Files\\Microsoft Visual Studio 9.0\\VC\\redist\\x86
 
 root = os.getcwd()
 
-dll_files = [('src', [root + '/src/aardvark.dll']),("Microsoft.VC90.CRT", glob(r'C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*'))]
+dll_files = [('src', [root + '/src/aardvark.dll']),('Microsoft.VC90.CRT', glob(r'C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*'))]
 
 xml_files = []
 
