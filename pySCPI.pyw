@@ -368,7 +368,7 @@ if platform.system() == 'Windows':
     float_menu.config(width = 1)
 else:
     float_menu.config(width = 5)
-# end
+# ends
 float_menu.grid(row = 1, column = 3, padx = 40, sticky=E)
 
 # allow for resizing
