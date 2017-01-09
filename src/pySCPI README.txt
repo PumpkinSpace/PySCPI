@@ -1,20 +1,19 @@
-Welcome to Pumpkin SCPI.
+Welcome to pySCPI.
 
 This porgram provides a PC based interface for using SCPI commands to communicate with Pumpkin modules that feature SCPI command interfaces. This program can be used to send commands to modules aswell as recieving and formatting telemetry requests.
 
 Contents:
 
-1. Using Pumpkin SCPI
+1. Using pySCPI
 	A. Using the GUI
 	B. Sending SCPI commands
 	C. Using XML files
 	D. Common Issues 
 2. Supported Modules
-3. Adding Functionality
 
 ********************
-1. Using Pumpkin SCPI
-Pumpkin SCPI build on the PySCPI python program to provide a GUI to allow users to send SCPI commands to Pumpkin modules that have SCPI capabilities, this section covers the basics of using this program.
+1. Using pySCPI
+pySCPI provides a GUI to allow users to send SCPI commands from a computer to Pumpkin modules that have SCPI capabilities, this section covers the basics of using this program.
 
 
 **********
@@ -49,17 +48,57 @@ Float DP: defines the number of decimal places to be used when displaying floats
 
 **********
 B. Sending SCPI Commands
-Pumpkin SCPI can be used to send any supported SCPI command to a Pumpkin Module, these commands fall into two catagories; Commands and Telemetry Requests.
+pySCPI can be used to send any supported SCPI command to a Pumpkin Module, these commands fall into two catagories; Commands and Telemetry Requests.
 
 Commands:
 A command in this context refers to the subset of SCPI commands that are not a request for telemetry, such as Starting the MCU Self tests or turing off the MCU status LED.
 
-To send such a command it just needs to be typed into the 'Commands to be Written' box. A listing of these commands can be found in the supporting documentation for each specific module. Any command can be issued from Pumpkin SCPI without altering the program configuration as no checking of command validity is done within the program.
+To send such a command it just needs to be typed into the 'Commands to be Written' box. A listing of these commands can be found in the supporting documentation for each specific module. Any command can be issued from pySCPI without altering the program configuration as no checking of command validity is done within the program.
 
 Telemetry Requests:
-Telemetry requests are SCPI commands that when recieved by a module cause it to load a certain data field into it's output buffer for the host to read. Pumpkin SCPI takes care of both the sending of the command and the reading of the data. The time delay between read and write commands is defined by the Intermessage Delay and ASCII delay boxes in the GUI. The data recieved by Pumpkin SCPI from the slave device is then formatted and displayed in the Output box. A listing of accepted telemetry requests can be found in the supporting documentation for each specific module.
+Telemetry requests are SCPI commands that when recieved by a module cause it to load a certain data field into it's output buffer for the host to read. pySCPI takes care of both the sending of the command and the reading of the data. The time delay between read and write commands is defined by the Intermessage Delay and ASCII delay boxes in the GUI. The data recieved by pySCPI from the slave device is then formatted and displayed in the Output box. A listing of accepted telemetry requests can be found in the supporting documentation for each specific module.
 
 
 **********
-B. Using XML files
-Pumpkin SCPI uses XML files to store command sets 
+C. Using XML files
+pySCPI uses XML files to store command sets for use again later.
+pySCPI comes with an XML file for each module containing examples of usable commands.
+
+Load XML: Loads a previuosly saved XML file, this loads the command list, slave name and address and the delays used in that file.
+
+Write XML: Saves the setting currently being used to an XML file. 
+
+
+**********
+B. Common Issues
+
+*** Requested delay is not valid, reverting to default *** = The delay entered is not a valid number.
+
+*** Invlaid address entered, reverting to device default *** = Make sure the address you entered matches the format 0x__
+
+*** No file given to Load *** = The Load XML window was exited without selecting a file.
+
+*** No XML file written *** = The Save XML window was exited without saving.
+
+*** No Aardvark is present *** = make sure you have an Aardvark connected to the computer you are using.
+
+*** Aardvark is being used, disconnect other application or Aardvark device *** = You either have another program using the Aardvark or a pervious program exited without closing its connection. Ensure all other programs are closed and disconnect the Aardvark and then plug it back in again.
+
+*** Command not found in dictionary *** = You are requesting telemetry that is not supproted by this pySCPI, a default format and length will be returned. Please check your command for accuracy and contact Pumpkin if you believe that command should be supported.
+
+*** Read failed, Write flag = 0 *** = The Processor was not ready for your request, try increasing the Intermessage Delay and ensure that the Slave address is set correctly for the command you are sending.
+
+Data is returned as Hex: 01 01 01 01 01 01 01.... = The Aardvark is not able to communicate with the module, unsure everything is connected and the module is powered.
+
+
+
+********************
+2. Supported Modules
+
+pySCPI currently supports the following modules:
+
+PIM  : Payload Interface Module
+BIM  : Bus Interface Module
+BM2  : Battery Module 2
+GPSRM: GPS Reciever Module
+BSM  : battery Switching Module

@@ -30,14 +30,14 @@ def write_aardvark(commands, dec_addr, Delay, Ascii_delay, root, float_var):
     Aardvark_free = True
     Aardvark_port = 8<<7
     if (AA_Devices[0] < 1):
-        print ' *** No Aardvark is present ***'
+        print '*** No Aardvark is present ***'
         Aardvark_free = False
     else:
         Aardvark_port = AA_Devices[1][0]
     # end
     
     if Aardvark_port >= 8<<7 and Aardvark_free:
-        print ' *** Aardvark is being used, disconnect other application or Aardvark device ***'
+        print '*** Aardvark is being used, disconnect other application or Aardvark device ***'
         aa_close(Aardvark_port)
         Aardvark_free = False
     elif Aardvark_free:
