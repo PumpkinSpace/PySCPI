@@ -8,6 +8,7 @@ from Tkinter import *
 from tkFileDialog import *
 from aardvark_builder import *
 from pySCPI_config import *       
+import platform
 
 
 # Function to call to write through the AArdvark:
@@ -280,7 +281,11 @@ addr_text = Entry(root, textvariable=addr_var, width = 5, justify = CENTER)
 addr_text.grid(row = current_row, column = 1, ipadx=20, pady = 5, sticky = E, ipady = 3)
 
 slave_menu = OptionMenu(root, slave_var, *tuple(devices), command = update_addr)
-slave_menu.config(width = 1)
+if platform.system == 'Windows':
+    slave_menu.config(width = 1)
+else:
+    slave_menu.config(width = 4)
+# end
 slave_menu.grid(row = current_row, column = 1, ipadx=20, pady = 5, sticky=W)
 current_row += 1
 
@@ -359,7 +364,11 @@ float_label.grid(row = 1, column=3, padx = 100, sticky = E)
 float_var = IntVar(root)
 float_var.set(default_dp)
 float_menu = OptionMenu(root, float_var, 1,2,3,4,5,6,7,8,9,10,11,12)
-float_menu.config(width = 1)
+if platform.system() == 'Windows':
+    float_menu.config(width = 1)
+else:
+    float_menu.config(width = 5)
+# end
 float_menu.grid(row = 1, column = 3, padx = 40, sticky=E)
 
 # allow for resizing
