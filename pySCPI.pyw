@@ -152,7 +152,11 @@ def Load_XML():
     options['defaultextension'] = '.xml'
     options['filetypes'] = [('xml files', '.xml')]
     options['initialdir'] = os.getcwd() + '/xml_files'
-    options['initialfile'] = 'aardvark_script.xml'
+    dir_list = os.listdir(os.getcwd() + '/xml_files')
+    if 'aardvark_script.xml' in dir_list or dir_list == []:
+        options['initialfile'] = 'aardvark_script.xml'
+    else:
+        options['initialfile'] = dir_list[1]
     options['title'] = 'Select .xml file to open'   
     
     filename = askopenfilename(**file_opt)

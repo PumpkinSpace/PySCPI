@@ -30,7 +30,7 @@ Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\pySCPI.exe"; DestDir
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\Microsoft.VC90.CRT\*"; DestDir: "{app}\Microsoft.VC90.CRT"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\src\*"; DestDir: "{app}\src"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\tcl\*"; DestDir: "{app}\tcl"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\xml_files\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\xml_files\*"; DestDir: "{app}\xml_files"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion

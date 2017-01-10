@@ -31,8 +31,8 @@ exe.wait()
 time.sleep(1)
 print '## .exe created'
 
-#install_file = os.getcwd().replace('\\', '/') + '/dist/installer_setup.iss'
+install_file = os.getcwd().replace('\\', '/') + '/dist/installer_setup.iss'
 
-#bld = subprocess.Popen(['iscc', install_file], cwd = 'C:/Program Files (x86)/Inno Setup 5', shell=True)
-#bld.wait()
-#print '## Installer created'
+bld = subprocess.Popen(['iscc', install_file], cwd = 'C:/Program Files (x86)/Inno Setup 5', shell=True)
+bld.wait()
+print '## Installer created'
