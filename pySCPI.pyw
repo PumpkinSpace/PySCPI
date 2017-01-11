@@ -324,18 +324,22 @@ image_label.grid(row = 0, column = 0, sticky = NSEW)
 
 config_header = Label(Config_frame, text = 'Configuration:')
 config_header.config(font=title_font, bg = default_color)
-config_header.grid(row = 0, column = 0, columnspan = 7)
+config_header.grid(row = 0, column = 1, columnspan = 5)
+
+but_frame = Frame(Config_frame)
+but_frame.config(bg = default_color)
+but_frame.grid(row = 0, column = current_column, rowspan = 3)
+but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
-xml_button = Button(Config_frame, text = 'Load\nXML', command = Load_XML, activebackground = 'green')
+xml_button = Button(but_frame, text = 'Load XML', command = Load_XML, activebackground = 'green')
 xml_button.config(font = label_font, bg = default_color)
-xml_button.grid(row = 1, column=current_column, rowspan = 2, padx = 5)
-current_column += 1
+xml_button.grid(row = 0, column=0, padx = 5)
 
 # View README Button
-readme_button = Button(Config_frame, text = 'View\nReadMe', command = View_Readme, activebackground = 'green')
+readme_button = Button(but_frame, text = 'View ReadMe', command = View_Readme, activebackground = 'green')
 readme_button.config(font = label_font, bg = default_color)
-readme_button.grid(row = 1, column=current_column, rowspan = 2)
+readme_button.grid(row = 1, column=0, padx = 5, pady = 5)
 current_column += 1
 
 # Slave Address selection options
@@ -351,7 +355,7 @@ slave_frame.grid(row = 2, column = current_column, rowspan = 2, padx = 5, sticky
 
 slave_label = Label(Config_frame, text = 'Slave Device')
 slave_label.config(font = label_font, bg = default_color)
-slave_label.grid(row = 1, column= current_column, pady = 5)
+slave_label.grid(row = 1, column= current_column)
 devices = get_devices()
 slave_var = StringVar(root)
 slave_var.set(devices[0])
@@ -378,7 +382,7 @@ delay_frame.grid(row = 2, column = current_column)
 delay_frame.columnconfigure(0, weight = 2)
 
 delay_label = Label(Config_frame, text = 'Intermessage Delay')
-delay_label.grid(row = 1, column = current_column, padx = 5, pady = 5)
+delay_label.grid(row = 1, column = current_column, padx = 5)
 delay_label.config(font = label_font, bg = default_color)
 
 delay = Entry(delay_frame, justify = RIGHT)
@@ -399,7 +403,7 @@ ascii_frame.columnconfigure(0, weight = 2)
 
 ascii_label = Label(Config_frame, text = 'ASCII Delay')
 ascii_label.config(font = label_font, bg = default_color)
-ascii_label.grid(row = 1, column=current_column, pady = 5)
+ascii_label.grid(row = 1, column=current_column)
 
 ascii = Entry(ascii_frame, justify = RIGHT)
 ascii.config(font = text_font)
@@ -526,12 +530,11 @@ output_text['yscrollcommand'] = output_scroll.set
 
 # allow for resizing
 Config_frame.columnconfigure(0, weight = 2, minsize = 60)
-Config_frame.columnconfigure(1, weight = 2, minsize = 60)
-Config_frame.columnconfigure(2, weight = 2, minsize = 200)
-Config_frame.columnconfigure(3, weight = 2, minsize = 100)
-Config_frame.columnconfigure(4, weight = 2, minsize = 80)
-Config_frame.columnconfigure(5, weight = 2, minsize = 60)
-Config_frame.columnconfigure(6, weight = 2, minsize = 80)
+Config_frame.columnconfigure(1, weight = 2, minsize = 200)
+Config_frame.columnconfigure(2, weight = 2, minsize = 100)
+Config_frame.columnconfigure(3, weight = 2, minsize = 80)
+Config_frame.columnconfigure(4, weight = 2, minsize = 60)
+Config_frame.columnconfigure(5, weight = 2, minsize = 80)
 
 Input_frame.rowconfigure(1, weight = 2)
 command_frame.rowconfigure(0, weight = 2)
