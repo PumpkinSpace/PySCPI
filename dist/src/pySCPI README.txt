@@ -102,3 +102,7 @@ BIM  : Bus Interface Module
 BM2  : Battery Module 2
 GPSRM: GPS Reciever Module
 BSM  : battery Switching Module
+
+********************
+pySCPI created by David Wright,
+(c) Pumpkin Inc. 2017

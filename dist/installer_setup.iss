@@ -23,6 +23,7 @@ SolidCompression=yes
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
+Name: "install_usb"; Description: "Install Aardvark USB Drivers from TotalPhase"; GroupDescription: "External drivers:";
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
@@ -56,5 +57,7 @@ Name: "{commondesktop}\pySCPI"; Filename: "{app}\pySCPI.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\pySCPI.exe"; Description: "{cm:LaunchProgram,pySCPI}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: Not IsWin64(); Tasks: install_usb; Flags: skipifsilent
+Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: IsWin64(); Tasks: install_usb; Flags: skipifsilent
 
 

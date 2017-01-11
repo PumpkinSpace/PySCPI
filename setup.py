@@ -27,10 +27,11 @@ setup(windows=[{'script':'pySCPI.pyw',
                 'icon_resources': [(1, 'src/cubesatkit.ico')], 
                 'dest_base': 'pySCPI'}],
       data_files= dll_files + xml_files +  
-                  [('src', [root + '/src/Pumpkin_Inc_Logo-medium.gif']), 
+                  [('src', [root + '/src/Header.jpg']), 
                   ('src', [root + '/src/cubesatkit.ico']),
                   ('src', [root + '/src/pySCPI README.txt'])],
-      options = {'py2exe':{'includes': ['aardvark_builder', 'pySCPI_config', 'SCPI_formatting', 'aardvark_py']                       
+      options = {'py2exe':{'includes': ['aardvark_builder', 'pySCPI_config', 'SCPI_formatting', 'aardvark_py'],
+                           'dll_excludes': ['MSVCP90.dll']
                  }
                  }
       )

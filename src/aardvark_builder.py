@@ -24,7 +24,7 @@ use_XML = True
 # Bitrate in kHz
 Bitrate = 100
 
-def write_aardvark(commands, dec_addr, Delay, Ascii_delay, root, float_var):
+def write_aardvark(commands, dec_addr, Delay, Ascii_delay, float_dp, THREAD_EXIT):
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
@@ -82,15 +82,17 @@ def write_aardvark(commands, dec_addr, Delay, Ascii_delay, root, float_var):
                 data = array('B', [1]*read_length(commands[i])) 
                 # read from the slave device
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                print_read(commands[i], list(read_data[1]), float_var.get())
+                print_read(commands[i], list(read_data[1]), float_dp)
             # end  
         # end
         print ''
         aa_sleep_ms(Delay)
-        root.update_idletasks()
         
         # Iterate to next command
         i+=1
+        if (THREAD_EXIT == True):
+            break
+        # end
     # end loop
 
     if Aardvark_free:
@@ -99,7 +101,7 @@ def write_aardvark(commands, dec_addr, Delay, Ascii_delay, root, float_var):
     # end
 # end
 
-def create_XML(commands, addr, Delay, Ascii_delay):
+def create_XML(commands, addr, Delay, Ascii_delay, output_text):
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -206,6 +208,9 @@ def create_XML(commands, addr, Delay, Ascii_delay):
         print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
     
     else:
+        output_text.config(state=NORMAL)
+        output_text.delete('1.0', END)
+        output_text.config(state=DISABLED)        
         print '*** No XML file written ***'
     # end
     
