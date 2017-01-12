@@ -13,7 +13,7 @@ import threading
 from PIL import Image, ImageTk
 
 def action_lock(state, active_button=None):
-    button_list = [readme_button, xml_button, aardvark_button, save_button]
+    button_list = [readme_button, xml_button, aardvark_button, save_button, logging_button]
     if (state == 'Lock'):
         for button in button_list:
             if (button != active_button):
@@ -29,17 +29,31 @@ def action_lock(state, active_button=None):
 
 THREAD_EXIT = False
 
+kill_event = threading.Event()
+
 def kill_threads():
-    THREAD_EXIT = True
+    kill_event.set()
     root.destroy()
 # end
 
-def I2C_thread(command_list, addr_num, delay_time, ascii_time, float_dp):
-    write_aardvark(command_list, addr_num, delay_time, ascii_time, float_dp, THREAD_EXIT)
+def kill_log():
+    kill_event.set()
+# end
+
+def I2C_thread(exit_event, command_list, addr_num, delay_time, ascii_time, float_dp):
+    write_aardvark(exit_event, command_list, addr_num, delay_time, ascii_time, float_dp)
+    exit_event.clear()
     action_lock('Unlock')
     aardvark_button.config(background = default_color)
 # end
 
+def I2C_log_thread(exit_event, command_list, addr_num, delay_time, ascii_time, float_dp, logging_p, filename):
+    logging_button.config(state = NORMAL, text = 'Stop Logging', command = kill_log)
+    log_aardvark(exit_event, command_list, addr_num, delay_time, ascii_time, float_dp, logging_p, filename, output_text)
+    exit_event.clear()
+    action_lock('Unlock')
+    logging_button.config(background = default_color, text = 'Start Logging', command = start_logging)
+# end
 
 # Function to call to write through the AArdvark:
 def Write_I2C():
@@ -94,8 +108,109 @@ def Write_I2C():
             command_list = command_list + [item]
         # end
     # end
-    write_thread = threading.Thread(target = I2C_thread, args=(command_list, addr_num, delay_time, ascii_time, float_var.get()))
+    write_thread = threading.Thread(target = I2C_thread, args=(kill_event, command_list, addr_num, delay_time, ascii_time, float_var.get()))
     write_thread.start()
+# end
+
+# Function to call to write through the AArdvark:
+def start_logging():
+    action_lock('Lock', None)
+    logging_button.config(background = 'green')
+    
+    # clear output
+    output_text.config(state=NORMAL)
+    output_text.delete('1.0', END)
+    output_text.config(state=DISABLED) 
+    
+    # determine delay
+    delay_text = delay.get()
+    delay_time = default_delay;
+    if delay_text.isdigit():
+        delay_time = int(delay_text)
+    else:
+        print '*** Requested delay is not valid, reverting to default ***'
+        delay.delete(0,END)
+        delay.insert(0, str(default_delay))
+    # end
+    
+    # determine ascii delay
+    ascii_text = ascii.get()
+    ascii_time = default_delay*4;
+    if ascii_text.isdigit():
+        ascii_time = int(ascii_text)
+    else:
+        print '*** Requested ascii delay is not valid, reverting to default ***'
+        ascii.delete(0,END)
+        ascii.insert(0, str(default_delay*4))
+    # end    
+    
+    # determine I2C address to write to
+    addr_string = addr_text.get()
+    addr_num = 0
+    if addr_string.startswith('0x') and (len(addr_string) == 4) and addr_string[2:3].isdigit():
+        addr_num = int(addr_string,0)
+    else:
+        print '*** Invlaid address entered, reverting to device default ***'
+        addr_string = address_of(slave_var.get())
+        addr_num = int(addr_string,0)
+    # end
+    
+    # get command list
+    input_string = Command_text.get('1.0', END).encode('ascii', 'ignore')
+    input_list = input_string.split('\n')
+    command_list = []
+    for item in input_list:
+        item = item.strip()
+        if item != '':
+            command_list = command_list + [item]
+        # end
+    # end
+    
+    loop_time = 0
+    for command in command_list:
+        if 'ascii' in command:
+            loop_time += (ascii_time + delay_time)
+        elif 'TEL?' in command:
+            loop_time += (2*delay_time)
+        else:
+            loop_time += delay_time
+        # end
+    # end
+    
+    logging_text = logging.get()
+    logging_time = (loop_time/1000)+1;
+    if logging_text.isdigit():
+        logging_time = int(logging_text)
+    else:
+        print '*** Requested logging period is not valid, reverting to default ***'
+        logging.delete(0,END)
+        logging.insert(0, str(logging_time))
+    # end       
+    
+    if logging_time*1000.0 <= loop_time*1.2:
+        print '*** Warning, logging period may be shorter than the dration of the commands requested ***'
+    # end   
+    
+    file_opt = options = {}
+    options['defaultextension'] = '.csv'
+    options['filetypes'] = [('csv files', '.csv')]
+    options['initialdir'] = os.getcwd() + '\\log_files'
+    options['initialfile'] = 'example_log.csv'
+    options['title'] = 'Save .csv log file as:'       
+    
+    filename_full = asksaveasfilename(**file_opt)
+    
+    if (filename_full == ''):
+        output_text.config(state=NORMAL)
+        output_text.delete('1.0', END)
+        output_text.config(state=DISABLED)        
+        print '*** No Logging filename selected ***'
+        action_lock('Unlock')
+        logging_button.config(background = default_color)
+    else: 
+        log_thread = threading.Thread(target = I2C_log_thread, args=(kill_event, command_list, addr_num, delay_time, ascii_time, float_var.get(), logging_time, filename_full))
+        log_thread.start()
+    # end
 # end
 
 # Function to call to write XML:
@@ -170,12 +285,13 @@ def Write_XML():
             
     filename = create_XML(command_list, addr_string, delay_time, ascii_time, output_text)
     
-    file_window.config(state = NORMAL)
+    file_window.config(state=NORMAL)
     file_window.delete('1.0', END)
     file_window.insert(INSERT, filename.split('/')[-1])
     file_window.config(state = DISABLED)
     file_window.tag_configure('center', justify = 'center')
-    file_window.tag_add('center', '1.0', END)        
+    file_window.tag_add('center', '1.0', END)     
+    
     action_lock('Unlock')
 # end
 
@@ -507,7 +623,7 @@ aardvark_button.grid(row = 0, column=1, pady = 5, sticky = EW)
 button_frame.columnconfigure(1, weight = 1)
 
 # Logging
-logging_button = Button(button_frame, text = 'Start Logging', command = Write_I2C, activebackground = 'green')
+logging_button = Button(button_frame, text = 'Start Logging', command = start_logging, activebackground = 'green')
 logging_button.config(font = label_font, bg = default_color)
 logging_button.grid(row = 0, column=2, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(2, weight = 1)

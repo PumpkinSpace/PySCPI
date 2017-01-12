@@ -3,6 +3,7 @@
 from struct import unpack
 import sys
 from pySCPI_config import *
+import csv
 
 # Find the number of bytes to be read by a command if it is present in the dictionary
 def read_length(command):
@@ -26,6 +27,12 @@ def get_time(timestamp):
     ss = sec - mm*60 - hh*60*60 - dd*60*60*24
     tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
     return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
+# end
+
+# convert the timestamp number into a string
+def log_time(timestamp):
+    ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
+    return ticks/100.0
 # end
 
 # print the data array in the format specified 
@@ -179,6 +186,127 @@ def print_read(command, raw_data, double_dp):
     
     # print the Hex data at the end, also print in hex by default
     print 'Hex:\t\t' + ' '.join(['%02X' % x for x in raw_data[0:stop_index]])
+# end
+
+# print the data array in the format specified 
+def log_read(command, raw_data, csv_row):
+    
+    # is the command in the dictionary
+    if SCPI_Data.has_key(command):
+        # extract the format of the command from the dictionary
+        print_format = SCPI_Data[command][1]
+              
+        # split the incoming command into its respective parts
+        write_flag = raw_data[0:wflag_size]
+        timestamp = raw_data[wflag_size:wflag_size+time_size]       
+        
+        if chksum_size != 0:
+            checksum = raw_data[-chksum_size:]
+            data = raw_data[wflag_size+time_size:-chksum_size]
+        else:
+            data = raw_data[wflag_size+time_size:]
+        # end
+        
+        if not has_preamble(command):
+            data = raw_data[0:-(wflag_size + time_size + chksum_size)]
+        # end
+        
+        if (write_flag[0] != 1) and has_preamble(command):
+            # The command was sent too fast, bad data was recieved
+            csv_row.append('WF = 0')
+            for format in print_format.split(','):
+                csv_row.append('WF = 0')
+            # end
+            
+        # else the data is good or is in ascii formatting
+        elif ',' not in print_format:
+            # the data is just a single peice of data, not a list.
+            
+            if has_preamble(command):
+                # print the timestamp
+                csv_row.append(log_time(timestamp))
+            # end
+ 
+            # print the data in the appropriate format given by the dictionary
+            if print_format == 'ascii':
+                if 0 in data:
+                    csv_row.append(''.join([chr(x) for x in data[0:data.index(0)]]))
+                    # end
+                else:
+                    csv_row.append(''.join([chr(x) for x in data]))
+                # end
+                
+            elif print_format == 'int':
+                csv_row.append(unpack('<h', ''.join([chr(x) for x in data]))[0])
+                
+            elif print_format == 'long':
+                csv_row.append(unpack('<l', ''.join([chr(x) for x in data]))[0])
+                
+            elif print_format == 'long long':
+                csv_row.append(unpack('<q', ''.join([chr(x) for x in data]))[0])        
+                
+            elif print_format == 'uint':
+                csv_row.append(unpack('<H', ''.join([chr(x) for x in data]))[0])
+                
+            elif print_format == 'double':
+                csv_row.append(unpack('<d', ''.join([chr(x) for x in data]))[0])
+                
+            elif print_format == 'char':
+                csv_row.append(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
+            
+            elif print_format == 'hex':
+                csv_row.append(' '.join(['0x%02x' % x for x in data]))
+            
+            else:
+                # the format in the dictionary does not match one of the supported types
+                csv_row.append('invalid format')
+            # end
+             
+        else:
+            # the data received is a list so process each piece individually
+            # does not accept hex or ascii parts in the list
+            
+            # print the timestamp
+            csv_row.append(log_time(timestamp))
+            
+            # split the list into individual formats
+            formats = print_format.split(', ')
+            start_index = 0
+            i = 0
+            # for each item in the list print it according to the associated specification
+            for spec in formats:
+                if spec == 'int':
+                    csv_row.append(unpack('<h', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0])
+                    start_index += 2
+                    
+                elif spec == 'long':
+                    csv_row.append(unpack('<l', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0])
+                    start_index += 4
+                    
+                elif spec == 'long long':
+                    csv_row.append(unpack('<q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
+                    start_index += 8
+                    
+                elif spec == 'uint':
+                    csv_row.append(unpack('<H', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0])  
+                    start_index += 2
+                    
+                elif spec == 'double':
+                    csv_row.append(unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
+                    start_index += 8
+                    
+                elif spec == 'char':
+                    csv_row.append(unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
+                    start_index += 1
+                else:
+                    # the format is not accepted by this code
+                    csv_row.append('invalid format') 
+                    
+                # end and iterate
+                i += 1
+            # end    
+        #end
+    # end
 # end
 
 # Get a list of devices supported by the dictionary

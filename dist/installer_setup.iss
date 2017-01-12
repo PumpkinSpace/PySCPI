@@ -27,27 +27,27 @@ Name: "install_usb"; Description: "Install Aardvark USB Drivers from TotalPhase"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\pySCPI.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\Microsoft.VC90.CRT\*"; DestDir: "{app}\Microsoft.VC90.CRT"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\src\*"; DestDir: "{app}\src"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\tcl\*"; DestDir: "{app}\tcl"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\xml_files\*"; DestDir: "{app}\xml_files"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_ssl.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\_tkinter.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\bz2.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\library.zip"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\pyexpat.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\pySCPI.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\python27.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\select.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\tcl85.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\tk85.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\w9xpopen.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\pumpkinadmin\Desktop\Codebase\PySCPI\dist\pySCPI.exe.log"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\pySCPI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\Microsoft.VC90.CRT\*"; DestDir: "{app}\Microsoft.VC90.CRT"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\src\*"; DestDir: "{app}\src"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\tcl\*"; DestDir: "{app}\tcl"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\log_files\*"; DestDir: "{app}\log_files"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\xml_files\*"; DestDir: "{app}\xml_files"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\_ssl.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\_tkinter.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\bz2.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\library.zip"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\pyexpat.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\pySCPI.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\python27.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\select.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\tcl85.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\tk85.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\David\Desktop\Codebase\PySCPI\dist\w9xpopen.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
@@ -59,5 +59,3 @@ Name: "{commondesktop}\pySCPI"; Filename: "{app}\pySCPI.exe"; Tasks: desktopicon
 Filename: "{app}\pySCPI.exe"; Description: "{cm:LaunchProgram,pySCPI}"; Flags: nowait postinstall skipifsilent
 Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: Not IsWin64(); Tasks: install_usb; Flags: skipifsilent
 Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: IsWin64(); Tasks: install_usb; Flags: skipifsilent
-
-
