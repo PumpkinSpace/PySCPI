@@ -1,11 +1,25 @@
-# Functions that format the SCPI Command output
+"""
+@package SCPI_formatting.py
+Module to handle the formatting of data in the pySCPI program.
+
+Author: David Wright
+
+(c) Pumpkin Inc. 2017
+"""
 
 from struct import unpack
 import sys
 from pySCPI_config import *
 import csv
 
-# Find the number of bytes to be read by a command if it is present in the dictionary
+
+"""
+Reads the length of a command from the dictionary.
+
+@param[in]  command:  The command to find the length of (string).
+@return     (Int)     The length of that command, or the default 
+                      length if the command is not found.
+"""
 def read_length(command):
     if SCPI_Data.has_key(command):
         # extract the length from the dictionary
@@ -14,28 +28,52 @@ def read_length(command):
         # command isn't in library so use the default length
         print '*** Command \"' + command + '\" not found in dictionary, length defaults to ' + str(default_length) + ' ***'
         return default_length
-    # end
-# end
+    # end if
+# end def
 
-# convert the timestamp number into a string
+
+"""
+Converts the raw timestamp data into a string for printing to the GUI.
+
+@param[in]  timestamp:  The raw hex timestamp to be converted (list of ints).
+@return     (string)    The formatted string denoting the time in the format:
+                        days:hours:mins:seconds.1/100th seconds.
+"""
 def get_time(timestamp):
+    # turn the hex data into a long int
     ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
+    # break it down into parts
     sec = ticks/100
     dd = sec/(60*60*24)
     hh = sec/(60*60) - dd*24
     mm = sec/60 - hh*60 - dd*60*24
     ss = sec - mm*60 - hh*60*60 - dd*60*60*24
     tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
+    # construct the string
     return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
-# end
+# end def
 
-# convert the timestamp number into a string
+
+"""
+Converts the raw timestamp data into a float for logging.
+
+@param[in]  timestamp:  The raw hex timestamp to be converted (list of ints).
+@return     (float)     Time in seconds.
+"""
 def log_time(timestamp):
     ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
     return ticks/100.0
-# end
+# end def
 
-# print the data array in the format specified 
+"""
+Formats the data that was returned from the AArdvark and then prints it to 
+the GUI according to the specifications of the dictionary.
+
+@param[in]  command:   The command that was sent (string).
+@param[in]  raw_data:  The raw data provided by the Aardvark (list of ints).
+@param[in]  double_dp: The number of decimal places to print for a double (int).
+@return     None.
+"""
 def print_read(command, raw_data, double_dp):
     
     # index to stop printing at
@@ -50,16 +88,18 @@ def print_read(command, raw_data, double_dp):
         write_flag = raw_data[0:wflag_size]
         timestamp = raw_data[wflag_size:wflag_size+time_size]       
         
+        # if a checksum is included extract that
         if chksum_size != 0:
             checksum = raw_data[-chksum_size:]
             data = raw_data[wflag_size+time_size:-chksum_size]
         else:
             data = raw_data[wflag_size+time_size:]
-        # end
+        # end if
         
+        # if there is no preamble clip the extra bytes off the end
         if not has_preamble(command):
             data = raw_data[0:-(wflag_size + time_size + chksum_size)]
-        # end
+        # end if
         
         if (write_flag[0] != 1) and has_preamble(command):
             # The command was sent too fast, bad data was recieved
@@ -72,20 +112,23 @@ def print_read(command, raw_data, double_dp):
             if has_preamble(command):
                 # print the timestamp
                 print 'Timestamp:\t\t' + get_time(timestamp)
-            # end
+            # end if
  
             # print the data in the appropriate format given by the dictionary
             if print_format == 'ascii':
                 if 0 in data:
+                    # terminate printing at the null terminator of the string
                     print 'Data:\t\t' + ''.join([chr(x) for x in data[0:data.index(0)]])
+                    # store the position of the null terminator depending on whether there is a preamble
                     if not has_preamble(command):
                         stop_index = data.index(0)
                     else:
-                        stop_index = data.index(0) + 5
-                    # end
+                        stop_index = data.index(0) + wflag_size + time_size
+                    # end if
                 else:
+                    # no null terminator
                     print 'Data:\t\t' + ''.join([chr(x) for x in data])
-                # end
+                # end if
                 
             elif print_format == 'int':
                 print 'Data:\t\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0])
@@ -111,12 +154,12 @@ def print_read(command, raw_data, double_dp):
             else:
                 # the format in the dictionary does not match one of the supported types
                 print '*** No valid format for data ***'
-            # end
+            # end if
             
             # print checksum if present
             if (chksum_size != 0) and has_preamble(command):
                 print 'Checksum:\t\t' + ' '.join(['0x%02X' % x for x in checksum])
-            # end
+            # end if
             
         else:
             # the data received is a list so process each piece individually
@@ -130,7 +173,7 @@ def print_read(command, raw_data, double_dp):
             start_index = 0
             output = [None]*len(formats)
             i = 0
-            # for each item in the list print it according to the associated specification
+            # for each item in the list print it according to the associated specification and then shift the pointer
             for spec in formats:
                 if spec == 'int':
                     output[i] =  unpack('<h', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0]
@@ -159,13 +202,13 @@ def print_read(command, raw_data, double_dp):
                     # the format is not accepted by this code
                     print '*** No valid format at list entry ' + str(i) + '***' 
                     
-                # end and iterate
+                # end if and iterate
                 i += 1
-            # end
+            # end for
             
             # construct an output string
             output_string = 'Data:\t\t['
-            array_len = len(output)
+            array_len = len(output) # number of data items
             for i in range(array_len):
                 if type(output[i]) is float:
                     # if the object is a float, format accordingly
@@ -174,21 +217,35 @@ def print_read(command, raw_data, double_dp):
                     output_string = output_string  + str(output[i])
                     
                 if i < array_len - 1:
+                    # add a comma between items
                     output_string = output_string + ', '
+                # end if
+            # end for
+            
+            # print the formatted data
             print output_string + ']'
             
             # print checksum if present
             if chksum_size != 0:
                 print 'Checksum: ' + ' '.join(['0x%02X' % x for x in checksum])
-            # end            
-        #end
-    # end
+            # end if        
+        #end if
+    # end if
     
     # print the Hex data at the end, also print in hex by default
     print 'Hex:\t\t' + ' '.join(['%02X' % x for x in raw_data[0:stop_index]])
-# end
+# end def
 
-# print the data array in the format specified 
+
+"""
+Formats the data that was returned from the AArdvark and then adds it to a 
+list of data to log.
+
+@param[in]  command:   The command that was sent (string).
+@param[in]  raw_data:  The raw data provided by the Aardvark (list of ints).
+@param[out] csv_row:   The list of data to add to (list).
+@return     None.
+"""
 def log_read(command, raw_data, csv_row):
     
     # is the command in the dictionary
@@ -205,18 +262,18 @@ def log_read(command, raw_data, csv_row):
             data = raw_data[wflag_size+time_size:-chksum_size]
         else:
             data = raw_data[wflag_size+time_size:]
-        # end
+        # end if
         
         if not has_preamble(command):
             data = raw_data[0:-(wflag_size + time_size + chksum_size)]
-        # end
+        # end if
         
         if (write_flag[0] != 1) and has_preamble(command):
             # The command was sent too fast, bad data was recieved
             csv_row.append('WF = 0')
             for format in print_format.split(','):
                 csv_row.append('WF = 0')
-            # end
+            # end for
             
         # else the data is good or is in ascii formatting
         elif ',' not in print_format:
@@ -225,16 +282,15 @@ def log_read(command, raw_data, csv_row):
             if has_preamble(command):
                 # print the timestamp
                 csv_row.append(log_time(timestamp))
-            # end
+            # end if
  
             # print the data in the appropriate format given by the dictionary
             if print_format == 'ascii':
                 if 0 in data:
                     csv_row.append(''.join([chr(x) for x in data[0:data.index(0)]]))
-                    # end
                 else:
                     csv_row.append(''.join([chr(x) for x in data]))
-                # end
+                # end if
                 
             elif print_format == 'int':
                 csv_row.append(unpack('<h', ''.join([chr(x) for x in data]))[0])
@@ -260,7 +316,7 @@ def log_read(command, raw_data, csv_row):
             else:
                 # the format in the dictionary does not match one of the supported types
                 csv_row.append('invalid format')
-            # end
+            # end if
              
         else:
             # the data received is a list so process each piece individually
@@ -302,24 +358,9 @@ def log_read(command, raw_data, csv_row):
                     # the format is not accepted by this code
                     csv_row.append('invalid format') 
                     
-                # end and iterate
+                # end if and iterate
                 i += 1
-            # end    
-        #end
-    # end
-# end
-
-# Get a list of devices supported by the dictionary
-def get_devices():
-    devices = []
-    keys = SCPI_Data.keys()
-    dev_keys = [key.split(':')[0] for key in keys]
-    for key in dev_keys:
-        if (key not in devices) and (key != 'SUP'):
-            devices = devices + [key]
-        # end
-    # end
-    devices = ['GPSRM' if device == 'GPS' else device for device in devices]
-    return devices
-#end
-        
+            # end for 
+        # end if
+    # end if
+# end def

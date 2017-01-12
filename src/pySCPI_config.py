@@ -1,4 +1,12 @@
-# Configurable inputs to the PySCPI program
+"""
+@package pySCPI_config.py
+Module to handle the configureation of pySCPI including setting default values
+and declaring the dictionaries of address and commands.
+
+Author: David Wright
+
+(c) Pumpkin Inc. 2017
+"""
 
 # defauult filename to be used in the GUI
 default_filename = 'aardvark_script.xml'
@@ -43,14 +51,44 @@ time_size = 4
 length_size = 1
 ascii_size = 128
 
-# check if preamble is required
+"""
+Determines if the command in question has a preamble.
+
+@param[in]  command:  The command of interest (string).
+@return     (bool)    True:  There is a preamble associated with this command.
+                      False: There is not.
+"""
 def has_preamble(command):
     if command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
         return False
     else:
         return True
-    # end
-# end
+    # end if
+# end def
+
+
+"""
+Get a list of all the devices that pySCPI supports
+
+@return     devices:  A list of all the supported devices (list of strings).
+"""
+def get_devices():
+    devices = []
+    # get all the keys from the dictionary
+    keys = SCPI_Data.keys()
+    # extract the device specifier
+    dev_keys = [key.split(':')[0] for key in keys]
+    for key in dev_keys:
+        if (key not in devices) and (key != 'SUP'):
+            # this is a unique device, add it to the list
+            devices = devices + [key]
+        # end if
+    # end for
+    
+    # replace the GPS if present with its longer name
+    devices = ['GPSRM' if device == 'GPS' else device for device in devices]
+    return devices
+# end def
 
 
 # Dictionary of all telemetry Commands

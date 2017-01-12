@@ -25,33 +25,60 @@ use_XML = True
 ######################## User Defined Configuration ############################
 # Bitrate in kHz
 Bitrate = 100
+################################################################################
 
+"""
+Determine if a file that is to be modified is being used by another program.
+
+@param[in]  filename: The absolute directory of the file (string).
+@return     (bool)    True:     The file is not being used by another program.
+                      False:    The file is in use.
+"""
 def file_is_free(filename):
     try:
+        # attempt to change the files name to see if it is available.
         os.rename(filename,filename)
         return True
     except OSError as e:
+        # renaming was not possible as another program is using it.
         return False
-    # end
-# end
+    # end try
+# end def
 
+"""
+Write to the slave device using the Aardvark and print its results to the GUI
 
-def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, THREAD_EXIT):
+@param[in]  exit_event:  Event to terminate the function (threading.Event).
+@param[in]  commands:    List of commands to be sent (list of strings).
+@param[in]  dec_addr:    I2C address of the slave device (int).
+@param[in]  Delay:       Millisecond delay to wait between transmissions (int).
+@param[in]  Ascii_delay: Millisecond delay to wait before reading an 'ascii' 
+                         request (int).
+@param[in]  float_dp:    The number of decimal places to print a float to (int).
+@return     int(0):      Failed to use Aardvark.
+            None         Otherwise.
+"""
+def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp):
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
     Aardvark_port = 8<<7
+    
+    # Check if there is an Aardvark present
     if (AA_Devices[0] < 1):
         print '*** No Aardvark is present ***'
         Aardvark_free = False
+        return 0
     else:
         Aardvark_port = AA_Devices[1][0]
-    # end
+    # end if
     
+    # If there is an Aardvark there is it free?
     if Aardvark_port >= 8<<7 and Aardvark_free:
         print '*** Aardvark is being used, disconnect other application or Aardvark device ***'
         aa_close(Aardvark_port)
         Aardvark_free = False
+        return 0
     elif Aardvark_free:
         # Aardvark is available so configure it
         Aardvark_in_use = aa_open(Aardvark_port)
@@ -61,7 +88,7 @@ def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp,
         aa_i2c_free_bus(Aardvark_in_use)
         aa_sleep_ms(Delay)    
         print "Starting Aardvark communications\n"
-    # end
+    # end if
     
     # iterate through commands and add them to the aardvark file
     i = 0
@@ -80,81 +107,119 @@ def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp,
                 print 'Read:\t\t' + commands[i]
             else:
                 print 'Write:\t\t' + commands[i]
-            # end
-        # end
+            # end if
+        # end if
         
         if 'TEL?' in commands[i]:
+            # an I2C read has been requested
             # if the Aardvark is free read from it
             if Aardvark_free:
                 if commands[i].endswith('ascii'):
+                    # sleep a different amount if ascii was requested
                     aa_sleep_ms(Ascii_delay)
                 else:
                     aa_sleep_ms(Delay)
-                # end
-                data = array('B', [1]*read_length(commands[i])) 
+                # end if
+                
                 # read from the slave device
+                data = array('B', [1]*read_length(commands[i])) 
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                
+                # print the recieved data
                 print_read(commands[i], list(read_data[1]), float_dp)
-            # end  
-        # end
+            # end if
+        # end if
         print ''
         aa_sleep_ms(Delay)
         
         # Iterate to next command
         i+=1
-        if not exit_event.isSet():
+        
+        if exit_event.isSet():
+            # this thread has been asked to terminate
             break
         # end
-    # end loop
+    # end while
     
+    if Aardvark_free:
+        # close the AArdvark device
+        aa_close(Aardvark_port)
+        print 'Aardvark communications finished'
+    # end if
+# end def
+   
+   
+"""
+Write to the slave device using the Aardvark and print to the gui and save the
+data to a csv log file.
+
+@param[in]  exit_event:  Event to terminate the function (threading.Event).
+@param[in]  commands:    List of commands to be sent (list of strings).
+@param[in]  dec_addr:    I2C address of the slave device (int).
+@param[in]  Delay:       Millisecond delay to wait between transmissions (int).
+@param[in]  Ascii_delay: Millisecond delay to wait before reading an 'ascii' 
+                         request (int).
+@param[in]  float_dp:    The number of decimal places to print a float to (int).
+@param[in]  logging_p:   The period in seconds to use for the logging loop (int).
+@param[in]  filename:    The absolute directory of the file to write log to (string).
+@param[out] output_text: The text window on the GUI to clear between logging loops.
+@return     int(0):      Failed to use Aardvark.
+"""      
 def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, logging_p, filename, output_text):
-    # configure Aardvark if available
-    
+
     csv_line = []
     output_writer = None
     csv_output = None
     # create CSV Header
     for command in commands:
         if 'TEL?' in command:
+            # is a telemetry request
             if has_preamble(command):
+                # can extract time data
                 csv_line.append(command + ': Time (s)')
-            #end
+            # end if
             print_format = SCPI_Data[command][1]
             if ',' not in print_format:
+                # is only a single data item so append title
                 csv_line.append(command + ': Data')
             else:
+                # is a list so create a column for every item in the list
                 for i in range(len(print_format.split(','))):
                     csv_line.append(command + ': Data[' + str(i) + ']')
-                # end
-            # end
-        # end
-    # end
+                # end for
+            # end if
+        # end if
+    # end for
+    
     # write Header
-    if file_is_free(filename):     
+    if file_is_free(filename): 
+        # write header to the log file
         csv_output = open(filename, 'wb')
         output_writer = csv.writer(csv_output, delimiter = ',')
         output_writer.writerow(csv_line) 
     else:
         print'*** Requested log file is in use by another program ***'
         return 0
-    # end
+    # end if
     
+    # Configure the Aardvark if present
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
     Aardvark_port = 8<<7
     if (AA_Devices[0] < 1):
         print '*** No Aardvark is present ***'
         Aardvark_free = False
-        THREAD_EXIT = True
+        return 0
     else:
         Aardvark_port = AA_Devices[1][0]
     # end
     
+    # If there is an Aardvark there is it free?
     if Aardvark_port >= 8<<7 and Aardvark_free:
         print '*** Aardvark is being used, disconnect other application or Aardvark device ***'
         aa_close(Aardvark_port)
         Aardvark_free = False
-        THREAD_EXIT = True
+        return 0
     elif Aardvark_free:
         # Aardvark is available so configure it
         Aardvark_in_use = aa_open(Aardvark_port)
@@ -166,9 +231,11 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
         print "Starting Aardvark communications\n"
     # end    
 
-    csv_row = []
     start_time = time.time()
+    
+    # loop until the thread is asked to exit
     while not exit_event.isSet():
+        csv_row = []
         
         # iterate through commands and add them to the aardvark file
         i = 0
@@ -187,8 +254,8 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
                     print 'Read:\t\t' + commands[i]
                 else:
                     print 'Write:\t\t' + commands[i]
-                # end
-            # end
+                # end if
+            # end if
             
             if 'TEL?' in commands[i]:
                 # if the Aardvark is free read from it
@@ -197,41 +264,67 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
                         aa_sleep_ms(Ascii_delay)
                     else:
                         aa_sleep_ms(Delay)
-                    # end
-                    data = array('B', [1]*read_length(commands[i])) 
+                    # end if
+                    
                     # read from the slave device
+                    data = array('B', [1]*read_length(commands[i])) 
                     read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                    
+                    # print data
                     print_read(commands[i], list(read_data[1]), float_dp)
+                    
+                    # log data
                     log_read(commands[i], list(read_data[1]), csv_row)
                     # write to log file              
-                # end  
-            # end
+                # end if
+            # end if
             print ''
             aa_sleep_ms(Delay)
             
             # Iterate to next command
             i+=1
-        # end loop
+        # end while
+        
         while (time.time() - start_time) < logging_p:
+            # delay to maintain the logging period
             continue
-        # end
+        # end while
+        
         start_time = time.time()
+        
+        # write to log file
         output_writer.writerow(csv_row) 
-        csv_row = []        
+                
+        # clear the output display on the GUI
         output_text.config(state = NORMAL)
         output_text.delete('1.0', END)
         output_text.config(state=DISABLED)  
         
-    # end loop
+    # end while
+    
+    # close the csv file
     csv_output.close()   
 
     if Aardvark_free:
+        # close the aardvark
         aa_close(Aardvark_port)
         print 'Aardvark communications finished'
-    # end
-# end
+    # end if
+# end def
 
-def create_XML(commands, addr, Delay, Ascii_delay, output_text):
+
+"""
+Write an Aardvark compatible .xml file that can be used with the Total phase 
+system or loaded back into pySCPI
+
+@param[in]  commands:      List of commands to be sent (list of strings).
+@param[in]  addr:          I2C address of the slave device (string).
+@param[in]  Delay:         Millisecond delay to wait between transmissions (int).
+@param[in]  Ascii_delay:   Millisecond delay to wait before reading an 'ascii' 
+                           request (int).
+@return     filename_full: Absolute directory of the file created
+"""   
+def create_XML(commands, addr, Delay, Ascii_delay):
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -245,7 +338,6 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
     
     config = ET.SubElement(aardvark, 'configure', config_attributes)
     
-    
     # Bitrate
     rate_attributes = {'khz': str(Bitrate)}
     
@@ -258,6 +350,7 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
     delay_attributes = {'ms': str(Delay)}    
     ascii_delay_attributes = {'ms': str(Ascii_delay)}  
     
+    # iterate through commands
     i = 0
     while i < len(commands):    
         # delay after previous block
@@ -281,11 +374,11 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
             # Read command was issued so a read needs to be performed
             
             if commands[i].endswith('ascii'):
+                # leave a longer delay for ascii commands
                 ET.SubElement(aardvark, 'sleep', ascii_delay_attributes)
             else:
                 ET.SubElement(aardvark, 'sleep', delay_attributes)
-            # end
-            
+            # end if
             
             # define attributes for read element extracting length from command
             read_attributes = {'addr':  addr,
@@ -294,11 +387,11 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
                 
             # create the read element
             read = ET.SubElement(aardvark, 'i2c_read', read_attributes)             
-        # end
+        # end if
         
         # Iterate to next command
         i+=1
-    #end loop        
+    #end while        
     
     # convert XML file to modifiable string to beautify it
     text_string = ET.tostring(aardvark, encoding='utf8', method='xml')
@@ -315,6 +408,7 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
     # remove header
     file_string5 = file_string4.replace('<?xml version=\'1.0\' encoding=\'utf8\'?>\n', '')
     
+    # open window for saving the file
     file_opt = options = {}
     options['defaultextension'] = '.xml'
     options['filetypes'] = [('xml files', '.xml')]
@@ -340,27 +434,8 @@ def create_XML(commands, addr, Delay, Ascii_delay, output_text):
             print 'XML file \'' + filename_full.split('/')[-1] + '\' written'
         else:
             print '*** Requested XML file is open in another program ***'
-    else:
-        output_text.config(state=NORMAL)
-        output_text.delete('1.0', END)
-        output_text.config(state=DISABLED)        
+    else:    
         print '*** No XML file written ***'
-    # end
-    
+    # end if
     return filename_full
-# end
-
-def write_I2C(commands, dec_addr, Delay, write_aardvark, create_XML, filename):
-    if use_aardvark:
-        write_aardvark(commands, dec_addr, Delay)
-    # end
-    if use_XML:
-        create_XML(commands, address, Delay, filename)
-    # end
-# end
-
-
-#write_I2C()
-## Incase of error, write this in shell
-# aa_close(Aardvark_port)
-
+# end def

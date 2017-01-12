@@ -24,6 +24,7 @@ xml_files = []
 xml_list = os.listdir(root + '/xml_files')
 for filename in xml_list:
     if 'example' in filename:
+        # only include files that are labelled as examples
         xml_files = xml_files + [('xml_files', [root + '/xml_files/' + filename])]
     # end
 # end
@@ -33,6 +34,7 @@ log_files = []
 log_list = os.listdir(root + '/log_files')
 for filename in log_list:
     if 'example' in filename:
+        # only include files that are labelled as examples
         log_files = log_files + [('log_files', [root + '/log_files/' + filename])]
     # end
 # end
