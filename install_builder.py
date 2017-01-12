@@ -34,17 +34,34 @@ installer_file.close()
 
 new_lines = []
 
-# replace text as needed
+dist_dir = root + '\\dist\\'
+dist_list = os.listdir(dist_dir)
+
+no_source_yet = True
+
+source_start = 'Source: "'  + dist_dir
+source_mid = '"; DestDir: "{app}'
+source_ignore = ' recursesubdirs createallsubdirs'
+source_end = '"; Flags: ignoreversion'
+
 for line in installer_text:
-    if '"C:\\' in line:
-        # is a line to change
-        start_index = line.index('C:\\') # beginning of previous absolute directory
-        stop_index = line.index('\\dist\\') # end of previous absolute directory
-        new_lines.append(line.replace(line[start_index:stop_index], root)) # replace
+    if line.startswith('Source'):
+        if no_source_yet:
+            for item in dist_list:
+                if (('.' not in item) or item.endswith('.CRT')) and (item != 'Output'):
+                    # it is a folder
+                    new_lines.append(source_start + item + '\\*' + source_mid + '\\' + item + source_end + source_ignore + '\n')
+                elif not(item.endswith('.md') or item.startswith('.') or item.endswith('.iss') or item.endswith('.log')):
+                    new_lines.append(source_start + item + source_mid + source_end + '\n')
+                # end if
+            # end for
+            no_source_yet = False
+        # end if
     else:
         new_lines.append(line)
-    # end    
-# end
+    # end if
+# end for
+    
 installer_file = open(root+'/dist/installer_setup.iss', 'wb')
 installer_file.writelines(new_lines)
 installer_file.close()
