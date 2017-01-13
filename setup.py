@@ -44,7 +44,7 @@ setup(windows=[{'script':'pySCPI.pyw', # Top level file to read in
                 'icon_resources': [(1, 'src/cubesatkit.ico')], # desired .exe icon
                 'dest_base': 'pySCPI'}], # base directory
       data_files= dll_files + xml_files + log_files + # data file lists declared above
-                  [('src', [root + '/src/Header.jpg']), # Header image for the GUI
+                  [('src', [root + '/src/Header2.jpg']), # Header image for the GUI
                   ('src', [root + '/src/cubesatkit.ico']), # icon image for the program
                   ('src', [root + '/src/pySCPI README.txt'])], # readme file
       options = {'py2exe':{'includes': ['aardvark_builder', 'pySCPI_config', 'SCPI_formatting', 'aardvark_py'], # include files required by program

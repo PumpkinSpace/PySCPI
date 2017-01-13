@@ -192,7 +192,9 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
     # end for
     
     # write Header
-    if file_is_free(filename): 
+    filename_short = filename.split('/')[-1]
+    filename_dir = filename[:filename.rfind('/')]
+    if (filename_short not in os.listdir(filename_dir)) or file_is_free(filename): 
         # write header to the log file
         csv_output = open(filename, 'wb')
         output_writer = csv.writer(csv_output, delimiter = ',')
@@ -287,7 +289,9 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
         
         while (time.time() - start_time) < logging_p:
             # delay to maintain the logging period
-            continue
+            if exit_event.isSet():
+                break
+        # end if
         # end while
         
         start_time = time.time()
@@ -421,7 +425,9 @@ def create_XML(commands, addr, Delay, Ascii_delay):
     if (filename_full != ''):    
         # open file for writing
         
-        if file_is_free(filename_full):
+        filename_short = filename_full.split('/')[-1]
+        filename_dir = filename_full[:filename_full.rfind('/')]
+        if (filename_short not in os.listdir(filename_dir)) or file_is_free(filename_full):         
             myfile = open(filename_full, 'w+')
             
             # write file

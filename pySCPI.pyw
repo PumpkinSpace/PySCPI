@@ -390,7 +390,7 @@ def Write_XML():
     # end for
             
     # create the xml file
-    filename = create_XML(command_list, addr_string, delay_time, ascii_time, output_text)
+    filename = create_XML(command_list, addr_string, delay_time, ascii_time)
     
     # update the filename display window to show the filename saved
     file_window.config(state=NORMAL)
@@ -434,6 +434,8 @@ def Load_XML():
     ascii_last = 0
     ascii_delay = '0'
     message_delay = '0'
+    device_detected = ''
+    printed = False
     
     if (filename != ''): 
         # extract all commands from the XML
@@ -444,7 +446,12 @@ def Load_XML():
             if line.startswith('<!--'):
                 if config_found:
                     # line is a command
-                    commands = commands + [line[4:-3]]
+                    command = line[4:-3]
+                    commands = commands + [command]
+                    if not command.startswith('SUP'):
+                        # detect the device name
+                        device_detected = command.split(':')[0]
+                    # end if
                 else:
                     # line is the configuration command
                     config_found = True
@@ -474,12 +481,39 @@ def Load_XML():
                 index = line.index('"')
                 address = '0x' + line[index+3:index+5]
                 addr_var.set(address)
-                if address in address_of.values():
-                    # address matches a device
-                    slave_var.set(address_of.keys()[address_of.values().index(address)])
+                
+                # create local address dictionary to compare to
+                local_address_of = address_of.copy()
+                local_address_of['GPS'] = '0x51'
+                
+                if device_detected in local_address_of.keys():
+                    if address == local_address_of[device_detected]:
+                        # address matches a device
+                        if device_detected == 'GPS':
+                            slave_var.set('GPSRM')
+                        else:
+                            slave_var.set(device_detected)
+                        # end if
+                    else:
+                        # address does not so color it yellow as a warning
+                        addr_text.config(background = 'yellow') 
+                        if not printed:
+                            print '*** Warning, loaded device address does not match default for that device ***'
+                            printed = True
+                        # end if
+                    # end if  
                 else:
-                    # address does not so color it yellow as a warning
-                    addr_text.config(background = 'yellow')    
+                    if address in address_of.values():
+                        # address matches a device
+                        slave_var.set(address_of.keys()[address_of.values().index(address)])
+                    else:
+                        # address does not so color it yellow as a warning
+                        addr_text.config(background = 'yellow') 
+                        if not printed:
+                            print '*** Warning, loaded device address does not match default for that device ***'
+                            printed = True
+                        # end if
+                    # end if
                 # end if
             # end if
         # end if
@@ -519,7 +553,8 @@ def Load_XML():
 ################################ GUI defaults ##################################
 default_color = '#E1E5E7'
 title_font = "Arial 16 bold"
-label_font = "Arial 11"
+label_font = "Arial 10"
+button_font = "Arial 10 bold"
 text_font = "Arial 9"
                    
 root = Tk()
@@ -550,7 +585,7 @@ Output_frame.grid(row = 2, column = 1, sticky = NSEW, padx = 1)
 
 ################################ Header Image ##################################
 
-input_image = Image.open('src/Header.jpg')
+input_image = Image.open('src/Header2.jpg')
 # find the images aspect ratio so it can be maintained
 aspect_ratio = float(input_image.size[1])/float(input_image.size[0])
 # resize to fit the window
@@ -598,12 +633,12 @@ but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
 xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green', width = 15)
-xml_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+xml_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
 xml_button.grid(row = 0, column=0, padx = 5)
 
 # View README Button
 readme_button = Button(but_frame, text = 'View ReadMe', command = View_Readme, activebackground = 'green', width = 15)
-readme_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+readme_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
 readme_button.grid(row = 1, column=0, padx = 5, pady = 5)
 current_column += 1
 
@@ -623,7 +658,7 @@ slave_frame.columnconfigure(1,weight = 2)
 # Slave selector title
 slave_label = Label(Config_frame, text = 'Slave Device')
 slave_label.config(font = label_font, bg = default_color)
-slave_label.grid(row = 1, column= current_column)
+slave_label.grid(row = 1, column= current_column, sticky = S)
 
 # device name variable
 devices = get_devices()
@@ -654,13 +689,13 @@ current_column += 1
 # delay text box sub-frame
 delay_frame = Frame(Config_frame)
 delay_frame.config(bg = default_color)
-delay_frame.grid(row = 2, column = current_column, sticky = NSEW)
+delay_frame.grid(row = 2, column = current_column, sticky = EW)
 delay_frame.columnconfigure(0, weight = 2)
 delay_frame.columnconfigure(1, weight = 2)
 
 # delay title
 delay_label = Label(Config_frame, text = 'Intermessage Delay')
-delay_label.grid(row = 1, column = current_column, padx = 5)
+delay_label.grid(row = 1, column = current_column, padx = 5, sticky = S)
 delay_label.config(font = label_font, bg = default_color)
 
 # delay entry box
@@ -678,14 +713,14 @@ current_column += 1
 # ASCII Delay sub-frame
 ascii_frame = Frame(Config_frame)
 ascii_frame.config(bg = default_color)
-ascii_frame.grid(row = 2, column = current_column, sticky = NSEW)
+ascii_frame.grid(row = 2, column = current_column, sticky = EW)
 ascii_frame.columnconfigure(0, weight = 2)
 ascii_frame.columnconfigure(1, weight = 2)
 
 # ascii delay title
 ascii_label = Label(Config_frame, text = 'ASCII Message Delay')
 ascii_label.config(font = label_font, bg = default_color)
-ascii_label.grid(row = 1, column=current_column)
+ascii_label.grid(row = 1, column=current_column, sticky = S)
 
 # ascii delay entry box
 ascii = Entry(ascii_frame, justify = RIGHT, width = 7)
@@ -702,7 +737,7 @@ current_column += 1
 # ouput float size selector title
 float_label = Label(Config_frame, text = 'Float DP')
 float_label.config(font = label_font, bg = default_color)
-float_label.grid(row = 1, column=current_column)
+float_label.grid(row = 1, column=current_column, sticky = S)
 
 # float size variable
 float_var = IntVar(root)
@@ -714,7 +749,8 @@ if platform.system() == 'Windows':
     # adjust size for different OSs
     float_menu.config(width = 1, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
 else:
-    float_menu.config(width = 5, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
+    float_menu.config(width = 7, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
+    float_menu["menu"].config(fg = 'black')
 # end if
 float_menu["menu"].config(font = label_font, bg = default_color)
 float_menu.grid(row = 2, column = current_column)
@@ -723,14 +759,14 @@ current_column += 1
 # Logging period sub-frame
 logging_frame = Frame(Config_frame)
 logging_frame.config(bg = default_color)
-logging_frame.grid(row = 2, column = current_column, sticky = NSEW)
+logging_frame.grid(row = 2, column = current_column, sticky = EW)
 logging_frame.columnconfigure(0, weight = 2)
 logging_frame.columnconfigure(1, weight = 2)
 
 #logging period title
 logging_label = Label(Config_frame, text = 'Logging Period')
 logging_label.config(font = label_font, bg = default_color)
-logging_label.grid(row = 1, column=current_column, padx = 5)
+logging_label.grid(row = 1, column=current_column, padx = 5, sticky = S)
 
 # logging period entry box
 logging = Entry(logging_frame, justify = RIGHT, width = 7)
@@ -794,19 +830,19 @@ button_frame.grid(row = 2, column = 0, sticky = NSEW)
 
 # Write XML Button
 save_button = Button(button_frame, text = 'Save Commands', command = Write_XML, activebackground = 'green', width = 13)
-save_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+save_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
 save_button.grid(row = 0, column=0, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(0, weight = 1)
 
 # Use Aardvark Button
 aardvark_button = Button(button_frame, text = 'Send Commands', command = Write_I2C, activebackground = 'green', width = 13)
-aardvark_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+aardvark_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
 aardvark_button.grid(row = 0, column=1, pady = 5, sticky = EW)
 button_frame.columnconfigure(1, weight = 1)
 
 # Logging button
 logging_button = Button(button_frame, text = 'Start Logging', command = start_logging, activebackground = 'green', width = 13)
-logging_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+logging_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
 logging_button.grid(row = 0, column=2, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(2, weight = 1)
 
