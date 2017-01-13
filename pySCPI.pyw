@@ -585,10 +585,10 @@ Header.bind('<Configure>', resize_image) # link the resizing event
 image_label.grid(row = 0, column = 0, sticky = NSEW)
 
 ##################### Configuration Elements #############################
-# Configuration title
-config_header = Label(Config_frame, text = 'Configuration:')
-config_header.config(font=title_font, bg = default_color)
-config_header.grid(row = 0, column = 1, columnspan = 5)
+## Configuration title
+#config_header = Label(Config_frame, text = 'Configuration:')
+#config_header.config(font=title_font, bg = default_color)
+#config_header.grid(row = 0, column = 1, columnspan = 5)
 
 # sub-frame for the buttons
 but_frame = Frame(Config_frame)
@@ -597,12 +597,12 @@ but_frame.grid(row = 0, column = current_column, rowspan = 3)
 but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
-xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green')
+xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green', width = 15)
 xml_button.config(font = label_font, bg = default_color)
 xml_button.grid(row = 0, column=0, padx = 5)
 
 # View README Button
-readme_button = Button(but_frame, text = 'View ReadMe', command = View_Readme, activebackground = 'green')
+readme_button = Button(but_frame, text = 'View ReadMe', command = View_Readme, activebackground = 'green', width = 15)
 readme_button.config(font = label_font, bg = default_color)
 readme_button.grid(row = 1, column=0, padx = 5, pady = 5)
 current_column += 1
@@ -745,10 +745,10 @@ logging_units.grid(row = 0, column = 1, sticky = W)
 
 ############################ Inputs Section ####################################
 
-# Inptu header sub-frame
+# Input header sub-frame
 input_header_frame = Frame(Input_frame)
 input_header_frame.config(bg = default_color)
-input_header_frame.grid(row = 0, column = 0)
+input_header_frame.grid(row = 0, column = 0, sticky = NSEW)
 
 # input title
 input_header = Label(input_header_frame, text = 'Input Commands:')
@@ -756,9 +756,9 @@ input_header.config(font=title_font, bg = default_color)
 input_header.grid(row = 0, column = 0, sticky = W, padx = 5)
 
 # file text_box
-file_window = Text(input_header_frame, height = 1, width = 25)
+file_window = Text(input_header_frame, height = 1, width = 33)
 file_window.config(font = text_font, bg = default_color, state = DISABLED)
-file_window.grid(row = 0, column=1, ipady = 3, sticky = EW)
+file_window.grid(row = 0, column=1, ipady = 3, sticky = E)
 
 """
 Event function to clear the filename wnidow if the commands are edited
@@ -773,18 +773,18 @@ def key(event):
 # Command input sub-frame
 command_frame = Frame(Input_frame)
 command_frame.config(bg = default_color)
-command_frame.grid(row = 1, column = 0, sticky = 'NESW')
+command_frame.grid(row = 1, column = 0, sticky = NSEW)
 
 # text box to enter commands into
-Command_text = Text(command_frame, height = 10, width = 50, padx = 3, pady = 3)
+Command_text = Text(command_frame, height = 10, width = 58, padx = 3, pady = 3)
 Command_text.config(font = text_font)
 Command_text.insert(INSERT, '\n'.join(default_commands))
 Command_text.bind('<Key>', key)
-Command_text.grid(row = 0, column=0, sticky = 'NESW')
+Command_text.grid(row = 0, column=0, sticky = NSEW)
 
 # scrollbar for the command text box, linked to the text box
 command_scroll = Scrollbar(command_frame, command = Command_text.yview)
-command_scroll.grid(column = 1, row = 0, sticky = 'NESW')
+command_scroll.grid(column = 1, row = 0, sticky = NSEW)
 Command_text['yscrollcommand'] = command_scroll.set
 
 # Buttons subframe
@@ -793,19 +793,19 @@ button_frame.config(bg = default_color)
 button_frame.grid(row = 2, column = 0, sticky = NSEW)
 
 # Write XML Button
-save_button = Button(button_frame, text = 'Save Commands', command = Write_XML, activebackground = 'green')
+save_button = Button(button_frame, text = 'Save Commands', command = Write_XML, activebackground = 'green', width = 13)
 save_button.config(font = label_font, bg = default_color)
 save_button.grid(row = 0, column=0, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(0, weight = 1)
 
 # Use Aardvark Button
-aardvark_button = Button(button_frame, text = 'Send Commands', command = Write_I2C, activebackground = 'green')
+aardvark_button = Button(button_frame, text = 'Send Commands', command = Write_I2C, activebackground = 'green', width = 13)
 aardvark_button.config(font = label_font, bg = default_color)
 aardvark_button.grid(row = 0, column=1, pady = 5, sticky = EW)
 button_frame.columnconfigure(1, weight = 1)
 
 # Logging button
-logging_button = Button(button_frame, text = 'Start Logging', command = start_logging, activebackground = 'green')
+logging_button = Button(button_frame, text = 'Start Logging', command = start_logging, activebackground = 'green', width = 13)
 logging_button.config(font = label_font, bg = default_color)
 logging_button.grid(row = 0, column=2, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(2, weight = 1)
