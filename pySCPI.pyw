@@ -598,12 +598,12 @@ but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
 xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green', width = 15)
-xml_button.config(font = label_font, bg = default_color)
+xml_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
 xml_button.grid(row = 0, column=0, padx = 5)
 
 # View README Button
 readme_button = Button(but_frame, text = 'View ReadMe', command = View_Readme, activebackground = 'green', width = 15)
-readme_button.config(font = label_font, bg = default_color)
+readme_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
 readme_button.grid(row = 1, column=0, padx = 5, pady = 5)
 current_column += 1
 
@@ -636,7 +636,7 @@ addr_var.set(address_of[devices[0]])
 
 # device address display box
 addr_text = Entry(slave_frame, textvariable=addr_var, width = 4, justify = CENTER)
-addr_text.config(font = text_font)
+addr_text.config(font = text_font, highlightbackground= default_color)
 addr_text.grid(row = 0, column = 1, ipadx=20, pady = 5,sticky = W, ipady = 3)
 
 # device selector drop down menu
@@ -665,7 +665,7 @@ delay_label.config(font = label_font, bg = default_color)
 
 # delay entry box
 delay = Entry(delay_frame, justify = RIGHT, width = 7)
-delay.config(font = text_font)
+delay.config(font = text_font, highlightbackground= default_color)
 delay.grid(row = 0, column = 0, ipady = 3, sticky = E)
 delay.insert(0, str(default_delay))
 
@@ -689,7 +689,7 @@ ascii_label.grid(row = 1, column=current_column)
 
 # ascii delay entry box
 ascii = Entry(ascii_frame, justify = RIGHT, width = 7)
-ascii.config(font = text_font)
+ascii.config(font = text_font, highlightbackground= default_color)
 ascii.grid(row = 0, column=0, ipady = 3, sticky = E)
 ascii.insert(0, str(default_delay*4))
 
@@ -734,7 +734,7 @@ logging_label.grid(row = 1, column=current_column, padx = 5)
 
 # logging period entry box
 logging = Entry(logging_frame, justify = RIGHT, width = 7)
-logging.config(font = text_font)
+logging.config(font = text_font, highlightbackground= default_color)
 logging.grid(row = 0, column=0, ipady = 3, sticky = E)
 logging.insert(0, '60')
 
@@ -757,7 +757,7 @@ input_header.grid(row = 0, column = 0, sticky = W, padx = 5)
 
 # file text_box
 file_window = Text(input_header_frame, height = 1, width = 33)
-file_window.config(font = text_font, bg = default_color, state = DISABLED)
+file_window.config(font = text_font, bg = default_color, state = DISABLED, highlightbackground= default_color)
 file_window.grid(row = 0, column=1, ipady = 3, sticky = E)
 
 """
@@ -777,7 +777,7 @@ command_frame.grid(row = 1, column = 0, sticky = NSEW)
 
 # text box to enter commands into
 Command_text = Text(command_frame, height = 10, width = 58, padx = 3, pady = 3)
-Command_text.config(font = text_font)
+Command_text.config(font = text_font, highlightbackground= default_color)
 Command_text.insert(INSERT, '\n'.join(default_commands))
 Command_text.bind('<Key>', key)
 Command_text.grid(row = 0, column=0, sticky = NSEW)
@@ -794,19 +794,19 @@ button_frame.grid(row = 2, column = 0, sticky = NSEW)
 
 # Write XML Button
 save_button = Button(button_frame, text = 'Save Commands', command = Write_XML, activebackground = 'green', width = 13)
-save_button.config(font = label_font, bg = default_color)
+save_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
 save_button.grid(row = 0, column=0, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(0, weight = 1)
 
 # Use Aardvark Button
 aardvark_button = Button(button_frame, text = 'Send Commands', command = Write_I2C, activebackground = 'green', width = 13)
-aardvark_button.config(font = label_font, bg = default_color)
+aardvark_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
 aardvark_button.grid(row = 0, column=1, pady = 5, sticky = EW)
 button_frame.columnconfigure(1, weight = 1)
 
 # Logging button
 logging_button = Button(button_frame, text = 'Start Logging', command = start_logging, activebackground = 'green', width = 13)
-logging_button.config(font = label_font, bg = default_color)
+logging_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
 logging_button.grid(row = 0, column=2, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(2, weight = 1)
 
@@ -818,7 +818,7 @@ output_label.grid(row = 0, column = 0, columnspan = 2)
 
 # output text box
 output_text = Text(Output_frame, height = 20, width = 100, padx = 3, pady = 3)
-output_text.config(font = text_font)
+output_text.config(font = text_font, highlightbackground= default_color)
 output_text.grid(row = 1, column=0, sticky = 'NESW')
 output_text.config(state=DISABLED, wrap=WORD)
 
