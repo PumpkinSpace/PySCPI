@@ -597,7 +597,7 @@ but_frame.grid(row = 0, column = current_column, rowspan = 3)
 but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
-xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green')
+xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green', highlightcolor = 'red')
 xml_button.config(font = label_font, bg = default_color)
 xml_button.grid(row = 0, column=0, padx = 5)
 
