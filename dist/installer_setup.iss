@@ -7,7 +7,7 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{8C27620E-EEDD-49FD-9D68-775CC81BDDC1}
 AppName=pySCPI
-AppVersion=1.1
+AppVersion=2.1
 ;AppVerName=pySCPI 1.1
 AppPublisher=Pumpkin Inc.
 AppPublisherURL=http://www.pumpkinspace.com/
@@ -71,5 +71,5 @@ Name: "{commondesktop}\pySCPI"; Filename: "{app}\pySCPI.exe"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\pySCPI.exe"; Description: "{cm:LaunchProgram,pySCPI}"; Flags: nowait postinstall skipifsilent
-Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: Not IsWin64(); Tasks: install_usb; Flags: skipifsilent
-Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing USB driver (IVI Foundation)"; Check: IsWin64(); Tasks: install_usb; Flags: skipifsilent
+Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing Aardvark USB driver (Total Phase)"; Check: Not IsWin64(); Tasks: install_usb; Flags: skipifsilent
+Filename: "{app}\src\TotalPhaseUSB-v2.15.exe"; StatusMsg: "Installing Aardvark USB driver (Total Phase)"; Check: IsWin64(); Tasks: install_usb; Flags: skipifsilent

@@ -51,7 +51,7 @@ for line in installer_text:
                 if (('.' not in item) or item.endswith('.CRT')) and (item != 'Output'):
                     # it is a folder
                     new_lines.append(source_start + item + '\\*' + source_mid + '\\' + item + source_end + source_ignore + '\n')
-                elif not(item.endswith('.md') or item.startswith('.') or item.endswith('.iss') or item.endswith('.log')):
+                elif not(item.endswith('.md') or item.startswith('.') or item.endswith('.iss') or item.endswith('.log') or (item == 'Output')):
                     new_lines.append(source_start + item + source_mid + source_end + '\n')
                 # end if
             # end for
