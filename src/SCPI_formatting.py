@@ -103,8 +103,12 @@ def print_read(command, raw_data, double_dp):
         
         if (write_flag[0] != 1) and has_preamble(command):
             # The command was sent too fast, bad data was recieved
-            print '*** Read failed, Write flag = 0 ***'
+            print '*** Read failed, Write flag = 0, try increasing the messgage delay***'
             
+        elif all(byte == 1 for byte in raw_data):
+            # The device is not connected
+            print '*** Read failed, ensure the slave device is connected and powered ***'            
+    
         # else the data is good or is in ascii formatting
         elif ',' not in print_format:
             # the data is just a single peice of data, not a list.
@@ -273,6 +277,13 @@ def log_read(command, raw_data, csv_row):
             csv_row.append('WF = 0')
             for format in print_format.split(','):
                 csv_row.append('WF = 0')
+            # end for
+            
+        elif all(byte == 1 for byte in raw_data):
+            # The device is not connected
+            csv_row.append('No Device')
+            for format in print_format.split(','):
+                csv_row.append('No Device')
             # end for
             
         # else the data is good or is in ascii formatting

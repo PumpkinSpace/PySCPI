@@ -161,7 +161,8 @@ def Write_I2C():
         addr_num = int(addr_string,0)
     else:
         print '*** Invlaid address entered, reverting to device default ***'
-        addr_string = address_of(slave_var.get())
+        addr_string = address_of[slave_var.get()]
+        addr_var.set(addr_string)
         addr_num = int(addr_string,0)
     # end if
     
@@ -227,7 +228,8 @@ def start_logging():
         addr_num = int(addr_string,0)
     else:
         print '*** Invlaid address entered, reverting to device default ***'
-        addr_string = address_of(slave_var.get())
+        addr_string = address_of[slave_var.get()]
+        addr_var.set(addr_string)
         addr_num = int(addr_string,0)
     # end if
     
@@ -258,7 +260,6 @@ def start_logging():
             loop_time += delay_time
         # end if
     # end for
-    
     
     # evaluate the perscribed loop period
     logging_text = logging.get()
@@ -372,6 +373,7 @@ def Write_XML():
     else:
         print '*** Invlaid address entered, reverting to device default ***'
         addr_string = address_of(slave_var.get())
+        addr_var.set(addr_string)
         addr_num = int(addr_string,0)
     # end if
     
@@ -595,7 +597,7 @@ but_frame.grid(row = 0, column = current_column, rowspan = 3)
 but_frame.columnconfigure(0, weight = 2)
 
 # Load XML Button
-xml_button = Button(but_frame, text = 'Load XML', command = Load_XML, activebackground = 'green')
+xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green')
 xml_button.config(font = label_font, bg = default_color)
 xml_button.grid(row = 0, column=0, padx = 5)
 
@@ -681,7 +683,7 @@ ascii_frame.columnconfigure(0, weight = 2)
 ascii_frame.columnconfigure(1, weight = 2)
 
 # ascii delay title
-ascii_label = Label(Config_frame, text = 'ASCII Delay')
+ascii_label = Label(Config_frame, text = 'ASCII Message Delay')
 ascii_label.config(font = label_font, bg = default_color)
 ascii_label.grid(row = 1, column=current_column)
 
@@ -791,7 +793,7 @@ button_frame.config(bg = default_color)
 button_frame.grid(row = 2, column = 0, sticky = NSEW)
 
 # Write XML Button
-save_button = Button(button_frame, text = 'Write XML', command = Write_XML, activebackground = 'green')
+save_button = Button(button_frame, text = 'Save Commands', command = Write_XML, activebackground = 'green')
 save_button.config(font = label_font, bg = default_color)
 save_button.grid(row = 0, column=0, pady = 5, padx = 10, sticky = EW)
 button_frame.columnconfigure(0, weight = 1)
