@@ -585,7 +585,7 @@ Output_frame.grid(row = 2, column = 1, sticky = NSEW, padx = 1)
 
 ################################ Header Image ##################################
 
-input_image = Image.open('src/Header2.jpg')
+input_image = Image.open('src/Header4.jpg')
 # find the images aspect ratio so it can be maintained
 aspect_ratio = float(input_image.size[1])/float(input_image.size[0])
 # resize to fit the window
