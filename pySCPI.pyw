@@ -585,7 +585,7 @@ Output_frame.grid(row = 2, column = 1, sticky = NSEW, padx = 1)
 
 ################################ Header Image ##################################
 
-input_image = Image.open('src/Header4.jpg')
+input_image = Image.open('src/Header.jpg')
 # find the images aspect ratio so it can be maintained
 aspect_ratio = float(input_image.size[1])/float(input_image.size[0])
 # resize to fit the window
@@ -628,8 +628,8 @@ image_label.grid(row = 0, column = 0, sticky = NSEW)
 # sub-frame for the buttons
 but_frame = Frame(Config_frame)
 but_frame.config(bg = default_color)
-but_frame.grid(row = 0, column = current_column, rowspan = 3)
-but_frame.columnconfigure(0, weight = 2)
+but_frame.grid(row = 0, column = current_column, rowspan = 3, padx = 10)
+but_frame.columnconfigure(0, weight = 1)
 
 # Load XML Button
 xml_button = Button(but_frame, text = 'Load Commands', command = Load_XML, activebackground = 'green', width = 15)
@@ -778,6 +778,47 @@ logging.insert(0, '60')
 logging_units = Label(logging_frame, text = 's')
 logging_units.config(font = text_font, bg = default_color)
 logging_units.grid(row = 0, column = 1, sticky = W)
+current_column += 1  
+
+# error count sub-frame
+error_frame = Frame(Config_frame)
+error_frame.config(bg = default_color)
+error_frame.grid(row = 2, column = current_column, sticky = EW, padx = 10)
+error_frame.columnconfigure(0, weight = 2)
+error_frame.columnconfigure(1, weight = 2)
+
+# error count title
+error_label = Label(Config_frame, text = 'Error count')
+error_label.config(font = label_font, bg = default_color)
+error_label.grid(row = 1, column=current_column, padx = 5, sticky = S)
+
+# error count entry box
+errors = Entry(error_frame, justify = CENTER, width = 7)
+errors.config(font = text_font, highlightbackground= default_color, disabledforeground = 'black', disabledbackground = 'white')
+errors.grid(row = 0, column=0, ipady = 3, sticky = E)
+errors.insert(0, '0')
+errors.config(state = DISABLED)
+
+def zero_errors():
+    errors.config(state = NORMAL, disabledforeground = 'black')
+    errors.delete(0,END)
+    errors.insert(0, '0')     
+    errors.config(state = DISABLED)
+# end
+
+def add_error():
+    current = int(errors.get())
+    errors.config(state = NORMAL, disabledforeground = 'red')
+    errors.delete(0,END)
+    errors.insert(0, str(current + 1))     
+    errors.config(state = DISABLED)  
+# end
+
+# error clearing button
+error_button = Button(error_frame, text = 'Zero', command = zero_errors, activebackground = 'green', width = 5)
+error_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+error_button.grid(row = 0, column=1, sticky = W)
+
 
 ############################ Inputs Section ####################################
 
@@ -863,13 +904,18 @@ output_scroll = Scrollbar(Output_frame, command = output_text.yview)
 output_scroll.grid(column = 1, row = 1, sticky = 'NESW')
 output_text['yscrollcommand'] = output_scroll.set
 
+# highlight tag
+output_text.tag_config('error', foreground = 'red')
+
+############################# Resizing #########################################
+
 # allow for resizing of the configuration frame columns
-Config_frame.columnconfigure(0, weight = 2, minsize = 110)
-Config_frame.columnconfigure(1, weight = 2, minsize = 200)
+Config_frame.columnconfigure(1, weight = 1, minsize = 200)
 Config_frame.columnconfigure(2, weight = 2, minsize = 100)
 Config_frame.columnconfigure(3, weight = 2, minsize = 80)
 Config_frame.columnconfigure(4, weight = 2, minsize = 60)
 Config_frame.columnconfigure(5, weight = 2, minsize = 80)
+Config_frame.columnconfigure(6, weight = 1, minsize = 80)
 
 # allow for resizing of the input frame row containing the text box
 Input_frame.rowconfigure(1, weight = 2)
@@ -884,7 +930,7 @@ Output_frame.columnconfigure(0, weight = 2)
 root.columnconfigure(1, weight = 5, minsize = 200)
 
 # set window minsize to prevent objects crashing
-root.minsize(width = 800, height = 500)
+root.minsize(width = 900, height = 500)
 
 
 """
@@ -898,7 +944,12 @@ class GUI_Writer(object):
     # what to do when a 'print' command is issued 
     def write(self, string):
         self.output_text.config(state=NORMAL)
-        self.output_text.insert(INSERT, string)
+        if string.startswith('*'):
+            self.output_text.insert(INSERT, string, 'error')
+            add_error()
+        else:
+            self.output_text.insert(INSERT, string)
+        # end
         self.output_text.config(state=DISABLED)
     # end def
 # end class
