@@ -603,7 +603,7 @@ def resize_image(event):
     new_width = event.width
     new_height = int(new_width * aspect_ratio)
     # resize
-    header_image = image_copy.resize((new_width, new_height), Image.ANTIALIAS)
+    header_image = input_image.resize((new_width, new_height), Image.ANTIALIAS)
     # snap the Frame rows around it
     root.rowconfigure(0, minsize = new_height)
     Header.rowconfigure(0, minsize = new_height)
