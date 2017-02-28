@@ -246,6 +246,30 @@ SCPI_Data = {
     'BSM:TEL? 6,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
     'BSM:TEL? 6,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],
     
+    # External Temperature Sensor 9
+    'BSM:TEL? 7,data':    [wflag_size + time_size + chksum_size + 2,             'uint'],
+    'BSM:TEL? 7,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BSM:TEL? 7,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BSM:TEL? 7,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],   
+    
+    # External Temperature Sensor 10
+    'BSM:TEL? 8,data':    [wflag_size + time_size + chksum_size + 2,             'uint'],
+    'BSM:TEL? 8,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BSM:TEL? 8,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BSM:TEL? 8,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],       
+    
+    # External Temperature Sensor 11
+    'BSM:TEL? 9,data':    [wflag_size + time_size + chksum_size + 2,             'uint'],
+    'BSM:TEL? 9,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BSM:TEL? 9,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BSM:TEL? 9,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],  
+
+    # External Temperature Sensor 12
+    'BSM:TEL? 10,data':    [wflag_size + time_size + chksum_size + 2,             'uint'],
+    'BSM:TEL? 10,name':    [wflag_size + time_size + name_size + chksum_size,     'ascii'],
+    'BSM:TEL? 10,length':  [wflag_size + time_size + length_size + chksum_size,   'char'],
+    'BSM:TEL? 10,ascii':   [wflag_size + time_size + chksum_size + ascii_size,    'ascii'],   
+    
     ############################### BM2 Commands ########################################
     
     ## Skip entries 1-6
