@@ -197,7 +197,7 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
     if (filename_short not in os.listdir(filename_dir)) or file_is_free(filename): 
         # write header to the log file
         csv_output = open(filename, 'wb')
-        output_writer = csv.writer(csv_output, delimiter = ',')
+        output_writer = csv.writer(csv_output, delimiter = '\t')
         output_writer.writerow(csv_line) 
     else:
         print'*** Requested log file is in use by another program ***'
@@ -289,6 +289,7 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
         
         while (time.time() - start_time) < logging_p:
             # delay to maintain the logging period
+            time.sleep(0.1)
             if exit_event.isSet():
                 break
         # end if
