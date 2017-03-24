@@ -283,6 +283,11 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
             print ''
             aa_sleep_ms(Delay)
             
+            if exit_event.isSet():
+                # End if a stop has been issued
+                break            
+            # end if
+            
             # Iterate to next command
             i+=1
         # end while

@@ -277,7 +277,7 @@ def start_logging():
     # end if
     
     if logging_time*1000.0 <= loop_time*1.2:
-        print '*** Warning, logging period may be shorter than the dration of the commands requested ***'
+        print '*** Warning, logging period may be shorter than the duration of the commands requested ***'
     # end if
     
     # open a save file window

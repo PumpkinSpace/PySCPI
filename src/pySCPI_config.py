@@ -59,7 +59,7 @@ Determines if the command in question has a preamble.
                       False: There is not.
 """
 def has_preamble(command):
-    if command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
+    if 0: # or command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
         return False
     else:
         return True
