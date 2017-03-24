@@ -19,6 +19,7 @@ from pySCPI_config import *
 import platform
 import threading
 from PIL import Image, ImageTk
+sys.stderr = sys.stdout
 
 """
 Disable the function of all the buttons on the GUI except the one requested 
