@@ -21,6 +21,8 @@ import threading
 from PIL import Image, ImageTk
 sys.stderr = sys.stdout
 
+version_number = '2.2'
+
 """
 Disable the function of all the buttons on the GUI except the one requested 
 and then reenable them.
@@ -559,7 +561,9 @@ button_font = "Arial 10 bold"
 text_font = "Arial 9"
                    
 root = Tk()
-root.geometry('1000x600')
+root_width = 1000
+root_height = 600
+root.geometry(str(root_width) + 'x' + str(root_height))
 root.config(bg = 'white') # to show through the gaps between frames
 current_column = 0
 
@@ -590,7 +594,7 @@ input_image = Image.open('src/Header.jpg')
 # find the images aspect ratio so it can be maintained
 aspect_ratio = float(input_image.size[1])/float(input_image.size[0])
 # resize to fit the window
-header_image = input_image.resize((1000, int(1000*aspect_ratio)), Image.ANTIALIAS)
+header_image = input_image.resize((root_width, int(root_width*aspect_ratio)), Image.ANTIALIAS)
 image_copy = header_image.copy()
 
 
@@ -599,6 +603,21 @@ Event function to auto-resize the header image with the window
 
 TODO try and speed up this function
 """
+#def resize_image(event):
+    ## find new geometry
+    #new_width = event.width
+    #new_height = int(new_width * aspect_ratio)
+    ## resize
+    #header_image = input_image.resize((new_width, new_height), Image.ANTIALIAS)
+    ## snap the Frame rows around it
+    #root.rowconfigure(0, minsize = new_height)
+    #Header.rowconfigure(0, minsize = new_height)
+    ## load the new image
+    #header_photo = ImageTk.PhotoImage(header_image)
+    #image_label.config(image = header_photo)
+    #image_label.image = header_photo
+## end def
+    
 def resize_image(event):
     # find new geometry
     new_width = event.width
@@ -609,16 +628,24 @@ def resize_image(event):
     root.rowconfigure(0, minsize = new_height)
     Header.rowconfigure(0, minsize = new_height)
     # load the new image
+    global header_photo
     header_photo = ImageTk.PhotoImage(header_image)
-    image_label.config(image = header_photo)
-    image_label.image = header_photo
-# end def
+    image_canvas.config(width=new_width, height=new_height)
+    image_canvas.itemconfig(image_on_canvas, image=header_photo)
+    text_move_x = new_width - image_canvas.coords(text_on_canvas)[0] - 2
+    text_move_y = new_height - image_canvas.coords(text_on_canvas)[1]
+    image_canvas.move(text_on_canvas, text_move_x, text_move_y)
+# end def    
 
 # Header Image
 header_photo = ImageTk.PhotoImage(header_image)
-image_label = Label(Header, image=header_photo)
+#image_label = Label(Header, image=header_photo)
+#image_label.grid(row = 0, column = 0, sticky = NSEW)
+image_canvas = Canvas(Header, width=root_width, height=int(root_width*aspect_ratio), highlightthickness=0, borderwidth=0)
+image_on_canvas = image_canvas.create_image(0,0, image=header_photo, anchor=NW)
+text_on_canvas = image_canvas.create_text(root_width-2, int(root_width*aspect_ratio), anchor=SE, text=('v'+str(version_number)), font=button_font, fill='white')
+image_canvas.grid(row = 0, column = 0, sticky=NSEW)
 Header.bind('<Configure>', resize_image) # link the resizing event
-image_label.grid(row = 0, column = 0, sticky = NSEW)
 
 ##################### Configuration Elements #############################
 ## Configuration title
