@@ -114,7 +114,7 @@ def update_aardvark(command, address, Aardvark_in_use):
             print 'Turned I2C pullups off.'
         
         else:
-            print '*** Invalid Pullup Command, use either <PULLUPS ON> or <PULLUPS OFF>'
+            print '*** Invalid Pullup Command, use either <PULLUPS ON> or <PULLUPS OFF>***'
         #end if  
         
     else:

@@ -154,7 +154,7 @@ The Processor was not ready for your request, try increasing the Intermessage De
 The format of your DELAY command is incorrect, use the format <DELAY x> where x is the length of the delay in milliseconds eg. <DELAY 2000> for a 2000ms delay.
 
 *** The requested ADDRESS command is not valid. Use <ADDRESS 0xYY>***
-The format of the ADDRESS command that you issues is incorrect, use the format <ADDRESS 0xYY> where YY is the hexidecimal number of the address you want to use eg <ADDRESS 0x55>.
+The format of the ADDRESS command that you issues is incorrect, use the format <ADDRESS 0xYY> where YY is the hexidecimal number of the addres	s you want to use eg <ADDRESS 0x55>.
 
 *** The requested BITRATE command is not valid. Use <BITRATE x>***
 The format of your BITRATE command is incorrect, use the format <BITRATE x> where x is the new bitrate in kHz eg. <BITRATE 200> for a 200kHz bitrate.
