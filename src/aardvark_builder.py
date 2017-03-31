@@ -92,9 +92,8 @@ def update_aardvark(command, address, Aardvark_in_use):
         if speed_num.isdigit() and (speed_list[0] == '<BITRATE'):
             # is a good bitrate
             bitrate = aa_i2c_bitrate(Aardvark_in_use, int(speed_num))
-            aa_i2c_free_bus(Aardvark_in_use)
             aa_sleep_ms(200)             
-            print 'Changed I2C bitrate to ' + bitrate + 'kHz.'
+            print 'Changed I2C bitrate to ' + str(bitrate) + 'kHz.'
         else:
             # the bitrate is invlaid
             print '*** The requested BITRATE command is not valid. Use <BITRATE x>***'
@@ -190,7 +189,7 @@ def write_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp):
                 data = array('B', write_data)  
                 # Write the data to the slave device
                 aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                if 'TEL?' in commands[i]:
+                if 'TEL?' in command:
                     print 'Read:\t\t' + command
                 else:
                     print 'Write:\t\t' + command
@@ -202,7 +201,7 @@ def write_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp):
             # an I2C read has been requested
             # if the Aardvark is free read from it
             if Aardvark_free:
-                if commands[i].endswith('ascii'):
+                if command.endswith('ascii'):
                     # sleep a different amount if ascii was requested
                     aa_sleep_ms(Ascii_delay)
                 else:
@@ -541,6 +540,9 @@ def create_XML(commands, address, Delay, Ascii_delay):
     delay_attributes = {'ms': str(Delay)}    
     ascii_delay_attributes = {'ms': str(Ascii_delay)}  
     
+    # delay
+    ET.SubElement(aardvark, 'sleep', delay_attributes)    
+    
     # iterate through commands
     for command in commands: 
         
@@ -549,8 +551,6 @@ def create_XML(commands, address, Delay, Ascii_delay):
             addr = update_XML(command, addr, aardvark)
             
         else:
-            # delay after previous block
-            ET.SubElement(aardvark, 'sleep', delay_attributes)
             
             # comment the string of the SCPI command
             aardvark.append(ET.Comment(command))
@@ -584,6 +584,9 @@ def create_XML(commands, address, Delay, Ascii_delay):
                 # create the read element
                 read = ET.SubElement(aardvark, 'i2c_read', read_attributes)             
             # end if
+            
+            # delay
+            ET.SubElement(aardvark, 'sleep', delay_attributes)             
         # end if
 
     #end for        

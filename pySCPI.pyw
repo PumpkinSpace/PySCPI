@@ -322,10 +322,14 @@ def View_Readme():
         content = f.readlines() 
     # end with
     
+    print content[0].rstrip() + ' v' + version_number + '.'
+    
     # print each line to the gui
-    for line in content:
+    for line in content[1:]:
         print line.rstrip()
     # end for
+    
+    zero_errors()
     
     # unlock buttons
     action_lock('Unlock')
@@ -438,7 +442,12 @@ def Load_XML():
     ascii_delay = '0'
     message_delay = '0'
     device_detected = ''
+    previous_line = ''
     printed = False
+    first_address = True
+    last_address = '0'
+    first_bitrate = True
+    first_config = True
     
     if (filename != ''): 
         # extract all commands from the XML
@@ -472,9 +481,16 @@ def Load_XML():
                 slices = [s for s in line.split('"') if s.isdigit()]
                 if (ascii_last == 0):
                     # not an ascii delay
-                    delay.delete(0,END)
-                    message_delay = slices[0]
-                    delay.insert(0, message_delay)
+                    if 'sleep' not in previous_line:
+                        # a standard delay
+                        delay.delete(0,END)
+                        message_delay = slices[0]
+                        delay.insert(0, message_delay)    
+                        
+                    else:
+                        time = line.split('"')[1]
+                        commands = commands + ['<DELAY ' + time + '>']                        
+                    # end if
                 else:
                     # is an ascii delay
                     ascii_delay = slices[0]
@@ -483,42 +499,85 @@ def Load_XML():
                 # finding address
                 index = line.index('"')
                 address = '0x' + line[index+3:index+5]
-                addr_var.set(address)
                 
-                # create local address dictionary to compare to
-                local_address_of = address_of.copy()
-                local_address_of['GPS'] = '0x51'
-                
-                if device_detected in local_address_of.keys():
-                    if address == local_address_of[device_detected]:
-                        # address matches a device
-                        if device_detected == 'GPS':
-                            slave_var.set('GPSRM')
+                if first_address == True:
+                    addr_var.set(address)
+                    
+                    # create local address dictionary to compare to
+                    local_address_of = address_of.copy()
+                    local_address_of['GPS'] = '0x51'
+                    
+                    if device_detected in local_address_of.keys():
+                        if address == local_address_of[device_detected]:
+                            # address matches a device
+                            if device_detected == 'GPS':
+                                slave_var.set('GPSRM')
+                            else:
+                                slave_var.set(device_detected)
+                            # end if
                         else:
-                            slave_var.set(device_detected)
-                        # end if
+                            # address does not so color it yellow as a warning
+                            addr_text.config(background = 'yellow') 
+                            if not printed:
+                                print '*** Warning, loaded device address does not match default for that device ***'
+                                printed = True
+                            # end if
+                        # end if  
                     else:
-                        # address does not so color it yellow as a warning
-                        addr_text.config(background = 'yellow') 
-                        if not printed:
-                            print '*** Warning, loaded device address does not match default for that device ***'
-                            printed = True
-                        # end if
-                    # end if  
-                else:
-                    if address in address_of.values():
-                        # address matches a device
-                        slave_var.set(address_of.keys()[address_of.values().index(address)])
-                    else:
-                        # address does not so color it yellow as a warning
-                        addr_text.config(background = 'yellow') 
-                        if not printed:
-                            print '*** Warning, loaded device address does not match default for that device ***'
-                            printed = True
+                        if address in address_of.values():
+                            # address matches a device
+                            slave_var.set(address_of.keys()[address_of.values().index(address)])
+                        else:
+                            # address does not so color it yellow as a warning
+                            addr_text.config(background = 'yellow') 
+                            if not printed:
+                                print '*** Warning, loaded device address does not match default for that device ***'
+                                printed = True
+                            # end if
                         # end if
                     # end if
+                    first_address = False
+                    
+                else:
+                    if address != last_address:
+                        # an address change has happened
+                        if commands[-1].startswith('<'):
+                            commands = commands + ['<ADDRESS ' + address + '>']
+                            
+                        else:
+                            # needs to be added before the last command
+                            commands.insert(-1,'<ADDRESS ' + address + '>')
+                        # end if
+                        last_address = address
+                    # end if
                 # end if
+            
+            elif 'bitrate' in line:
+                # the line is a bitrate setting line
+                if first_bitrate == True:
+                    # it is the default line so should be ignored
+                    first_bitrate = False
+                
+                else:
+                    # it is a change in bitrate so it should be processed
+                    rate = line.split('"')[1]
+                    commands = commands + ['<BITRATE ' + rate + '>']
+                # end if
+                
+            elif 'configure' in line:
+                # the line is a config line
+                if first_config == True:
+                    # it is the default line so should be ignored
+                    first_config = False
+                
+                else:
+                    # it is a change in pullups so it should be processed
+                    states = ['<PULLUPS OFF>', '<PULLUPS ON>']
+                    state = int(line.split('pullups="')[1][0])
+                    commands = commands + [states[state]]
+                # end if                
             # end if
+            previous_line = line
         # end if
         
         
