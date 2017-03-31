@@ -45,6 +45,87 @@ def file_is_free(filename):
     # end try
 # end def
 
+
+"""
+Perform the configureation requested by a config command
+
+@param[in]  command:         The configuration comamnd requested (string).
+@param[in]  address:         The current I2C slave address in use (int).
+@param[in]  AArdvark_in_use: The aardvark port in use (Aardvark handle).
+@return     (int)            The new I2C address to use (potentially unchanged).
+"""
+def update_aardvark(command, address, Aardvark_in_use):
+    new_address = address
+    # determine the appropriate action to take
+    if 'DELAY ' in command:
+        # strip out the number
+        delay_list = command.split(' ')
+        delay_number = delay_list[1][0:-1]
+        # verify that it is a number and that the beginning of the command was correct
+        if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
+            # perform a millisecond delay
+            print 'Implementing additional ' + delay_number + 'ms delay.'
+            aa_sleep_ms(int(delay_number))  
+        else:
+            # the delay is not valid
+            print '*** The requested DELAY command is not valid. Use <DELAY x>***'
+        # end if
+             
+    elif 'ADDRESS ' in command:
+        # strip out the number
+        address_list = command.split(' ')
+        address_hex = address_list[1][0:-1]
+        # verify that it is a number and that the beginning of the command was correct
+        if address_hex.startswith('0x') and (len(address_hex) == 4) and address_hex[2:3].isdigit() and (address_list[0] == '<ADDRESS'):
+            # is a good address
+            new_address = int(address_hex,0)
+            print 'Changed slave I2C address to ' + address_hex + '.'
+        else:
+            # the adderss is invlaid
+            print '*** The requested ADDRESS command is not valid. Use <ADDRESS 0xYY>***'
+        # end if        
+    
+    elif 'BITRATE ' in command:
+        # strip out the number
+        speed_list = command.split(' ')
+        speed_num = speed_list[1][0:-1] 
+        if speed_num.isdigit() and (speed_list[0] == '<BITRATE'):
+            # is a good bitrate
+            bitrate = aa_i2c_bitrate(Aardvark_in_use, int(speed_num))
+            aa_i2c_free_bus(Aardvark_in_use)
+            aa_sleep_ms(200)             
+            print 'Changed I2C bitrate to ' + bitrate + 'kHz.'
+        else:
+            # the bitrate is invlaid
+            print '*** The requested BITRATE command is not valid. Use <BITRATE x>***'
+        # end if         
+        
+    elif 'PULLUPS ' in command:
+        # check command
+        if command == '<PULLUPS ON>':
+            # turn pullups on
+            aa_i2c_pullup(Aardvark_in_use, AA_I2C_PULLUP_BOTH)
+            aa_sleep_ms(200)   
+            print 'Turned I2C pullups on.'
+        
+        elif command == '<PULLUPS OFF>':
+            # turn pullups off
+            aa_i2c_pullup(Aardvark_in_use, AA_I2C_PULLUP_NONE)
+            aa_sleep_ms(200)  
+            print 'Turned I2C pullups off.'
+        
+        else:
+            print '*** Invalid Pullup Command, use either <PULLUPS ON> or <PULLUPS OFF>'
+        #end if  
+        
+    else:
+        print '*** The configuration command requested in not valid, refer to Read Me***'
+    # end if  
+    
+    return new_address
+# end def
+        
+
 """
 Write to the slave device using the Aardvark and print its results to the GUI
 
@@ -58,7 +139,10 @@ Write to the slave device using the Aardvark and print its results to the GUI
 @return     int(0):      Failed to use Aardvark.
             None         Otherwise.
 """
-def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp):
+def write_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp):
+    # local copy of the address
+    dec_addr = addr
+    
     # configure Aardvark if available
     AA_Devices = aa_find_devices(1)
     Aardvark_free = True
@@ -91,26 +175,30 @@ def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp)
     # end if
     
     # iterate through commands and add them to the aardvark file
-    i = 0
-    while i < len(commands):
-    
+    for command in commands:
         # See if the Aardvark is free
         if Aardvark_free:
-            # Prepare the data for transmission
-            write_data = list(commands[i])
-            write_data = [ord(item) for item in write_data]
-            write_data.append(0x0a)
-            data = array('B', write_data)  
-            # Write the data to the slave device
-            aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-            if 'TEL?' in commands[i]:
-                print 'Read:\t\t' + commands[i]
+            # determine if the command is a configuration command
+            if is_config(command):
+                # configure the system based on the config command
+                dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
             else:
-                print 'Write:\t\t' + commands[i]
+                # Prepare the data for transmission
+                write_data = list(command)
+                write_data = [ord(item) for item in write_data]
+                write_data.append(0x0a)
+                data = array('B', write_data)  
+                # Write the data to the slave device
+                aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                if 'TEL?' in commands[i]:
+                    print 'Read:\t\t' + command
+                else:
+                    print 'Write:\t\t' + command
+                # end if
             # end if
         # end if
         
-        if 'TEL?' in commands[i]:
+        if 'TEL?' in command:
             # an I2C read has been requested
             # if the Aardvark is free read from it
             if Aardvark_free:
@@ -122,18 +210,15 @@ def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp)
                 # end if
                 
                 # read from the slave device
-                data = array('B', [1]*read_length(commands[i])) 
+                data = array('B', [1]*read_length(command)) 
                 read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
                 
                 # print the recieved data
-                print_read(commands[i], list(read_data[1]), float_dp)
+                print_read(command, list(read_data[1]), float_dp)
             # end if
         # end if
         print ''
         aa_sleep_ms(Delay)
-        
-        # Iterate to next command
-        i+=1
         
         if exit_event.isSet():
             # this thread has been asked to terminate
@@ -147,7 +232,8 @@ def write_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp)
         print 'Aardvark communications finished'
     # end if
 # end def
-   
+
+  
    
 """
 Write to the slave device using the Aardvark and print to the gui and save the
@@ -165,7 +251,7 @@ data to a csv log file.
 @param[out] output_text: The text window on the GUI to clear between logging loops.
 @return     int(0):      Failed to use Aardvark.
 """      
-def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, logging_p, filename, output_text):
+def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, logging_p, filename, output_text):
 
     csv_line = []
     output_writer = None
@@ -238,45 +324,50 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
     # loop until the thread is asked to exit
     while not exit_event.isSet():
         csv_row = []
+        dec_addr = addr
         
         # iterate through commands and add them to the aardvark file
-        i = 0
-        while i < len(commands):
-        
+        for command in commands:
             # See if the Aardvark is free
             if Aardvark_free:
-                # Prepare the data for transmission
-                write_data = list(commands[i])
-                write_data = [ord(item) for item in write_data]
-                write_data.append(0x0a)
-                data = array('B', write_data)  
-                # Write the data to the slave device
-                aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                if 'TEL?' in commands[i]:
-                    print 'Read:\t\t' + commands[i]
+                # determine if the command is a configuration command
+                if is_config(command):
+                    # configure the system based on the config command
+                    dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
                 else:
-                    print 'Write:\t\t' + commands[i]
+                    # Prepare the data for transmission
+                    write_data = list(command)
+                    write_data = [ord(item) for item in write_data]
+                    write_data.append(0x0a)
+                    data = array('B', write_data)  
+                    # Write the data to the slave device
+                    aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                    if 'TEL?' in commands:
+                        print 'Read:\t\t' + command
+                    else:
+                        print 'Write:\t\t' + command
+                    # end if
                 # end if
             # end if
             
-            if 'TEL?' in commands[i]:
+            if 'TEL?' in command:
                 # if the Aardvark is free read from it
                 if Aardvark_free:
-                    if commands[i].endswith('ascii'):
+                    if command.endswith('ascii'):
                         aa_sleep_ms(Ascii_delay)
                     else:
                         aa_sleep_ms(Delay)
                     # end if
                     
                     # read from the slave device
-                    data = array('B', [1]*read_length(commands[i])) 
+                    data = array('B', [1]*read_length(command)) 
                     read_data = aa_i2c_read(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
                     
                     # print data
-                    print_read(commands[i], list(read_data[1]), float_dp)
+                    print_read(command, list(read_data[1]), float_dp)
                     
                     # log data
-                    log_read(commands[i], list(read_data[1]), csv_row)
+                    log_read(command, list(read_data[1]), csv_row)
                     # write to log file              
                 # end if
             # end if
@@ -288,8 +379,6 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
                 break            
             # end if
             
-            # Iterate to next command
-            i+=1
         # end while
         
         while (time.time() - start_time) < logging_p:
@@ -324,6 +413,97 @@ def log_aardvark(exit_event, commands, dec_addr, Delay, Ascii_delay, float_dp, l
 
 
 """
+Save the configuration requested by a config command to XML
+
+@param[in]  command:         The configuration comamnd requested (string).
+@param[in]  address:         The current I2C slave address in use (int).
+@param[in]  XML:             The XML Element to add to (ET.Element).
+@return     (int)            The new I2C address to use (potentially unchanged).
+"""
+def update_XML(command, address, XML):
+    new_address = address
+    # determine the appropriate action to take
+    if 'DELAY ' in command:
+        # strip out the number
+        delay_list = command.split(' ')
+        delay_number = delay_list[1][0:-1]
+        # verify that it is a number and that the beginning of the command was correct
+        if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
+            # perform a millisecond delay
+            delay_attributes = {'ms': str(delay_number)} 
+            ET.SubElement(XML, 'sleep', delay_attributes)
+        else:
+            # the delay is not valid
+            print '*** The requested DELAY command is not valid. Use <DELAY x>***'
+        # end if
+             
+    elif 'ADDRESS ' in command:
+        # strip out the number
+        address_list = command.split(' ')
+        address_hex = address_list[1][0:-1]
+        # verify that it is a number and that the beginning of the command was correct
+        if address_hex.startswith('0x') and (len(address_hex) == 4) and address_hex[2:3].isdigit() and (address_list[0] == '<ADDRESS'):
+            # is a good address
+            new_address = address_hex
+        else:
+            # the adderss is invlaid
+            print '*** The requested ADDRESS command is not valid. Use <ADDRESS 0xYY>***'
+        # end if        
+    
+    elif 'BITRATE ' in command:
+        # strip out the number
+        speed_list = command.split(' ')
+        speed_num = speed_list[1][0:-1] 
+        if speed_num.isdigit() and (speed_list[0] == '<BITRATE'):
+            # is a good bitrate
+            rate_attributes = {'khz': speed_num}
+            rate = ET.SubElement(XML, 'i2c_bitrate', rate_attributes)
+            delay_attributes = {'ms': '200'} 
+            ET.SubElement(XML, 'sleep', delay_attributes)             
+        else:
+            # the bitrate is invlaid
+            print '*** The requested BITRATE command is not valid. Use <BITRATE x>***'
+        # end if         
+        
+    elif 'PULLUPS ' in command:
+        # check command
+        if command == '<PULLUPS ON>':
+            # turn pullups on
+            config_attributes = {'i2c':     str(int(I2C)),
+                                 'spi':     str(int(SPI)),
+                                 'gpio':    str(int(GPIO)),
+                                 'pullups': '1'}
+    
+            config = ET.SubElement(XML, 'configure', config_attributes)
+            
+            delay_attributes = {'ms': '200'} 
+            ET.SubElement(XML, 'sleep', delay_attributes)  
+        
+        elif command == '<PULLUPS OFF>':
+            # turn pullups off
+            config_attributes = {'i2c':     str(int(I2C)),
+                                 'spi':     str(int(SPI)),
+                                 'gpio':    str(int(GPIO)),
+                                 'pullups': '0'}
+    
+            config = ET.SubElement(XML, 'configure', config_attributes)
+            
+            delay_attributes = {'ms': '200'} 
+            ET.SubElement(XML, 'sleep', delay_attributes)              
+        
+        else:
+            print '*** Invalid Pullup Command, use either <PULLUPS ON> or <PULLUPS OFF>'
+        #end if  
+        
+    else:
+        print '*** The configuration command requested in not valid, refer to Read Me***'
+    # end if  
+    
+    return new_address
+# end def
+
+
+"""
 Write an Aardvark compatible .xml file that can be used with the Total phase 
 system or loaded back into pySCPI
 
@@ -334,7 +514,8 @@ system or loaded back into pySCPI
                            request (int).
 @return     filename_full: Absolute directory of the file created
 """   
-def create_XML(commands, addr, Delay, Ascii_delay):
+def create_XML(commands, address, Delay, Ascii_delay):
+    addr = address
     # Start XML
     aardvark = ET.Element('aardvark')
     
@@ -361,47 +542,51 @@ def create_XML(commands, addr, Delay, Ascii_delay):
     ascii_delay_attributes = {'ms': str(Ascii_delay)}  
     
     # iterate through commands
-    i = 0
-    while i < len(commands):    
-        # delay after previous block
-        ET.SubElement(aardvark, 'sleep', delay_attributes)
+    for command in commands: 
         
-        # comment the string of the SCPI command
-        aardvark.append(ET.Comment(commands[i]))
-        
-        # define attributes for write element
-        write_attributes = {'addr':  addr,
-                            'count': str(len(commands[i])+1),
-                            'radix': str(radix)}
-        
-        # create write element
-        scpi = ET.SubElement(aardvark, 'i2c_write', write_attributes)
-        
-        # add hexidecimal null terminated command as text to the write element
-        scpi.text = ' '.join("{:02x}".format(ord(c)) for c in commands[i]) + ' 0a'        
-        
-        if 'TEL?' in commands[i]:
-            # Read command was issued so a read needs to be performed
+        if is_config(command):
+            # add the configuration to the XML
+            addr = update_XML(command, addr, aardvark)
             
-            if commands[i].endswith('ascii'):
-                # leave a longer delay for ascii commands
-                ET.SubElement(aardvark, 'sleep', ascii_delay_attributes)
-            else:
-                ET.SubElement(aardvark, 'sleep', delay_attributes)
-            # end if
+        else:
+            # delay after previous block
+            ET.SubElement(aardvark, 'sleep', delay_attributes)
             
-            # define attributes for read element extracting length from command
-            read_attributes = {'addr':  addr,
-                               'count': str(read_length(commands[i])),
-                               'radix': str(radix)}        
+            # comment the string of the SCPI command
+            aardvark.append(ET.Comment(command))
+            
+            # define attributes for write element
+            write_attributes = {'addr':  addr,
+                                'count': str(len(command)+1),
+                                'radix': str(radix)}
+            
+            # create write element
+            scpi = ET.SubElement(aardvark, 'i2c_write', write_attributes)
+            
+            # add hexidecimal null terminated command as text to the write element
+            scpi.text = ' '.join("{:02x}".format(ord(c)) for c in command) + ' 0a'        
+            
+            if 'TEL?' in command:
+                # Read command was issued so a read needs to be performed
                 
-            # create the read element
-            read = ET.SubElement(aardvark, 'i2c_read', read_attributes)             
+                if command.endswith('ascii'):
+                    # leave a longer delay for ascii commands
+                    ET.SubElement(aardvark, 'sleep', ascii_delay_attributes)
+                else:
+                    ET.SubElement(aardvark, 'sleep', delay_attributes)
+                # end if
+                
+                # define attributes for read element extracting length from command
+                read_attributes = {'addr':  addr,
+                                   'count': str(read_length(command)),
+                                   'radix': str(radix)}        
+                    
+                # create the read element
+                read = ET.SubElement(aardvark, 'i2c_read', read_attributes)             
+            # end if
         # end if
-        
-        # Iterate to next command
-        i+=1
-    #end while        
+
+    #end for        
     
     # convert XML file to modifiable string to beautify it
     text_string = ET.tostring(aardvark, encoding='utf8', method='xml')

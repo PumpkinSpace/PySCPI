@@ -24,7 +24,7 @@ default_dp = 4
 address_of = {'PIM':        '0x53',
               'BM2':        '0x5C',
               'GPSRM':      '0x51',
-              'SIM':        '0x54',
+              'SIM':        '0x50',
               'BIM':        '0x52',
               'BSM':        '0x58',
               # Non-SCPI Devices
@@ -85,9 +85,27 @@ def get_devices():
         # end if
     # end for
     
+    devices = devices + ['SIM']
+    
     # replace the GPS if present with its longer name
     devices = ['GPSRM' if device == 'GPS' else device for device in devices]
     return devices
+# end def
+
+
+"""
+Determine if the command in question is a configuration command
+
+@param[in]  command: The command string to be tested (string).
+@return     (bool)   True:    The command is a configuration command.
+                     False:   The command is not a configuration command.
+"""
+def is_config(command):
+    if command.startswith('<') and command.endswith('>'):
+        return True
+    else:
+        return False
+    # end if
 # end def
 
 

@@ -1,2 +1,3 @@
-"SUP:TEL? 0,name: Time (s)","SUP:TEL? 0,name: Data","SUP:TEL? 0,length: Time (s)","SUP:TEL? 0,length: Data","SUP:TEL? 0,data: Time (s)","SUP:TEL? 0,data: Data","SUP:TEL? 0,ascii: Data"
-20881.13,Firmware version,20881.54,61,20881.95,BIM 1 v0.11.0a & SupMCU Core v0.11.0a,[1:2088236] BIM 1 v0.11.0a & SupMCU Core v0.11.0a
+SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data	SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data	SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data
+91721.89	BM 2 v0.11.1a & SupMCU Core v0.11.1a	No Device	No Device	91723.11	BM 2 v0.11.1a & SupMCU Core v0.11.1a
+91781.87	BM 2 v0.11.1a & SupMCU Core v0.11.1a	No Device	No Device	91783.08	BM 2 v0.11.1a & SupMCU Core v0.11.1a

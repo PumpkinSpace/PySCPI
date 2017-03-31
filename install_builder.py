@@ -13,7 +13,7 @@ except ImportError, e:
 # end
 
 if not os.path.isdir('C:/Program Files (x86)/Inno Setup 5'):
-    # is Toon Setup 5 installed?
+    # is Inno Setup 5 installed?
     print '**** this build requires \'Inno Setup 5\' ****'
     exit = True
 # end
