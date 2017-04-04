@@ -7,7 +7,7 @@ Contents:
 1. Using pySCPI
 	A. Using the GUI
 	B. Sending SCPI commands
-	C. Sending Configuration Commands
+	C. Sending Aardvark Commands
 	D. Logging
 	E. Common Issues 
 2. Supported Modules
@@ -78,21 +78,27 @@ Telemetry requests are SCPI commands that when recieved by a module cause it to 
 
 
 ################
-C. Sending Configuration Commands
+C. Sending Aardvark Commands
 
-pySCPI supports four possible configuraation commands that can be interleaved with SCPI commands in the Input Commands window, these commands that are denoted by the <> brackets that encompass them, are as follows:
+pySCPI supports 6 possible Aardvark commands: four configuration commands and read and write commands for raw data. Any of these commands can be interleaved with SCPI commands in the Input Commands window, these commands that are denoted by the <> brackets that encompass them, are as follows:
 
 DELAY:
-This function allows an additional millisecond delay to be done at a given point in addition to the intermessage delay. For example to delay for 200ms the command would be <DELAY 200>.
+This command allows an additional millisecond delay to be done at a given point in addition to the intermessage delay. For example to delay for 200ms the command would be <DELAY 200>.
 
 ADDRESS:
-This function allows the I2C address that is used for all subsequent commands to be changed. For example to change the I2C address to 0x55 the command would be <ADDRESS 0x55>.
+This command allows the I2C address that is used for all subsequent commands to be changed. For example to change the I2C address to 0x55 the command would be <ADDRESS 0x55>.
 
 PULLUPS:
-This function allows the I2C pullups to be either turned on or turned off, this is done by sending either <PULLUPS ON> or <PULLUPS OFF>.
+This command allows the I2C pullups to be either turned on or turned off, this is done by sending either <PULLUPS ON> or <PULLUPS OFF>.
 
 BITRATE:
-This function allows the bitrate of the I2C transactions to be altered for all subsequent transactions. The system default bitrate is 100kHz, to change the bitrate to 200kHz for example the command would be <BITRATE 200>. There are a discrete set of bitrates that the Aardvark can be set to, when this command is issues the bitrate will be set to the closest setting below what was requested, for example if you ask for 215kHz the system will run at 210kHz, this is displayed in the ouput window.
+This command allows the bitrate of the I2C transactions to be altered for all subsequent transactions. The system default bitrate is 100kHz, to change the bitrate to 200kHz for example the command would be <BITRATE 200>. There are a discrete set of bitrates that the Aardvark can be set to, when this command is issues the bitrate will be set to the closest setting below what was requested, for example if you ask for 215kHz the system will run at 210kHz, this is displayed in the ouput window.
+
+READ:
+This command executes a simple I2C read from a given address. For example <READ 2C, 4> will read 4 bytes of data from a device with the address 0x2C.
+
+WRITE:
+This command executes a simple I2C write of specified data to a given address. For Example <WRITE 2C, 44 55 9D 06> will write the four hexidecimal values 0x44, 0x55, 0x9D and 0x06 to the slace device with the address 0x2C, bytes will be sent in the order that they entered in the command. 
 
 
 ################
