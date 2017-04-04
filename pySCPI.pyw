@@ -519,7 +519,7 @@ def Load_XML():
                             # address does not so color it yellow as a warning
                             addr_text.config(background = 'yellow') 
                             if not printed:
-                                print '*** Warning, loaded device address does not match default for that device ***'
+                                print '*** Warning, loaded device address does not match a device default ***'
                                 printed = True
                             # end if
                         # end if  
@@ -531,7 +531,7 @@ def Load_XML():
                             # address does not so color it yellow as a warning
                             addr_text.config(background = 'yellow') 
                             if not printed:
-                                print '*** Warning, loaded device address does not match default for that device ***'
+                                print '*** Warning, loaded device address does not match a device default ***'
                                 printed = True
                             # end if
                         # end if

@@ -59,7 +59,7 @@ Determines if the command in question has a preamble.
                       False: There is not.
 """
 def has_preamble(command):
-    if 0: # or command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
+    if command.endswith('ascii'): # or command.endswith('length')  or command.endswith('name'):
         return False
     else:
         return True
@@ -170,10 +170,10 @@ def is_valid_raw(command):
     if (len(data_list) < 3) or ((data_list[0] != '<READ') and (data_list[0] != '<WRITE')):
         valid = False
         
-    elif (len(data_list[1]) != 3):
+    elif (len(data_list[1]) != 5) or not data_list[1].startswith('0x'):
         valid = False
         
-    elif (data_list[1][2] != ',') or not is_hex(data_list[1][:-1]):
+    elif (data_list[1][4] != ',') or not is_hex(data_list[1][2:-1]):
         valid = False
         
     elif ('WRITE' in data_list[0]) and any([not is_hex(item) for item in data_list[2:]]):

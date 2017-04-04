@@ -215,12 +215,12 @@ def write_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp):
                     if is_valid_raw(command):
                         data_list = command.split(' ')
                         data_len = int(data_list[2][:-1])
-                        raw_addr = int(write_data[1][:-1],16)
+                        raw_addr = int(data_list[1][:-1],16)
                         
                         data = array('B', [1]*data_len)
                         read_data = aa_i2c_read(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
                         
-                        print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in read_data]) + '] from address ' + data_list[1][:-1]
+                        print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in list(read_data[1])]) + '] from address ' + data_list[1][:-1]
                     else:
                         print '*** Invalid READ command, please refer to the Read me for proper syntax ***'
                     # end if    
@@ -283,7 +283,7 @@ data to a csv log file.
 """      
 def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, logging_p, filename, output_text):
 
-    csv_line = []
+    csv_line = ['Timestamp']
     output_writer = None
     csv_output = None
     # create CSV Header
@@ -355,6 +355,7 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
     while not exit_event.isSet():
         csv_row = []
         dec_addr = addr
+        first_timestamp = ''
         
         # iterate through commands and add them to the aardvark file
         for command in commands:
@@ -368,7 +369,7 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
                     if is_raw_write(command):
                         if is_valid_raw(command):
                             write_data = command[:-1].split(' ')
-                            raw_addr = int(write_data[1][:-1],16)
+                            raw_addr = int(write_data[1][2:-1],16)
                             int_write_data = [int(item,16) for item in write_data[2:]]
                             int_write_data.append(0x0a)
                             data = array('B', int_write_data)  
@@ -399,12 +400,14 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
                         if is_valid_raw(command):
                             data_list = command.split(' ')
                             data_len = int(data_list[2][:-1])
-                            raw_addr = int(write_data[1][:-1],16)
+                            raw_addr = int(data_list[1][2:-1],16)
                             
                             data = array('B', [1]*data_len)
                             read_data = aa_i2c_read(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
                             
-                            print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in read_data]) + '] from address ' + data_list[1][:-1]
+                            print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in list(read_data[1])]) + '] from address ' + data_list[1][:-1]
+                            
+                            log_read(command, list(read_data[1]), csv_row)
                         else:
                             print '*** Invalid READ command, please refer to the Read me for proper syntax ***'
                         # end if    
@@ -443,6 +446,18 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
             
         # end while
         
+        first_timestamp = csv_row[0]
+        if type(first_timestamp) == float:
+            timestamp_list = [ord(x) for x in '[1:' + str(int(first_timestamp*100)) + ']']
+            timestamp_string = get_ascii_time(timestamp_list)
+            csv_row.insert(0,timestamp_string)
+        else:
+            csv_row.insert(0,'-')
+            
+        
+        # write to log file
+        output_writer.writerow(csv_row)         
+        
         while (time.time() - start_time) < logging_p:
             # delay to maintain the logging period
             time.sleep(0.1)
@@ -453,8 +468,6 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
         
         start_time = time.time()
         
-        # write to log file
-        output_writer.writerow(csv_row) 
                 
         # clear the output display on the GUI
         output_text.config(state = NORMAL)
@@ -617,7 +630,7 @@ def create_XML(commands, address, Delay, Ascii_delay):
             if is_valid_raw(command):
                 aardvark.append(ET.Comment(command))
                 raw_list = command[:-1].split(' ')
-                raw_addr = '0x' + raw_list[1][:-1]
+                raw_addr = '0x' + raw_list[1][2:-1]
                 if is_raw_write(command):
                     write_attributes = {'addr':  raw_addr,
                                         'count': str(len(raw_list)-1),

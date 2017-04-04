@@ -55,6 +55,29 @@ def get_time(timestamp):
 
 
 """
+Converts the ascii timestamp data into a string for printing to the GUI.
+
+@param[in]  data:       The data list to be converted (list of ints).
+@return     (string)    The formatted string denoting the time in the format:
+                        days:hours:mins:seconds.1/100th seconds.
+"""
+def get_ascii_time(data):
+    # turn the hex data into a long int
+    string_data = ''.join([chr(x) for x in data])
+    ticks = int(string_data[3:string_data.find(']')])
+    # break it down into parts
+    sec = ticks/100
+    dd = sec/(60*60*24)
+    hh = sec/(60*60) - dd*24
+    mm = sec/60 - hh*60 - dd*60*24
+    ss = sec - mm*60 - hh*60*60 - dd*60*60*24
+    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
+    # construct the string
+    return '%02d:' % dd + '%02d:' % hh + '%02d:' % mm + '%02d.' % ss + '%02d' % tt
+# end def
+
+
+"""
 Converts the raw timestamp data into a float for logging.
 
 @param[in]  timestamp:  The raw hex timestamp to be converted (list of ints).
@@ -117,6 +140,9 @@ def print_read(command, raw_data, double_dp):
                 # print the timestamp
                 print 'Timestamp:\t\t' + get_time(timestamp)
             # end if
+            elif print_format == 'ascii':
+                print 'Timestamp:\t\t' + get_ascii_time(data)
+                
  
             # print the data in the appropriate format given by the dictionary
             if print_format == 'ascii':
@@ -252,8 +278,11 @@ list of data to log.
 """
 def log_read(command, raw_data, csv_row):
     
+    if command.startswith('<READ'):
+        csv_row.append(' '.join(['0x%02x' % x for x in raw_data]))
+
     # is the command in the dictionary
-    if SCPI_Data.has_key(command):
+    elif SCPI_Data.has_key(command):
         # extract the format of the command from the dictionary
         print_format = SCPI_Data[command][1]
               
