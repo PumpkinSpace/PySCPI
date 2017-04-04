@@ -159,14 +159,14 @@ def Write_I2C():
     # determine I2C address to write to
     addr_string = addr_text.get()
     addr_num = 0
-    if addr_string.startswith('0x') and (len(addr_string) == 4) and addr_string[2:3].isdigit():
+    if addr_string.startswith('0x') and (len(addr_string) == 4) and is_hex(addr_string[2:]):
         # is a good address
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     else:
-        print '*** Invlaid address entered, reverting to device default ***'
+        print '*** Invalid address entered, reverting to device default ***'
         addr_string = address_of[slave_var.get()]
         addr_var.set(addr_string)
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     # end if
     
     # get command list from GUI
@@ -226,14 +226,14 @@ def start_logging():
     # determine I2C address to write to
     addr_string = addr_text.get()
     addr_num = 0
-    if addr_string.startswith('0x') and (len(addr_string) == 4) and addr_string[2:3].isdigit():
+    if addr_string.startswith('0x') and (len(addr_string) == 4) and is_hex(addr_string[2:]):
         # address is good
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     else:
         print '*** Invlaid address entered, reverting to device default ***'
         addr_string = address_of[slave_var.get()]
         addr_var.set(addr_string)
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     # end if
     
     # get command list
@@ -345,7 +345,7 @@ def Write_XML():
     # clear output
     output_text.config(state=NORMAL)
     output_text.delete('1.0', END)
-    output_text.config(state=DISABLED) 
+    output_text.config(state=DISABLED)  
     
     # determine delay
     delay_text = delay.get()
@@ -374,14 +374,14 @@ def Write_XML():
     # determine I2C address to write to
     addr_string = addr_text.get()
     addr_num = 0
-    if addr_string.startswith('0x') and (len(addr_string) == 4) and addr_string[2:3].isdigit():
+    if addr_string.startswith('0x') and (len(addr_string) == 4) and is_hex(addr_string[2:]):
         # address is good
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     else:
         print '*** Invlaid address entered, reverting to device default ***'
         addr_string = address_of(slave_var.get())
         addr_var.set(addr_string)
-        addr_num = int(addr_string,0)
+        addr_num = int(addr_string,16)
     # end if
     
     # get command list
@@ -537,9 +537,10 @@ def Load_XML():
                         # end if
                     # end if
                     first_address = False
+                    last_address = address
                     
                 else:
-                    if address != last_address:
+                    if (address != last_address) and ('<READ' not in previous_line) and ('<WRITE' not in previous_line):
                         # an address change has happened
                         if commands[-1].startswith('<'):
                             commands = commands + ['<ADDRESS ' + address + '>']

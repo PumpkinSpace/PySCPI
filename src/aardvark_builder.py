@@ -76,9 +76,9 @@ def update_aardvark(command, address, Aardvark_in_use):
         address_list = command.split(' ')
         address_hex = address_list[1][0:-1]
         # verify that it is a number and that the beginning of the command was correct
-        if address_hex.startswith('0x') and (len(address_hex) == 4) and address_hex[2:3].isdigit() and (address_list[0] == '<ADDRESS'):
+        if address_hex.startswith('0x') and (len(address_hex) == 4) and is_hex(address_hex[2:]) and (address_list[0] == '<ADDRESS'):
             # is a good address
-            new_address = int(address_hex,0)
+            new_address = int(address_hex,16)
             print 'Changed slave I2C address to ' + address_hex + '.'
         else:
             # the adderss is invlaid
@@ -183,16 +183,47 @@ def write_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp):
                 dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
             else:
                 # Prepare the data for transmission
-                write_data = list(command)
-                write_data = [ord(item) for item in write_data]
-                write_data.append(0x0a)
-                data = array('B', write_data)  
-                # Write the data to the slave device
-                aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                if 'TEL?' in command:
-                    print 'Read:\t\t' + command
+                if is_raw_write(command):
+                    if is_valid_raw(command):
+                        write_data = command[:-1].split(' ')
+                        raw_addr = int(write_data[1][:-1],16)
+                        int_write_data = [int(item,16) for item in write_data[2:]]
+                        int_write_data.append(0x0a)
+                        data = array('B', int_write_data)  
+                        # Write the data to the slave device
+                        aa_i2c_write(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
+                        print 'Raw Write:\t\t[' + ', '.join([str(item) for item in write_data[2:]]) + '] to address ' + write_data[1][:-1]
+                        # end if                        
+                    else:
+                        print '*** Invalid WRITE command, please refer to the Read me for proper syntax ***'
+                    # end if
+                elif not is_raw_read(command):
+                    write_data = list(command)
+                    write_data = [ord(item) for item in write_data]
+                    write_data.append(0x0a)
+                    data = array('B', write_data)  
+                    # Write the data to the slave device
+                    aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                    if 'TEL?' in command:
+                        print 'Read:\t\t' + command
+                    else:
+                        print 'Write:\t\t' + command
+                    # end if
+
                 else:
-                    print 'Write:\t\t' + command
+                    # is a raw read command
+                    if is_valid_raw(command):
+                        data_list = command.split(' ')
+                        data_len = int(data_list[2][:-1])
+                        raw_addr = int(write_data[1][:-1],16)
+                        
+                        data = array('B', [1]*data_len)
+                        read_data = aa_i2c_read(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
+                        
+                        print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in read_data]) + '] from address ' + data_list[1][:-1]
+                    else:
+                        print '*** Invalid READ command, please refer to the Read me for proper syntax ***'
+                    # end if    
                 # end if
             # end if
         # end if
@@ -334,17 +365,49 @@ def log_aardvark(exit_event, commands, addr, Delay, Ascii_delay, float_dp, loggi
                     # configure the system based on the config command
                     dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
                 else:
-                    # Prepare the data for transmission
-                    write_data = list(command)
-                    write_data = [ord(item) for item in write_data]
-                    write_data.append(0x0a)
-                    data = array('B', write_data)  
-                    # Write the data to the slave device
-                    aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
-                    if 'TEL?' in commands:
-                        print 'Read:\t\t' + command
+                    if is_raw_write(command):
+                        if is_valid_raw(command):
+                            write_data = command[:-1].split(' ')
+                            raw_addr = int(write_data[1][:-1],16)
+                            int_write_data = [int(item,16) for item in write_data[2:]]
+                            int_write_data.append(0x0a)
+                            data = array('B', int_write_data)  
+                            # Write the data to the slave device
+                            aa_i2c_write(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
+                            print 'Raw Write:\t\t[' + ', '.join([str(item) for item in write_data[2:]]) + '] to address ' + write_data[1][:-1]
+                            # end if                        
+                        else:
+                            print '*** Invalid WRITE command, please refer to the Read me for proper syntax ***'
+                        # end if  
+                        
+                    elif not is_raw_read(command):
+                        # Prepare the data for transmission
+                        write_data = list(command)
+                        write_data = [ord(item) for item in write_data]
+                        write_data.append(0x0a)
+                        data = array('B', write_data)  
+                        # Write the data to the slave device
+                        aa_i2c_write(Aardvark_in_use, dec_addr, AA_I2C_NO_FLAGS, data)
+                        if 'TEL?' in commands:
+                            print 'Read:\t\t' + command
+                        else:
+                            print 'Write:\t\t' + command
+                        # end if
+                        
                     else:
-                        print 'Write:\t\t' + command
+                        # is a raw read command
+                        if is_valid_raw(command):
+                            data_list = command.split(' ')
+                            data_len = int(data_list[2][:-1])
+                            raw_addr = int(write_data[1][:-1],16)
+                            
+                            data = array('B', [1]*data_len)
+                            read_data = aa_i2c_read(Aardvark_in_use, raw_addr, AA_I2C_NO_FLAGS, data)
+                            
+                            print 'Raw Read:\t\t[' + ', '.join(['0x%02x' % x for x in read_data]) + '] from address ' + data_list[1][:-1]
+                        else:
+                            print '*** Invalid READ command, please refer to the Read me for proper syntax ***'
+                        # end if    
                     # end if
                 # end if
             # end if
@@ -441,7 +504,7 @@ def update_XML(command, address, XML):
         address_list = command.split(' ')
         address_hex = address_list[1][0:-1]
         # verify that it is a number and that the beginning of the command was correct
-        if address_hex.startswith('0x') and (len(address_hex) == 4) and address_hex[2:3].isdigit() and (address_list[0] == '<ADDRESS'):
+        if address_hex.startswith('0x') and (len(address_hex) == 4) and is_hex(address_hex[2:]) and (address_list[0] == '<ADDRESS'):
             # is a good address
             new_address = address_hex
         else:
@@ -550,6 +613,38 @@ def create_XML(commands, address, Delay, Ascii_delay):
             # add the configuration to the XML
             addr = update_XML(command, addr, aardvark)
             
+        elif is_raw_write(command) or is_raw_read(command):
+            if is_valid_raw(command):
+                aardvark.append(ET.Comment(command))
+                raw_list = command[:-1].split(' ')
+                raw_addr = '0x' + raw_list[1][:-1]
+                if is_raw_write(command):
+                    write_attributes = {'addr':  raw_addr,
+                                        'count': str(len(raw_list)-1),
+                                        'radix': str(radix)}
+                    raw = ET.SubElement(aardvark, 'i2c_write', write_attributes)
+                    
+                    # add hexidecimal null terminated command as text to the write element
+                    raw.text = ' '.join("{:02x}".format(int(c, 16)) for c in raw_list[2:]) + ' 0a'
+                    
+                else:
+                    read_attributes = {'addr':  raw_addr,
+                                       'count': raw_list[2],
+                                       'radix': str(radix)}     
+                    
+                    read = ET.SubElement(aardvark, 'i2c_read', read_attributes) 
+                # end if
+                ET.SubElement(aardvark, 'sleep', delay_attributes)  
+                
+            else:
+                if 'READ' in command:
+                    print '*** Invalid READ command, please refer to the Read me for proper syntax ***'
+                    
+                else:
+                    print '*** Invalid WRITE command, please refer to the Read me for proper syntax ***'
+                # end if
+            # end if        
+                    
         else:
             
             # comment the string of the SCPI command

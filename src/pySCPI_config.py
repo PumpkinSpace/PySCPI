@@ -101,12 +101,89 @@ Determine if the command in question is a configuration command
                      False:   The command is not a configuration command.
 """
 def is_config(command):
-    if command.startswith('<') and command.endswith('>'):
+    if command.startswith('<') and command.endswith('>') and ('WRITE' not in command) and ('READ' not in command):
         return True
     else:
         return False
     # end if
 # end def
+
+
+"""
+Determine if a string is a hexnumber
+
+@param[in]  s:       The string to be tested (string).
+@return     (bool)   True:    The string is a hex number.
+                     False:   The command is not a hex number.
+"""
+def is_hex(s):
+    try:
+        int(s, 16)
+        return True
+    except ValueError:
+        return False
+    # end try
+# end def
+
+
+"""
+Determine if the command in question is a raw write command
+
+@param[in]  command: The command string to be tested (string).
+@return     (bool)   True:    The command is a raw write command.
+                     False:   The command is not a raw write command.
+"""
+def is_raw_write(command):
+    if command.startswith('<WRITE') and command.endswith('>'):
+        return True
+    else:
+        return False
+    # end if
+# end def    
+
+"""
+Determine if the command in question is a raw read command
+
+@param[in]  command: The command string to be tested (string).
+@return     (bool)   True:    The command is a raw read command.
+                     False:   The command is not a raw read command.
+"""
+def is_raw_read(command):
+    if command.startswith('<READ')and command.endswith('>'):
+        return True
+    else:
+        return False
+    # end if
+# end def 
+
+"""
+Determine if the command in question is a raw read command
+s
+@param[in]  command: The command string to be tested (string).
+@return     (bool)   True:    The command is a raw read command.
+                     False:   The command is not a raw read command.
+"""
+def is_valid_raw(command):
+    valid = True
+    data_list = command[:-1].split(' ')
+    
+    if (len(data_list) < 3) or ((data_list[0] != '<READ') and (data_list[0] != '<WRITE')):
+        valid = False
+        
+    elif (len(data_list[1]) != 3):
+        valid = False
+        
+    elif (data_list[1][2] != ',') or not is_hex(data_list[1][:-1]):
+        valid = False
+        
+    elif ('WRITE' in data_list[0]) and any([not is_hex(item) for item in data_list[2:]]):
+        valid = False
+        
+    elif ('READ' in data_list[0]) and (len(data_list) != 3 or not data_list[2].isdigit()):
+        valid = False        
+    # end if
+    return valid   
+# end def 
 
 
 # Dictionary of all telemetry Commands
