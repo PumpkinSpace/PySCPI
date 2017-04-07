@@ -95,10 +95,10 @@ BITRATE:
 This command allows the bitrate of the I2C transactions to be altered for all subsequent transactions. The system default bitrate is 100kHz, to change the bitrate to 200kHz for example the command would be <BITRATE 200>. There are a discrete set of bitrates that the Aardvark can be set to, when this command is issues the bitrate will be set to the closest setting below what was requested, for example if you ask for 215kHz the system will run at 210kHz, this is displayed in the ouput window.
 
 READ:
-This command executes a simple I2C read from a given address. For example <READ 2C, 4> will read 4 bytes of data from a device with the address 0x2C.
+This command executes a simple I2C read from a given address. For example <READ 0x2C, 4> will read 4 bytes of data from a device with the address 0x2C.
 
 WRITE:
-This command executes a simple I2C write of specified data to a given address. For Example <WRITE 2C, 44 55 9D 06> will write the four hexidecimal values 0x44, 0x55, 0x9D and 0x06 to the slace device with the address 0x2C, bytes will be sent in the order that they entered in the command. 
+This command executes a simple I2C write of specified data to a given address. For Example <WRITE 0x2C, 44 55 9D 06> will write the four hexidecimal values 0x44, 0x55, 0x9D and 0x06 to the slace device with the address 0x2C, bytes will be sent in the order that they entered in the command. 
 
 
 ################
