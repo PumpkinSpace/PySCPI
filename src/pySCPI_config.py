@@ -48,7 +48,7 @@ name_size = 32
 chksum_size = 0
 wflag_size = 1
 time_size = 4
-length_size = 1
+length_size = 2
 ascii_size = 128
 
 """
