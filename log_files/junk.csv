@@ -1,3 +1,1 @@
-Timestamp	SUP:TEL? 0,name: Time (s)	SUP:TEL? 0,name: Data	SUP:TEL? 0,length: Time (s)	SUP:TEL? 0,length: Data	SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data
-00:00:50:57.90	3057.9	Firmware version	3058.31	61	3058.71	BM 2 v0.11.1a & SupMCU Core v0.11.1a
-00:00:51:07.92	3067.92	Firmware version	3068.33	61	3068.73	BM 2 v0.11.1a & SupMCU Core v0.11.1a
+Timestamp	SUP:TEL? 0,name: Time (s)	SUP:TEL? 0,name: Data	SUP:TEL? 0,length: Time (s)	SUP:TEL? 0,length: Data	SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data	SUP:TEL? 0,ascii: Data

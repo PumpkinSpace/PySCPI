@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- pySCPI Configuration elements -->
+<pySCPI_config>
+	
+	<!-- Default filename to save to and load from -->
+	<default_filename>aardvark_script.xml</default_filename>
+	
+	<!-- Default intermessage delay to use -->
+	<default_delay>200</default_delay>
+	
+	<!-- Default data length to read -->
+	<default_length>16</default_length>
+	
+	<!-- Default number of decimal places to display -->
+	<default_dp>4</default_dp>
+	
+	<!-- Modules Supported -->
+	<addresses>
+		<PIM address="0x53" />
+		<BM2 address="0x5C" />
+		<GPSRM address="0x51" />
+		<SIM address="0x50" />
+		<BIM address="0x52" />
+		<BSM address="0x58" />
+	</addresses>
+	
+	<!-- Default commands to be shown on startup -->
+	<default_commands>
+		<command>SUP:TEL? 0,name</command>
+		<command>SUP:TEL? 0,length</command>
+		<command>SUP:TEL? 0,data</command>
+		<command>SUP:TEL? 0,ascii</command>
+	</default_commands>
+	
+	
+</pySCPI_config>
+	
+	
+		
+	
+	

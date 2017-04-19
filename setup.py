@@ -2,10 +2,6 @@ from distutils.core import setup
 import py2exe
 import sys
 sys.path.insert(0, 'src/')
-import aardvark_builder
-import pySCPI_config
-import SCPI_formatting
-import aardvark_py
 import os
 from glob import glob
 
@@ -47,9 +43,9 @@ setup(windows=[{'script':'pySCPI.pyw', # Top level file to read in
                   [('src', [root + '/src/Header.jpg']), # Header image for the GUI
                   ('src', [root + '/src/cubesatkit.ico']), # icon image for the program
                   ('src', [root + '/src/CubeSatKit.bmp']), # image for the install wizard
-                  ('src', [root + '/src/pySCPI README.txt'])], # readme file
-      options = {'py2exe':{'includes': ['aardvark_builder', 'pySCPI_config', 'SCPI_formatting', 'aardvark_py'], # include files required by program
-                           'dll_excludes': ['MSVCP90.dll'] # TODO!!!!!! should not need this exclude
-                 }
-                 }
+                  ('src', [root + '/src/pySCPI README.txt']), # readme file
+                  ('src', [root + '/src/pySCPI_config.xml']), # configuration file
+                  ('src', [root + '/src/SCPI_Commands.xml'])], # SCPI Command Library
+      options = {'py2exe':{'includes': ['pySCPI_aardvark', 'pySCPI_config', 'pySCPI_formatting', 'aardvark_py', 'pySCPI_XML', 'pySCPI_gui'], # include files required by program
+                           'dll_excludes': ['MSVCP90.dll']}} # TODO!!!!!! should not need this exclude
       )
