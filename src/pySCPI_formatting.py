@@ -42,14 +42,17 @@ def read_length(command, gui):
     @return     (Int)     The length of that command, or the default 
                           length if the command is not found.
     """    
+    # determine if the command is in the library
     if gui.scpi_commands.SCPI_Data.has_key(command):
         # extract the length from the dictionary
         return gui.scpi_commands.SCPI_Data[command][0]
+    
     else:
         # command isn't in library so use the default length
         print '*** Command \"' + command + \
               '\" not found in dictionary, length defaults to ' + \
               str(gui.defaults.default_length) + ' ***'
+        
         return gui.defaults.default_length
     # end if
 # end def
@@ -63,7 +66,10 @@ def log_time(timestamp):
                             (list of ints).
     @return     (float)     Time in seconds.
     """    
+    # unpack the timestamp to get hundredths of a second
     ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
+    
+    # time in seconds
     return ticks/100.0
 # end def
 
@@ -80,7 +86,9 @@ def print_read(command, raw_data, gui):
                            called by (pySCPI_gui.main_gui).
     """        
     # index to stop printing at
-    stop_index = len(raw_data)   
+    stop_index = len(raw_data)  
+    
+    # get the sizes of subparts of the data
     wflag_size = gui.scpi_commands.wflag_size
     time_size = gui.scpi_commands.time_size
     chksum_size = gui.scpi_commands.chksum_size
@@ -96,8 +104,10 @@ def print_read(command, raw_data, gui):
         
         # if a checksum is included extract that
         if chksum_size != 0:
+            # extract the checksum
             checksum = raw_data[-chksum_size:]
             data = raw_data[wflag_size+time_size:-chksum_size]
+            
         else:
             data = raw_data[wflag_size+time_size:]
         # end if
@@ -107,7 +117,8 @@ def print_read(command, raw_data, gui):
             data = raw_data[0:-(wflag_size + time_size + chksum_size)]
         # end if
         
-        if (write_flag[0] != 1) and pySCPI_config.has_preamble(command):
+        # check for error conditions
+        if (not write_flag[0] & 1) and pySCPI_config.has_preamble(command):
             # The command was sent too fast, bad data was recieved
             print '*** Read failed, Write flag = 0, '\
                   'try increasing the messgage delay***'
@@ -121,13 +132,13 @@ def print_read(command, raw_data, gui):
         elif ',' not in print_format:
             # the data is just a single peice of data, not a list.
             
+            # if a timestamp is present print it out accordingly
             if pySCPI_config.has_preamble(command):
-                # print the timestamp
                 print 'Timestamp:\t\t' + get_time(timestamp)
-            # end if
+
             elif print_format == 'ascii':
                 print 'Timestamp:\t\t' + get_ascii_time(data)
-                
+            # end if               
  
             # print the data in the appropriate format 
             # given by the dictionary
@@ -165,6 +176,10 @@ def print_read(command, raw_data, gui):
                 print 'Data:\t\t' + '{:.{dp}f}'.format(unpack('<d', ''.join([chr(x) for x in data]))[0], 
                                                        dp=gui.float_var.get()) 
                 
+            elif print_format == 'float':
+                print 'Data:\t\t' + '{:.{dp}f}'.format(unpack('<f', ''.join([chr(x) for x in data]))[0], 
+                                                       dp=gui.float_var.get())                 
+                
             elif print_format == 'char':
                 print 'Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
             
@@ -188,7 +203,7 @@ def print_read(command, raw_data, gui):
             # individually does not accept hex or ascii parts in the list
             
             # print the timestamp
-            print 'Timestamp:\t\t' + pySCPI_config.get_time(timestamp)
+            print 'Timestamp:\t\t' + get_time(timestamp)
             
             # split the list into individual formats
             formats = print_format.split(', ')
@@ -218,6 +233,10 @@ def print_read(command, raw_data, gui):
                     output[i] =  unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
                     start_index += 8
                     
+                elif spec == 'float':
+                    output[i] =  unpack('<f', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0]
+                    start_index += 4                    
+                    
                 elif spec == 'char':
                     output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
                     start_index += 1
@@ -237,7 +256,7 @@ def print_read(command, raw_data, gui):
                 if type(output[i]) is float:
                     # if the object is a float, format accordingly
                     output_string = output_string  + \
-                        '{:.{dp}f}'.format(output[i], dp = double_dp)
+                        '{:.{dp}f}'.format(output[i], dp = gui.float_var.get())
                 else:
                     output_string = output_string  + str(output[i])
                     
@@ -352,6 +371,9 @@ def log_read(command, raw_data, csv_row, gui):
             elif print_format == 'double':
                 csv_row.append(unpack('<d', ''.join([chr(x) for x in data]))[0])
                 
+            elif print_format == 'float':
+                csv_row.append(unpack('<f', ''.join([chr(x) for x in data]))[0])                
+                
             elif print_format == 'char':
                 csv_row.append(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
             
@@ -398,6 +420,10 @@ def log_read(command, raw_data, csv_row, gui):
                     csv_row.append(unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
                     start_index += 8
                     
+                elif spec == 'float':
+                    csv_row.append(unpack('<f', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0])
+                    start_index += 4                
+                    
                 elif spec == 'char':
                     csv_row.append(unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
                     start_index += 1
@@ -428,13 +454,15 @@ def get_time(timestamp):
     """    
     # turn the hex data into a long int
     ticks = unpack('<L', ''.join([chr(x) for x in timestamp]))[0]
+    
     # break it down into parts
-    sec = ticks/100
-    dd = sec/(60*60*24)
-    hh = sec/(60*60) - dd*24
-    mm = sec/60 - hh*60 - dd*60*24
-    ss = sec - mm*60 - hh*60*60 - dd*60*60*24
-    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
+    sec = ticks/100 # total seconds
+    dd = sec/(60*60*24) # days
+    hh = sec/(60*60) - dd*24 # hours
+    mm = sec/60 - hh*60 - dd*60*24 # minutes
+    ss = sec - mm*60 - hh*60*60 - dd*60*60*24 # seconds
+    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100 #1/100
+    
     # construct the string
     return '%02d:' % dd + '%02d:' % hh + \
            '%02d:' % mm + '%02d.' % ss + '%02d' % tt
@@ -445,20 +473,24 @@ def get_ascii_time(data):
     """
     Converts the ascii timestamp data into a string for printing to the GUI.
     
-    @param[in]  data:       The data to be converted (string).
+    @param[in]  data:       The number of ticks to be converted (string).
     @return     (string)    The formatted string denoting the time in the 
                             format: days:hours:mins:seconds.1/100th seconds.
     """    
-    # turn the hex data into a long int
+    # turn the hex data into a string
     string_data = ''.join([chr(x) for x in data])
+    
+    # extract the time
     ticks = int(string_data[3:string_data.find(']')])
+    
     # break it down into parts
-    sec = ticks/100
-    dd = sec/(60*60*24)
-    hh = sec/(60*60) - dd*24
-    mm = sec/60 - hh*60 - dd*60*24
-    ss = sec - mm*60 - hh*60*60 - dd*60*60*24
-    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100
+    sec = ticks/100 # total seconds
+    dd = sec/(60*60*24) # days
+    hh = sec/(60*60) - dd*24 # hours
+    mm = sec/60 - hh*60 - dd*60*24 # minutes
+    ss = sec - mm*60 - hh*60*60 - dd*60*60*24 # seconds
+    tt = ticks - ss*100 - mm*60*100 - hh*60*60*100 - dd*60*60*24*100 #1/100
+    
     # construct the string
     return '%02d:' % dd + '%02d:' % hh + \
            '%02d:' % mm + '%02d.' % ss + '%02d' % tt

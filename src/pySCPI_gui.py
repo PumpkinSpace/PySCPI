@@ -92,6 +92,10 @@ class gui_defaults:
         
         # list of errors thrown during the importing of the XML file
         self.error_log = []
+        
+        # flags to track adding commands and addresses
+        self.no_commands = True
+        self.no_addresses = True
     # end def
     
     
@@ -169,30 +173,6 @@ class gui_defaults:
     # end def 
     
     
-    def add_first_address(self, new_module, new_address):
-        """ 
-        Rebuild the default list of addresses with this address
-        
-        @param[in]  new_module:   The name of the module added(string).
-        @param[in]  new_address:  The address of the added module(string).
-        """ 
-        # check the valdity of the address
-        if (len(new_address) == 4) and new_address.startswith('0x') \
-           and pySCPI_config.is_hex(new_address[2:]):
-            self.address_of = {# Non-SCPI Devices
-                               'CS EPS':     '0x2B',
-                               'ADCS CTRL':  '0x1F',
-                               'CS BAT':     '0x2A',
-                               'EXT_LIGHT':  '0x60',
-                               }
-            self.address_of[new_module] = new_address
-        else:
-            self.error_log.append('*** Invalid default address for ' +
-                                  new_module  + ' in xml file ***')    
-        # end if        
-    # end def   
-    
-    
     def add_address(self, new_module, new_address):
         """ 
         Add the new module to the dictionary of addresses
@@ -204,6 +184,16 @@ class gui_defaults:
         if (len(new_address) == 4) and new_address.startswith('0x') \
            and pySCPI_config.is_hex(new_address[2:]):
             # add the new address
+            if self.no_addresses:
+                self.address_of = {# Non-SCPI Devices
+                                   'CS EPS':     '0x2B',
+                                   'ADCS CTRL':  '0x1F',
+                                   'CS BAT':     '0x2A',
+                                   'EXT_LIGHT':  '0x60',
+                                   }         
+                self.no_addresses = False
+            # end if
+            
             self.address_of[new_module] = new_address
         else:
             self.error_log.append('*** Invalid default address for ' +
@@ -211,24 +201,18 @@ class gui_defaults:
         # end if        
     # end def     
     
-    
-    def add_first_command(self, new_command):
-        """ 
-        Replace the default list of commands with this first command
-        
-        @param[in]  new_command:  The new first command (string).
-        """ 
-        self.default_commands = [new_command] 
-    # end def    
-    
-    
+
     def add_command(self, new_command):
         """ 
         Append the new command to the existing list of commands
         
         @param[in]  new_command:  The new command to add (string).
         """ 
-        self.default_commands.append(new_command) 
+        if self.no_commands:
+            self.default_commands = [new_command]
+            self.no_commands = False
+        else:
+            self.default_commands.append(new_command) 
     # end def    
     
     
@@ -503,7 +487,7 @@ class main_gui:
         self.Command_text = TK.Text(self.command_frame, height = 10, width = 58, padx = 3, pady = 3)
         self.Command_text.config(font = text_font, highlightbackground= default_color)
         self.Command_text.insert('insert', '\n'.join(default_values.default_commands))
-        self.Command_text.bind('<Key>', self.key)
+        self.Command_text.bind('<Key>', self.update_filename)
         self.Command_text.grid(row = 0, column=0, sticky = 'nsew')
         
         # scrollbar for the command text box, linked to the text box
@@ -589,6 +573,15 @@ class main_gui:
         
     # end def
     
+    def output_clear(self):
+        """
+        Clear the output text window
+        """        
+        self.output_text.config(state='normal')
+        self.output_text.delete('1.0', 'end')
+        self.output_text.config(state='disabled')   
+    # end def
+    
     def start(self, gui_defs, command_defs):
         """
         Begin the GUI execution after printing any start up errors
@@ -603,17 +596,7 @@ class main_gui:
             
         self.root.mainloop()
     # end def
-        
-    def key(self, event):
-        """
-        Event function to clear the filename wnidow if the commands are edited
-        """            
-        # when a key is pressed within the command text frame, wipe the filename
-        self.file_window.config(state = 'normal')
-        self.file_window.delete('1.0', 'end')
-        self.file_window.config(state = 'disabled')  
-    # end def        
-    
+       
     
     def zero_errors(self):
         """ 
@@ -700,8 +683,324 @@ class main_gui:
                 button.config(state = 'normal', background = default_color)
             # end for
         # end if
-    # end def     
-# end def
+    # end def   
+    
+    def logging_button_state(self, state):
+        """
+        Function to change the configuration of the logging button.
+        
+        @param[in]    state:    The desired state of the button, 
+                                Either 'start' or 'stop' (string).
+        """
+        # define the partial to start the logging
+        start_command = partial(pySCPI_aardvark.start_logging, self)
+        
+        # determine which state to put the button into
+        if state == 'start':
+            # Change the logging button so that it starts logging
+            self.logging_button.config(text = 'Start Logging', 
+                                       command = start_command)   
+            
+        elif state == 'stop':
+            # Change the logging button so that it stops logging
+            self.logging_button.config(state = 'normal', 
+                                      text = 'Stop Logging', 
+                                      command = self.terminator.kill_log) 
+            
+        else:
+            # a valid button state was not requested, default to stop
+            print '*** invalid logging button state requested ***'
+            self.logging_button.config(state = 'normal', 
+                                      text = 'Stop Logging', 
+                                      command = self.terminator.kill_log)  
+        # end if
+    # end def
+    
+    def update_filename(self, event = None, filename = ''):
+        """
+        Function to change the loaded filename to display
+        
+        @param[in]  filename:   The filename to updte the gui to show
+                                (string).
+        """     
+        self.file_window.config(state='normal')
+        self.file_window.delete('1.0', 'end')
+        if filename != '':
+            self.file_window.insert('insert', filename.split('/')[-1])
+        # end
+        self.file_window.config(state = 'disabled')
+        self.file_window.tag_configure('center', justify = 'center')
+        self.file_window.tag_add('center', '1.0', 'end') 
+    # end def
+    
+    def update_fields(self, directives, device_detected):
+        """
+        Function to update the gui with values read from an xml file
+        
+        @param[in]  directives:      Information to update the gui with 
+                                     (pySCPI_config.write_directives)
+        @param[in]  device_detected: The device name that was read from the 
+                                     xml file (string).
+        """         
+        
+        # update the delay field
+        self.delay.delete(0,'end')
+        self.delay.insert(0, directives.delay_time)  
+        
+        
+        # update the address field
+        address = directives.addr
+        self.addr_var.set(address)
+                            
+        # create local address dictionary to compare to
+        local_addrs = self.defaults.address_of.copy()
+        local_addrs['GPS'] = '0x51' # add the GPS
+        
+        # check to see if the device is in the dictionary
+        if device_detected in local_addrs.keys():
+            
+            # see if the device address matches the default
+            if address == local_addrs[device_detected]:
+                # address matches a device
+                
+                # update the gui
+                if device_detected == 'GPS':
+                    # substitute the GPS name
+                    self.slave_var.set('GPSRM')
+                    
+                else:
+                    self.slave_var.set(device_detected)
+                # end if
+                
+            else:
+                # address does not math the default 
+                # so color it yellow as a warning
+                self.addr_text.config(background = 'yellow') 
+                
+                print '*** Warning, loaded device address '\
+                      'does not match a device default ***'
+            # end if  
+        elif address in local_addrs.values():
+            # address matches a device
+            device = local_addrs.keys()[local_addrs.values().index(address)]
+            self.slave_var.set(device)
+        else:
+            # address does not so color it yellow as a warning
+            self.addr_text.config(background = 'yellow') 
+            print '*** Warning, loaded device address '\
+                  'does not match a device default ***'
+        # end if
+       
+       
+        # check the appropriateness of the ascii delay
+        if (directives.ascii_time == '0') or \
+           (directives.ascii_time <= directives.delay_time):
+            # it is too short, go to the default delay
+            directives.ascii_time = 4*int(directives.delay_time)
+        # end if
+        
+        # update the ascii_delay
+        self.ascii.delete(0,'end')
+        self.ascii.insert(0, directives.ascii_time)      
+        
+        # empty command box and add new commands
+        self.Command_text.delete('1.0', 'end')
+        self.Command_text.insert('insert', '\n'.join(directives.command_list))        
+    # end def
+    
+ 
+    def get_delay(self):
+        """
+        Function to find the desired delay that was entered in the gui.
+        
+        @return     (int)         The delay that will be used in ms.
+        """        
+        # read the delay from the gui
+        delay_text = self.delay.get()
+        # establish the default delay
+        delay_time = self.defaults.default_delay;
+        
+        # verify if the delay is valid
+        if delay_text.isdigit():
+            # is a good delay so set it as the delay time
+            delay_time = int(delay_text)
+            
+        else:
+            # the delay is not valid
+            print '*** Requested delay is not valid, '\
+                  'reverting to default ***'
+            # restore the default delay
+            self.delay.delete(0,'end')
+            self.delay.insert(0, str(delay_time))
+        # end if    
+        
+        return delay_time
+    # end def
+    
+    def get_ascii_delay(self):
+        """
+        Function to find the desired ascii delay that was entered 
+        in the gui.
+        
+        @return     (int)         The delay that will be used in ms.
+        """    
+        # read the ascii delay from the gui
+        ascii_text = self.ascii.get()
+        # establish the default delay
+        ascii_time = self.defaults.default_delay*4;
+        
+        # verify that the delay is valid
+        if ascii_text.isdigit():
+            # is a good delay so set it as the ascii time
+            ascii_time = int(ascii_text)
+            
+        else:
+            # the delay is invalid
+            print '*** Requested ascii delay is not valid, '\
+                  'reverting to default ***'
+            
+            # restore the default delay
+            self.ascii.delete(0,'end')
+            self.ascii.insert(0, str(ascii_time))
+        # end if 
+        
+        return ascii_time
+    # end def
+    
+    
+    def get_i2c_address(self):
+        """
+        Function to find the desired I2C address that was entered 
+        in the gui.
+        
+        @return     (int)         The I2C address that will be used.
+        """  
+        # read the address from the gui
+        addr_string = self.addr_text.get()
+        
+        # verify the validity of the delay
+        if addr_string.startswith('0x') and (len(addr_string) == 4) and \
+           pySCPI_config.is_hex(addr_string[2:]):
+            # is a good address so use it
+            addr_num = int(addr_string,16)
+            
+        else:
+            # is it not a valid delay
+            print '*** Invalid address entered, '\
+                  'reverting to device default ***'
+            
+            # restore the defalut delay for the selected module
+            self.addr_string = address_of[self.slave_var.get()]
+            self.addr_var.set(addr_string)
+            addr_num = int(addr_string,16)
+        # end if
+        
+        return addr_num
+    # end def
+    
+    
+    def get_command_list(self):
+        """
+        Function to find the desired I2C address that was entered 
+        in the gui.
+        
+        @return    (list of strings) The list of commands to be sent.
+        """  
+        # read in the commands
+        commands = self.Command_text.get('1.0', 'end').encode('ascii', 'ignore')
+        # split them into a list
+        input_list = commands.split('\n')
+        # define list to construct into
+        command_list = []
+        
+        # construct the list
+        for item in input_list:
+            # remove white space and add to list
+            item = item.strip()
+            
+            if item != '':
+                # item is not empty so add it to the list
+                command_list = command_list + [item]
+            # end if
+        # end for
+        
+        return command_list
+    # end def
+    
+    
+    def get_logging_period(self, command_list, delay_time, ascii_time):
+        """
+        Function to find the logging period that will be used for 
+        logging by looking at the gui.
+        
+        @param[in] delay_time:       The intermessage delay in use (int).
+        @param[in] ascii_delay:      The ascii delay in use (int).
+        @return    (int)             The logging period to be used.
+        """      
+        
+        # find the amount of time taken for the all the commands to be 
+        # executed in a single iteration of the loop
+        loop_time = 0
+        
+        # add up all of the commands
+        for command in [c for c in command_list if not c.startswith('#')]:
+            # add up the time of all the commands in the list
+            if 'ascii' in command:
+                # is ascii do add both delays
+                loop_time += (ascii_time + delay_time)
+                
+            elif 'TEL?' in command:
+                # is telemetry so there are two delay periods
+                loop_time += (2*delay_time)
+                
+            elif command.startswith('<DELAY'):
+                # is is a delay command so add that delay
+                delay_command = query_delay_command(command)
+                loop_time += delay_command 
+                
+            else:
+                # is just a command so only add a single delay
+                loop_time += delay_time
+            # end if
+        # end for
+        
+        # convert the loop time into seconds and round up.
+        loop_time = (loop_time/1000)+1;
+        
+        
+        # extract the requested logging period from the gui
+        logging_text = self.logging.get()
+        
+        # determine the validity of the delay
+        if logging_text.isdigit():
+            # delay is a number so it is acceptible
+            logging_time = int(logging_text)
+            
+        else:
+            # the logging delay is unacceptible
+            print '*** Requested logging period is not valid, '\
+                  'reverting to default ***'
+            
+            # revert to the length of time taken to execute all commands
+            logging_time = loop_time * 2          
+            
+            self.logging.delete(0,'end')
+            self.logging.insert(0, str(logging_time))
+            
+        # end if
+        
+        # see if the delay is long enough
+        if logging_time <= loop_time*1.2:
+            # this is deemed to short for consistant operaton so 
+            # warn the user
+            print '*** Warning, logging period may be shorter than '\
+                  'the duration of the commands requested ***'
+            
+        # end if 
+        
+        return logging_time
+    # end def
+# end class
 
 
 class GUI_Writer(object):
@@ -774,9 +1073,7 @@ def test():
     sample_gui_defaults.update_delay('1000')
     sample_gui_defaults.update_dp('6')
     sample_gui_defaults.update_length('12')
-    sample_gui_defaults.add_first_address('TEST', '0x35')
     sample_gui_defaults.add_address('NEW', '0x44')
-    sample_gui_defaults.add_first_command('TEST COMMAND')
     sample_gui_defaults.add_command('NEW COMMAND')
     
     first_errors = len(sample_gui_defaults.error_log)
@@ -787,9 +1084,7 @@ def test():
     sample_gui_defaults.update_delay('10g0')
     sample_gui_defaults.update_dp('0')
     sample_gui_defaults.update_length('-4')
-    sample_gui_defaults.add_first_address('TEST', '35')
     sample_gui_defaults.add_address('NEW', 'AD')
-    sample_gui_defaults.add_first_command('TEST COMMAND')
     sample_gui_defaults.add_command('NEW COMMAND')
     
     new_errors = len(sample_gui_defaults.error_log) - first_errors

@@ -1,1 +1,3 @@
 Timestamp	SUP:TEL? 0,name: Time (s)	SUP:TEL? 0,name: Data	SUP:TEL? 0,length: Time (s)	SUP:TEL? 0,length: Data	SUP:TEL? 0,data: Time (s)	SUP:TEL? 0,data: Data	SUP:TEL? 0,ascii: Data
+00:00:33:06.29	1986.29	Firmware version	1986.7	61	1987.14	PIM 1 v0.13.5a & SupMCU Core v0.14.0a	[1:198756] PIM 1 v0.13.5a & SupMCU Core v0.14.0a
+00:00:33:21.38	2001.38	Firmware version	2001.79	61	2002.2	PIM 1 v0.13.5a & SupMCU Core v0.14.0a	[1:200261] PIM 1 v0.13.5a & SupMCU Core v0.14.0a

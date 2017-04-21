@@ -16,7 +16,7 @@ values and declaring the dictionaries of address and commands.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -24,9 +24,6 @@ __version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
 # Imports
 
 import os
-
-# ---------
-# Constants
 
 
 # ---------
@@ -60,6 +57,9 @@ class command_library:
         # The leght of an ascii request in bytes
         self.ascii_size = 128
         
+        # boolean to keep track of command updating
+        self.no_commands = True
+        
         # Default command list
         self.SCPI_Data = {}
         self.add_command('SUP:TEL? 0', '48', 'ascii')
@@ -71,141 +71,67 @@ class command_library:
         self.add_command('SUP:TEL? 6', '8',  'long long')
         self.add_command('SUP:TEL? 7', '8',  'long long')
         self.add_command('SUP:TEL? 8', '8',  'double')
-            
+        
+        # Reset flag after initial updating
+        self.no_commands = True
        
         # list of errors thrown during the importing of the XML file
         self.error_log = []        
     # end def
     
-    
-    def update_name_size(self, new_size):
+    def update_size(self, target, new_size):
         """ 
         Update the length of the data in a name request
         
-        @param[in]  new_size:  The new name length (string).
-        """ 
+        @param[in]  target:    The property that is to be updated, one of:
+                               'checksum_size', 'name_size', 'wflag_size', 
+                               'ascii_size', 'time_size'  or 'length_size' 
+                               (string).
+        @param[in]  new_size:  The new size for that property (string).
+        """     
+        # check the validity of the new size
         if new_size.isdigit():
-            if int(new_size) > 0:
-                self.name_size = int(new_size)
+            # it is an integer so that is good
+            if int(new_size) >= 0:
+                # it is also positive so determine which property is to 
+                # be updated then perform that update
+                if target == 'checksum_size':
+                    self.chksum_size = int(new_size)
+                    
+                elif target == 'name_size':
+                    self.name_size = int(new_size)
+                    
+                elif target == 'wflag_size':
+                    self.wflag_size = int(new_size)  
+                    
+                elif target == 'ascii_size':
+                    self.ascii_size = int(new_size)  
+                    
+                elif target == 'time_size':
+                    self.time_size = int(new_size)    
+                    
+                elif target == 'length_size':
+                    self.length_size = int(new_size)   
+                
+                else:
+                    # this is not a valid property to update
+                    self.error_log.append('*** ' + str(target) + 'found '\
+                                          ' in xml file is not a valid '\
+                                          'default to update ***')
+                # end if
+            
             else:
-                self.error_log.append('*** Invalid name_size '
-                                      'in xml file ***')   
+                self.error_log.append('*** Invalid ' + str(target) +
+                                      ' in xml file ***')   
             # end if
+            
         else:
-            self.error_log.append('*** Invalid name_size '
-                                  'in xml file ***')
+            self.error_log.append('*** Invalid ' + srt(target) + 
+                                  ' in xml file ***')
         # end if  
-    # end def 
-    
-    
-    def update_checksum_size(self, new_size):
-        """ 
-        Update the length of the checksum in SCPI telemetry
+    # end def        
         
-        @param[in]  new_size:  The new checksum length (string).
-        """ 
-        if new_size.isdigit():
-            if int(new_size) >= 0:
-                self.chksum_size = int(new_size)
-            else:
-                self.error_log.append('*** Invalid checksum size '
-                                      'in xml file ***')                    
-        else:
-            self.error_log.append('*** Invalid checksum size '
-                                  'in xml file ***')
-        # end if  
-    # end def   
-    
-    
-    def update_writeflag_size(self, new_size):
-        """ 
-        Update the length of the writeflag in SCPI telemetry
-        
-        @param[in]  new_size:  The new writeflag length (string).
-        """ 
-        if new_size.isdigit():
-            if int(new_size) >= 0:
-                self.wflag_size = int(new_size)
-            else:
-                self.error_log.append('*** Invalid write flag size '
-                                      'in xml file ***')                    
-        else:
-            self.error_log.append('*** Invalid write flag size '
-                                  'in xml file ***')
-        # end if  
-    # end def 
-    
-    
-    def update_timestamp_size(self, new_size):
-        """ 
-        Update the length of the timestamp in SCPI telemetry
-        
-        @param[in]  new_size:  The new timestamp length (string).
-        """ 
-        if new_size.isdigit():
-            if int(new_size) >= 0:
-                self.time_size = int(new_size)
-            else:
-                self.error_log.append('*** Invalid timestamp size '
-                                      'in xml file ***')                    
-        else:
-            self.error_log.append('*** Invalid timestamp size '
-                                  'in xml file ***')
-        # end if  
-    # end def  
-    
-    
-    def update_length_size(self, new_size):
-        """ 
-        Update the length of a length request in SCPI telemetry
-        
-        @param[in]  new_size:  The new length request length (string).
-        """ 
-        if new_size.isdigit():
-            if int(new_size) >= 0:
-                self.length_size = int(new_size)
-            else:
-                self.error_log.append('*** Invalid length size '
-                                      'in xml file ***')                    
-        else:
-            self.error_log.append('*** Invalid length size '
-                                  'in xml file ***')
-        # end if  
-    # end def   
-    
-    
-    def update_ascii_size(self, new_size):
-        """ 
-        Update the length of an ascii request in SCPI telemetry
-        
-        @param[in]  new_size:  The new ascii request length (string).
-        """ 
-        if new_size.isdigit():
-            if int(new_size) >= 0:
-                self.ascii_size = int(new_size)
-            else:
-                self.error_log.append('*** Invalid ascii size '
-                                      'in xml file ***')                    
-        else:
-            self.error_log.append('*** Invalid ascii size '
-                                  'in xml file ***')
-        # end if  
-    # end def  
-    
-    
-    def add_first_command(self, command, length, format_string):
-        """ 
-        Rebuild the dictionary of SCPI commands with the first item
-        
-        @param[in]  command:       The new command string (string).
-        @param[in]  length:        The length of the data field (string).
-        @param[in]  format_string: The format of the data returned
-        """         
-        self.SCPI_Data = {}
-        self.add_command(command, length, format_string)
-    # end def
-                
-                
+              
     def add_command(self, command, length, format_string):
         """ 
         Add an item to the SCPI command dictionary
@@ -215,55 +141,62 @@ class command_library:
         @param[in]  format_string: The format of the data returned
         """ 
         
+        # see if no new commands have been added
+        if self.no_commands:
+            
+            # empty the dictionary
+            self.SCPI_Data = {}        
+            
+            # set the updated flag
+            self.no_commands = False
+        # end if
+        
+        # check if the command is valid
         if length.isdigit() and is_valid_format(format_string):
             if int(length) > 0:
-                # Add the ,name command to the dictionary
-                name_key = command + ',name'
-                name_bytes = self.wflag_size + self.time_size + \
-                    self.name_size + self.chksum_size                
-                if name_key not in self.SCPI_Data:
-                    self.SCPI_Data[name_key] = [name_bytes, 'ascii']
-                else:
-                    self.error_log.append('*** ' + name_key + 
-                                          ' already in library ***')    
-                # end if
+                # the command is valid so proceed
                 
-                # Add the ,data command to the library
-                data_key = command + ',data'
-                data_bytes = self.wflag_size + self.time_size + \
-                    self.chksum_size + int(length)
-                if data_key not in self.SCPI_Data:
-                    self.SCPI_Data[data_key] = [data_bytes, format_string]
-                else:
-                    self.error_log.append('*** ' + data_key + 
-                                          ' already in library ***')    
-                # end if   
+                # define list of keys to use
+                keys = [command + ',name', command + ',data',
+                        command + ',length', command + ',ascii']
                 
-                # Add the ,length command to the library
-                length_key = command + ',length'
-                length_bytes = self.wflag_size + self.time_size + \
-                    self.length_size + self.chksum_size
-                if length_key not in self.SCPI_Data:
-                    self.SCPI_Data[length_key] = [length_bytes, 'uint']
-                else:
-                    self.error_log.append('*** ' + length_key + 
-                                          ' already in library ***')    
-                # end if   
+                # define list of bbyte lengths to use
+                key_bytes = [# name length
+                             self.wflag_size + self.time_size + \
+                             self.name_size + self.chksum_size,
+                             # data length
+                             self.wflag_size + self.time_size + \
+                             self.chksum_size + int(length),
+                             # length length
+                             self.wflag_size + self.time_size + \
+                             self.length_size + self.chksum_size,
+                             # ascii length
+                             self.wflag_size + self.time_size + \
+                             self.chksum_size + self.ascii_size]
                 
-                # Add the ,ascii command to the library
-                ascii_key = command + ',ascii'
-                ascii_bytes = self.wflag_size + self.time_size + \
-                    self.chksum_size + self.ascii_size
-                if ascii_key not in self.SCPI_Data:
-                    self.SCPI_Data[ascii_key] = [ascii_bytes, 'ascii']
-                else:
-                    self.error_log.append('*** ' + ascii_key + 
-                                          ' already in library ***')    
-                # end if   
+                # define list of formats
+                formats = ['ascii', format_string, 'uint', 'ascii']
+                
+                # construct the four scpi commands for each command
+                for i in range(0,4):
+                    
+                    # check if the command already exists in the library
+                    if keys[i] not in self.SCPI_Data:
+                        # it doesnt so add it
+                        self.SCPI_Data[keys[i]] = [key_bytes[i], 
+                                                   formats[i]]
+                        
+                    else:
+                        self.error_log.append('*** ' + key[i] + 
+                                              ' already in library ***')    
+                    # end if                                              
+                # end for
+                             
             else:
                 self.error_log.append('*** ' + command + 
                                       ' length is too short ***')  
             # end if
+            
         else:
             self.error_log.append('*** ' + command + 
                                   ' length or format is invalid ***')            
@@ -277,8 +210,10 @@ class command_library:
         
         @param[in]  error:  The error to log (string).
         """         
+        # add the error to the list
         self.error_log.append(error)
     # end def
+    
     
     def get_devices(self):
         """
@@ -288,10 +223,14 @@ class command_library:
                               (list of strings).
         """    
         devices = []
+        
         # get all the keys from the dictionary
         keys = self.SCPI_Data.keys()
+        
         # extract the device specifier
         dev_keys = [key.split(':')[0] for key in keys]
+        
+        # iterate through the devices
         for key in dev_keys:
             if (key not in devices) and (key != 'SUP'):
                 # this is a unique device, add it to the list
@@ -302,13 +241,37 @@ class command_library:
         devices = devices + ['SIM']
         
         # replace the GPS if present with its longer name
-        devices = ['GPSRM' if device == 'GPS' 
-                   else device for device in devices]
+        devices = ['GPSRM' if device == 'GPS' else device 
+                   for device in devices]
         return devices
     # end def     
-# end class    
- 
-                
+# end class   
+
+
+class write_directives:
+    """ 
+    Class to contain all of the information required by the 
+    writing functions.
+    """  
+    def __init__(self, commands, address, delay, ascii, logging_p = 0):
+        """
+        Combine the passed vlaues into an object.
+        
+        @param[in]     commands:    The list of commands to send.
+        @param[in]     address:     The address to send to.
+        @param[in]     delay:       The intermessage delay to use.
+        @param[in]     ascii:       The ascii delay to use.
+        @param[in]     logging_p:   OPTIONAL, the logging period to use.
+        """        
+        self.command_list = commands
+        self.addr = address
+        self.delay_time = delay
+        self.ascii_time = ascii
+        self.logging_p = logging_p
+    # end def
+# end class
+    
+               
 #
 # ----------------
 # Public Functions 
@@ -323,14 +286,22 @@ def file_is_free(filename):
                                     another program.
                           False:    The file is in use.
     """    
-    try:
-        # attempt to change the files name to see if it is available.
-        os.rename(filename,filename)
-        return True
-    except OSError as e:
-        # renaming was not possible as another program is using it.
-        return False
-    # end try
+    # define default status
+    file_free = True
+    
+    # check if the file already exists
+    if os.path.isfile(filename):
+        # it does so try and rename it to see if it is in use
+        try:
+            os.rename(filename,filename)
+            
+        except OSError as e:
+            # renaming was not possible as another program is using it.
+            file_free = False
+        # end try
+    # end if
+    
+    return file_free
 # end def
 
 
@@ -349,34 +320,6 @@ def has_preamble(command):
     else:
         return True
     # end if
-# end def
-
-
-def get_devices():
-    """
-    Get a list of all the devices that pySCPI supports
-    
-    @return     devices:  A list of all the supported devices 
-                          (list of strings).
-    """    
-    devices = []
-    # get all the keys from the dictionary
-    keys = SCPI_Data.keys()
-    # extract the device specifier
-    dev_keys = [key.split(':')[0] for key in keys]
-    for key in dev_keys:
-        if (key not in devices) and (key != 'SUP'):
-            # this is a unique device, add it to the list
-            devices = devices + [key]
-        # end if
-    # end for
-    
-    devices = devices + ['SIM']
-    
-    # replace the GPS if present with its longer name
-    devices = ['GPSRM' if device == 'GPS' else 
-               device for device in devices]
-    return devices
 # end def
 
 
@@ -406,10 +349,13 @@ def is_hex(s):
     @return     (bool)   True:    The string is a hex number.
                          False:   The command is not a hex number.
     """    
+    # if it can be converted to a base 16 int then it is hex
     try:
         int(s, 16)
         return True
+    
     except ValueError:
+        # it could not be converted therefore is not hex
         return False
     # end try
 # end def
@@ -425,7 +371,7 @@ def is_raw_write(command):
     """    
     if command.startswith('<WRITE') and command.endswith('>'):
         return True
-    else:
+    else:       
         return False
     # end if
 # end def    
@@ -439,9 +385,10 @@ def is_raw_read(command):
     @return     (bool)   True:    The command is a raw read command.
                          False:   The command is not a raw read command.
     """    
-    if command.startswith('<READ')and command.endswith('>'):
+    if command.startswith('<READ') and command.endswith('>') and \
+       is_vaild_raw(command):
         return True
-    else:
+    else:      
         return False
     # end if
 # end def 
@@ -455,27 +402,53 @@ def is_valid_raw(command):
     @return     (bool)   True:    The command is a raw read command.
                          False:   The command is not a raw read command.
     """    
+    # default state
     valid = True
+    
+    # split the command into sections
     data_list = command[:-1].split(' ')
     
+    # check the command's validity
     if (len(data_list) < 3) or ((data_list[0] != '<READ') and \
                                 (data_list[0] != '<WRITE')):
+        # if the command is too long and doesn't start corectly then it is 
+        # invalid        
         valid = False
         
     elif (len(data_list[1]) != 5) or not data_list[1].startswith('0x'):
+        # if the address field is not the right length and doesnt start 
+        # wit the hexidecimal identifier then it is invalid
         valid = False
         
     elif (data_list[1][4] != ',') or not is_hex(data_list[1][2:-1]):
+        # if the address doean't end with a comma or the number portion is 
+        # not a hexideciaml number then it is invalid
         valid = False
         
     elif ('WRITE' in data_list[0]) and \
          any([not is_hex(item) for item in data_list[2:]]):
+        # if it is a write command and any item in the data list is not
+        # hexidecimal then it is invalid
         valid = False
         
     elif ('READ' in data_list[0]) and \
          (len(data_list) != 3 or not data_list[2].isdigit()):
-        valid = False        
+        # if it is a read command and there in not a single decimal length
+        # specified then the command is invalid
+        valid = False     
+    
     # end if
+    
+    # print errors associated with commands if required
+    if ('READ' in command) and not valid:
+        print '*** Invalid READ command, please refer to the'\
+                      'Read me for proper syntax ***'          
+        
+    elif ('WRITE' in command) and not valid:
+        print '*** Invalid WRITE command, please refer to the'\
+                      'Read me for proper syntax ***'           
+    # end if
+    
     return valid   
 # end def 
 
@@ -493,15 +466,25 @@ def is_valid_format(format_string):
     @return     (bool)         True:  The format string is valid
                                False: The format string is not valid
     """     
+    # default
     is_valid = True
+    
+    # list of valid formats
     valid_formats = ['hex', 'char', 'uint', 'int', 'double', 
-                     'ascii', 'long', 'long long']
+                     'ascii', 'long', 'long long', 'float']
+    
+    # list of formats provided (may be a single format)
     format_list = format_string.split(', ')
+    
+    # check each item in the provided list
     for item in format_list:
+        
+        # if it does not match a valid format then it is invalid
         if item not in valid_formats:
             is_valid = False
         # end if
     # end for
+    
     return is_valid
 # end def
 

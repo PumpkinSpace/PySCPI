@@ -15,7 +15,7 @@ Module to handle the aardvark aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -34,23 +34,18 @@ import os
 import threading
 from array import array
 import csv
+
+
 # ---------
 # Constants
 
-# Configure I2C (DO NOT MODIFY)
+# I2C config
 I2C = True
 SPI = True
 GPIO = False
 Pullups = True
 radix = 16
-
-use_aardvark = True
-use_XML = True
-
-######################## User Defined Configuration ############################
-# Bitrate in kHz
 Bitrate = 100
-################################################################################
 
 
 #
@@ -67,68 +62,35 @@ def Write_I2C(gui):
     """    
     # Lock all buttons
     gui.action_lock('Lock', None)
+    # make the pressed button green
     gui.aardvark_button.config(background = 'green')
     
-    # clear output
-    gui.output_text.config(state='normal')
-    gui.output_text.delete('1.0', 'end')
-    gui.output_text.config(state='disabled') 
+    # clear the output
+    gui.output_clear()
     
-    # determine delay
-    delay_text = gui.delay.get()
-    delay_time = gui.defaults.default_delay;
-    if delay_text.isdigit():
-        # is a good delay
-        delay_time = int(delay_text)
-    else:
-        print '*** Requested delay is not valid, reverting to default ***'
-        gui.delay.delete(0,'end')
-        gui.delay.insert(0, str(delay_time))
-    # end if
+    # get the desired delay from the gui.
+    delay_time = gui.get_delay()
     
-    # determine ascii delay
-    ascii_text = gui.ascii.get()
-    ascii_time = gui.defaults.default_delay*4;
-    if ascii_text.isdigit():
-        # is a good delay
-        ascii_time = int(ascii_text)
-    else:
-        print '*** Requested ascii delay is not valid, '\
-              'reverting to default ***'
-        gui.ascii.delete(0,'end')
-        gui.ascii.insert(0, str(ascii_time))
-    # end if 
     
-    # determine I2C address to write to
-    addr_string = gui.addr_text.get()
-    addr_num = 0
-    if addr_string.startswith('0x') and (len(addr_string) == 4) and \
-       pySCPI_config.is_hex(addr_string[2:]):
-        # is a good address
-        addr_num = int(addr_string,16)
-    else:
-        print '*** Invalid address entered, reverting to device default ***'
-        gui.addr_string = address_of[gui.slave_var.get()]
-        gui.addr_var.set(addr_string)
-        addr_num = int(addr_string,16)
-    # end if
+    # get the desired ascii delay from the gui.
+    ascii_time = gui.get_ascii_delay()
     
-    # get command list from GUI
-    input_string = gui.Command_text.get('1.0', 'end').encode('ascii', 'ignore')
-    input_list = input_string.split('\n')
-    command_list = []
-    for item in input_list:
-        # add all acceptible command to the list
-        item = item.strip()
-        if item != '':
-            command_list = command_list + [item]
-        # end if
-    # end for
     
-    # start the thread to perform the writing
+    # get the desired I2C address from the gui.
+    addr_num = gui.get_i2c_address()
+    
+    
+    # get the list of commands from the gui
+    command_list = gui.get_command_list()
+    
+    # construct the writing directives
+    directives = pySCPI_config.write_directives(command_list, addr_num,
+                                                delay_time, ascii_time)
+    
+    # define the thread to perform the writing
     write_thread = threading.Thread(target = pySCPI_threading.I2C_thread, 
-                                    args=(command_list, addr_num, 
-                                          delay_time, ascii_time, gui))
+                                    args=(directives, gui))
+    # start the thread
     write_thread.start()
 # end def
 
@@ -142,100 +104,32 @@ def start_logging(gui):
     """    
     # lock all the GUI buttons
     gui.action_lock('Lock', None)
+    # highlight the button that was pressed
     gui.logging_button.config(background = 'green')
     
     # clear output
-    gui.output_text.config(state='normal')
-    gui.output_text.delete('1.0', 'end')
-    gui.output_text.config(state='disabled') 
+    gui.output_clear()
     
-    # determine delay
-    delay_text = gui.delay.get()
-    delay_time = gui.defaults.default_delay;
-    if delay_text.isdigit():
-        # delay is good
-        delay_time = int(delay_text)
-    else:
-        print '*** Requested delay is not valid, reverting to default ***'
-        gui.delay.delete(0,END)
-        gui.delay.insert(0, str(delay_time))
-    # end if
+    # get the desired delay from the gui.
+    delay_time = gui.get_delay()
     
-    # determine ascii delay
-    ascii_text = gui.ascii.get()
-    ascii_time = gui.defaults.default_delay*4;
-    if ascii_text.isdigit():
-        # delay is good
-        ascii_time = int(ascii_text)
-    else:
-        print '*** Requested ascii delay is not valid, '\
-              'reverting to default ***'
-        gui.ascii.delete(0,END)
-        gui.ascii.insert(0, str(ascii_time))
-    # end if 
     
-    # determine I2C address to write to
-    addr_string = gui.addr_text.get()
-    addr_num = 0
-    if addr_string.startswith('0x') and (len(addr_string) == 4) and \
-       pySCPI_config.is_hex(addr_string[2:]):
-        # address is good
-        addr_num = int(addr_string,16)
-    else:
-        print '*** Invlaid address entered, reverting to device default ***'
-        gui.addr_string = address_of[gui.slave_var.get()]
-        gui.addr_var.set(addr_string)
-        addr_num = int(addr_string,16)
-    # end if
+    # get the desired ascii delay from the gui.
+    ascii_time = gui.get_ascii_delay()
     
-    # get command list
-    input_string = gui.Command_text.get('1.0', 'end').encode('ascii', 
-                                                             'ignore')
-    input_list = input_string.split('\n')
-    command_list = []
-    for item in input_list:
-        # add all commands to a list
-        item = item.strip()
-        if item != '':
-            command_list = command_list + [item]
-        # end if
-    # end for
     
-    # find the required loop period
-    loop_time = 0
-    for command in command_list:
-        # add up the time of all the commands in the list
-        if 'ascii' in command:
-            # is ascii
-            loop_time += (ascii_time + delay_time)
-        elif 'TEL?' in command:
-            # is telemetry
-            loop_time += (2*delay_time)
-        else:
-            # is just a command
-            loop_time += delay_time
-        # end if
-    # end for
+    # get the desired I2C address from the gui.
+    addr_num = gui.get_i2c_address()
     
-    # evaluate the perscribed loop period
-    logging_text = gui.logging.get()
-    logging_time = (loop_time/1000)+1;
-    if logging_text.isdigit():
-        # delay is a number
-        logging_time = int(logging_text)
-    else:
-        print '*** Requested logging period is not valid, '\
-              'reverting to default ***'
-        gui.logging.delete(0,'end')
-        gui.logging.insert(0, str(logging_time))
-    # end if
     
-    if logging_time*1000.0 <= loop_time*1.2:
-        print '*** Warning, logging period may be shorter than '\
-              'the duration of the commands requested ***'
-    # end if
+    # get the list of commands from the gui
+    command_list = gui.get_command_list()
     
-    # open a save file window
+    # determine the required/desired logging period for the program
+    logging_time = gui.get_logging_period(command_list, delay_time, ascii_time)
+    
+    
+    # define the options to use when promting for a file to save to
     file_opt = options = {}
     options['defaultextension'] = '.csv'
     options['filetypes'] = [('csv files', '.csv')]
@@ -243,25 +137,39 @@ def start_logging(gui):
     options['initialfile'] = 'example_log.csv'
     options['title'] = 'Save .csv log file as:'       
     
-    filename_full = TKFD.asksaveasfilename(**file_opt)
+    # open a save file window
+    filename_full = TKFD.asksaveasfilename(**file_opt) 
     
+    # check the validity of the filename
     if (filename_full == ''):
         # No file was selected
-        gui.output_text.config(state='normal')
-        gui.output_text.delete('1.0', 'end')
-        gui.output_text.config(state='disabled')        
+        gui.output_clear()     
         print '*** No Logging filename selected ***'
+        
         # unlock buttons
         gui.action_lock('Unlock')
-    else: 
-        # start the logging thread
+        
+    elif pySCPI_config.file_is_free(filename_full): 
+        # the file is free so can be logged to
+        
+        # construct the writing directives
+        directives = pySCPI_config.write_directives(command_list, addr_num,
+                                                    delay_time, ascii_time,
+                                                    logging_time)        
+        
+        # define the logging thread
         log_thread = threading.Thread(target = pySCPI_threading.I2C_log_thread, 
-                                      args=(command_list, addr_num, 
-                                            delay_time, ascii_time, 
-                                            logging_time, filename_full, 
-                                            gui))
+                                      args=(directives, filename_full, gui))
+        # start the logging thread
         log_thread.start()
-    # end if
+        
+    else:
+        # the file is in use by another program
+        print'*** Requested log file is in use by another program ***'
+        
+        # unlock buttons
+        gui.action_lock('Unlock')        
+    # end if            
 # end def
 
 
@@ -281,21 +189,8 @@ def update_aardvark(command, address, Aardvark_in_use):
     new_address = address
     # determine the appropriate action to take
     if 'DELAY ' in command:
-        # strip out the number
-        delay_list = command.split(' ')
-        delay_number = delay_list[1][0:-1]
-        # verify that it is a number and that the beginning of 
-        # the command was correct
-        if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
-            # perform a millisecond delay
-            print 'Implementing additional ' + delay_number + 'ms delay.'
-            aardvark_py.aa_sleep_ms(int(delay_number))  
-        else:
-            # the delay is not valid
-            print '*** The requested DELAY command is not valid. '\
-                  'Use <DELAY x>***'
-        # end if
-             
+        delay_time = query_delay_command(command)
+        aardvark_py.aa_sleep_ms(delay_time) 
     elif 'ADDRESS ' in command:
         # strip out the number
         address_list = command.split(' ')
@@ -359,145 +254,69 @@ def update_aardvark(command, address, Aardvark_in_use):
 # end def
 
 
-
-def write_aardvark(commands, addr, Delay, Ascii_delay, gui):
+def write_aardvark(directives, gui):
     """
     Write to the slave device using the Aardvark and print its results 
     to the GUI.
     
-    @param[in]  commands:    List of commands to be sent (list of strings).
-    @param[in]  dec_addr:    I2C address of the slave device (int).
-    @param[in]  Delay:       Millisecond delay to wait between 
-                             transmissions (int).
-    @param[in]  Ascii_delay: Millisecond delay to wait before reading an 
-                             'ascii' request (int).
+    @param[in]  directives:  Instructions to direct the sending of 
+                             data (pySCPI_config.write_directives)
     @param[in]  gui:         Instance of the gui that this function is 
                              called by (pySCPI_gui.main_gui).
     @return     int(0):      Failed to use Aardvark.
                 None         Otherwise.
     """    
-    # local copy of the address
-    dec_addr = addr
+    # local copy of the write directives
+    dec_addr = directives.addr
+    commands = directives.command_list
+    Delay = directives.delay_time
+    Ascii_delay = directives.ascii_time
     
     # configure Aardvark if available
-    AA_Devices = aardvark_py.aa_find_devices(1)
-    Aardvark_free = True
-    Aardvark_port = 8<<7
+    Aardvark_in_use = configure_aardvark()
     
-    # Check if there is an Aardvark present
-    if (AA_Devices[0] < 1):
-        print '*** No Aardvark is present ***'
-        Aardvark_free = False
-        return 0
-    else:
-        Aardvark_port = AA_Devices[1][0]
-    # end if
-    
-    # If there is an Aardvark there is it free?
-    if Aardvark_port >= 8<<7 and Aardvark_free:
-        print '*** Aardvark is being used, '\
-              'disconnect other application or Aardvark device ***'
-        aardvark_py.aa_close(Aardvark_port)
-        Aardvark_free = False
-        return 0
-    elif Aardvark_free:
-        # Aardvark is available so configure it
-        Aardvark_in_use = aardvark_py.aa_open(Aardvark_port)
-        aardvark_py.aa_configure(Aardvark_in_use, 
-                                 aardvark_py.AA_CONFIG_SPI_I2C)
-        aardvark_py.aa_i2c_pullup(Aardvark_in_use, 
-                                  aardvark_py.AA_I2C_PULLUP_BOTH)
-        aardvark_py.aa_i2c_bitrate(Aardvark_in_use, Bitrate)
-        aardvark_py.aa_i2c_free_bus(Aardvark_in_use)
-        aardvark_py.aa_sleep_ms(Delay)    
-        print "Starting Aardvark communications\n"
-    # end if
-    
-    # iterate through commands and add them to the aardvark file
-    for command in commands:
-        # See if the Aardvark is free
-        if Aardvark_free:
+    # Check to see if an Aardvark was actually found
+    if Aardvark_in_use != None:
+        # iterate through commands and add them to the aardvark file
+        # commands that start with # are deemed comments
+        for command in [c for c in commands if not c.startswith('#')]:
             # determine if the command is a configuration command
             if pySCPI_config.is_config(command):
                 # configure the system based on the config command
-                dec_addr = update_aardvark(command, dec_addr, 
-                                           Aardvark_in_use)
+                dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
+                
             else:
                 # Prepare the data for transmission
                 if pySCPI_config.is_raw_write(command):
-                    if pySCPI_config.is_valid_raw(command):
-                        write_data = command[:-1].split(' ')
-                        raw_addr = int(write_data[1][:-1],16)
-                        int_write_data = [int(item,16) for \
-                                          item in write_data[2:]]
-                        int_write_data.append(0x0a)
-                        data = array('B', int_write_data)  
-                        # Write the data to the slave device
-                        aardvark_py.aa_i2c_write(Aardvark_in_use, raw_addr,
-                                                 aardvark_py.AA_I2C_NO_FLAGS, 
-                                                 data)
-                        print 'Raw Write:\t\t[' + \
-                              ' '.join([str(item) for \
-                                         item in write_data[2:]]) + \
-                              '] to address ' + write_data[1][:-1]
-                        # end if                        
-                    else:
-                        print '*** Invalid WRITE command, please refer '\
-                              'to the Read me for proper syntax ***'
-                    # end if
-                elif not pySCPI_config.is_raw_read(command):
-                    write_data = list(command)
-                    write_data = [ord(item) for item in write_data]
-                    write_data.append(0x0a)
-                    data = array('B', write_data)  
-                    # Write the data to the slave device
-                    aardvark_py.aa_i2c_write(Aardvark_in_use, dec_addr, 
-                                             aardvark_py.AA_I2C_NO_FLAGS, 
-                                             data)
-                    if 'TEL?' in command:
-                        print 'Read:\t\t' + command
-                    else:
-                        print 'Write:\t\t' + command
-                    # end if
-
+                    # it is a raw write command to send that
+                    send_raw_command(command, AArdvark_in_use)
+                    
+                elif pySCPI_config.is_raw_read(command):
+                    # it is a rew read command so read the data
+                    read_raw_command(command, AArdvark_in_use)
+                    
                 else:
-                    # is a raw read command
-                    if pySCPI_config.is_valid_raw(command):
-                        data_list = command.split(' ')
-                        data_len = int(data_list[2][:-1])
-                        raw_addr = int(data_list[1][:-1],16)
-                        
-                        data = array('B', [1]*data_len)
-                        read_data = aardvark_py.aa_i2c_read(Aardvark_in_use,
-                                                            raw_addr, 
-                                                            aardvark_py.AA_I2C_NO_FLAGS,
-                                                            data)
-                        
-                        print 'Raw Read:\t\t[' + \
-                              ' '.join(['%02X' % x for \
-                                        x in list(read_data[1])]) + \
-                              '] from address ' + data_list[1][:-1]
-                    else:
-                        print '*** Invalid READ command, please refer '\
-                              'to the Read me for proper syntax ***'
-                    # end if    
+                    # it is a normal command
+                    send_scpi_command(command, Aardvark_in_use, dec_addr)
                 # end if
             # end if
-        # end if
-        
-        if 'TEL?' in command:
-            # an I2C read has been requested
-            # if the Aardvark is free read from it
-            if Aardvark_free:
+            
+            if 'TEL?' in command:
+                # an I2C read has been requested
+                
+                # delay before reading the data
                 if command.endswith('ascii'):
                     # sleep a different amount if ascii was requested
                     aardvark_py.aa_sleep_ms(Ascii_delay)
+                    
                 else:
                     aardvark_py.aa_sleep_ms(Delay)
                 # end if
                 
-                # read from the slave device
+                # define array to read data into
                 data = array('B', [1]*pySCPI_formatting.read_length(command, gui)) 
+                
+                # read from the slave device
                 read_data = aardvark_py.aa_i2c_read(Aardvark_in_use, 
                                                     dec_addr, 
                                                     aardvark_py.AA_I2C_NO_FLAGS, 
@@ -506,213 +325,124 @@ def write_aardvark(commands, addr, Delay, Ascii_delay, gui):
                 # print the recieved data
                 pySCPI_formatting.print_read(command, list(read_data[1]), 
                                              gui)
+                # end if
             # end if
-        # end if
-        print ''
-        aardvark_py.aa_sleep_ms(Delay)
+            
+            # print an empty line
+            print ''
+            
+            # intermessage delay
+            aardvark_py.aa_sleep_ms(Delay)
+            
+            if gui.terminator.kill_event.isSet():
+                # this thread has been asked to terminate
+                break
+            # end
+        # end for
         
-        if gui.terminator.kill_event.isSet():
-            # this thread has been asked to terminate
-            break
-        # end
-    # end while
-    
-    if Aardvark_free:
         # close the AArdvark device
-        aardvark_py.aa_close(Aardvark_port)
+        aardvark_py.aa_close(Aardvark_in_use)
         print 'Aardvark communications finished'
+    
+    else:
+        return 0
     # end if
 # end def
 
      
-def log_aardvark(commands, addr, Delay, Ascii_delay, 
-                 logging_p, filename, gui):
+def log_aardvark(directives, filename, gui):
     """
     Write to the slave device using the Aardvark and print to 
     the gui and save the data to a csv log file.
     
-    @param[in]  commands:    List of commands to be sent (list of strings).
-    @param[in]  dec_addr:    I2C address of the slave device (int).
-    @param[in]  Delay:       Millisecond delay to wait between 
-                             transmissions (int).
-    @param[in]  Ascii_delay: Millisecond delay to wait before reading 
-                             an 'ascii' request (int).
-    @param[in]  logging_p:   The period in seconds to use for the logging 
-                             loop (int).
+    @param[in]  directives:  Instructions to direct the sending of 
+                             data (pySCPI_config.write_directives)
     @param[in]  filename:    The absolute directory of the file to write 
                              log to (string).
     @param[in]  gui:         Instance of the gui that this function is 
                              called by (pySCPI_gui.main_gui).
     @return     int(0):      Failed to use Aardvark.
     """     
-    csv_line = ['Timestamp']
-    output_writer = None
-    csv_output = None
-    # create CSV Header
-    for command in commands:
-        if 'TEL?' in command:
-            # is a telemetry request
-            if pySCPI_config.has_preamble(command):
-                # can extract time data
-                csv_line.append(command + ': Time (s)')
-            # end if
-            print_format = gui.scpi_commands.SCPI_Data[command][1]
-            if ',' not in print_format:
-                # is only a single data item so append title
-                csv_line.append(command + ': Data')
-            else:
-                # is a list so create a column for every item in the list
-                for i in range(len(print_format.split(','))):
-                    csv_line.append(command + ': Data[' + str(i) + ']')
-                # end for
-            # end if
-        # end if
-    # end for
+    # unpack the write directives
+    addr = directives.addr
+    commands = directives.command_list
+    Delay = directives.delay_time
+    Ascii_delay = directives.ascii_time
+    logging_p = directives.logging_p
     
-    # write Header
-    filename_short = filename.split('/')[-1]
-    filename_dir = filename[:filename.rfind('/')]
-    if (filename_short not in os.listdir(filename_dir)) or \
-       pySCPI_config.file_is_free(filename): 
-        # write header to the log file
-        csv_output = open(filename, 'wb')
-        output_writer = csv.writer(csv_output, delimiter = '\t')
-        output_writer.writerow(csv_line) 
-    else:
-        print'*** Requested log file is in use by another program ***'
-        return 0
-    # end if
+    # set up the csv writing output
+    csv_output = open(filename, 'wb')
+    output_writer = csv.writer(csv_output, delimiter = '\t')
     
-    # Configure the Aardvark if present
-    AA_Devices = aardvark_py.aa_find_devices(1)
-    Aardvark_free = True
-    Aardvark_port = 8<<7
-    if (AA_Devices[0] < 1):
-        print '*** No Aardvark is present ***'
-        Aardvark_free = False
-        return 0
-    else:
-        Aardvark_port = AA_Devices[1][0]
-    # end
+    # create the header for the csv file
+    csv_line = create_csv_header(commands, gui)
     
-    # If there is an Aardvark there is it free?
-    if Aardvark_port >= 8<<7 and Aardvark_free:
-        print '*** Aardvark is being used, disconnect other '\
-              'application or Aardvark device ***'
-        aardvark_py.aa_close(Aardvark_port)
-        Aardvark_free = False
-        return 0
-    elif Aardvark_free:
-        # Aardvark is available so configure it
-        Aardvark_in_use = aardvark_py.aa_open(Aardvark_port)
-        aardvark_py.aa_configure(Aardvark_in_use, 
-                                 aardvark_py.AA_CONFIG_SPI_I2C)
-        aardvark_py.aa_i2c_pullup(Aardvark_in_use, 
-                                  aardvark_py.AA_I2C_PULLUP_BOTH)
-        aardvark_py.aa_i2c_bitrate(Aardvark_in_use, Bitrate)
-        aardvark_py.aa_i2c_free_bus(Aardvark_in_use)
-        aardvark_py.aa_sleep_ms(Delay)    
-        print "Starting Aardvark communications\n"
-    # end    
-
-    start_time = time.time()
+    # write the header
+    output_writer.writerow(csv_line)     
     
-    # loop until the thread is asked to exit
-    while not gui.terminator.kill_event.isSet():
-        csv_row = []
-        dec_addr = addr
-        first_timestamp = ''
+    # configure Aardvark if available
+    Aardvark_in_use = configure_aardvark()
+    
+    # Check to see if an Aardvark was actually found
+    if Aardvark_in_use != None:    
         
-        # iterate through commands and add them to the aardvark file
-        for command in commands:
-            # See if the Aardvark is free
-            if Aardvark_free:
+        # start the loop timer
+        start_time = time.time()
+        
+        # loop until the thread is asked to exit
+        while not gui.terminator.kill_event.isSet():
+            
+            # define variables for the row
+            csv_row = []
+            dec_addr = addr
+            first_timestamp = ''
+            
+            # iterate through commands and add them to the aardvark file
+            # commands that start with # are deemed comments
+            for command in [c for c in commands if not c.startswith('#')]:
                 # determine if the command is a configuration command
                 if pySCPI_config.is_config(command):
                     # configure the system based on the config command
                     dec_addr = update_aardvark(command, dec_addr, 
                                                Aardvark_in_use)
+                    
                 else:
+                    # Prepare the data for transmission
                     if pySCPI_config.is_raw_write(command):
-                        if pySCPI_config.is_valid_raw(command):
-                            write_data = command[:-1].split(' ')
-                            raw_addr = int(write_data[1][2:-1],16)
-                            int_write_data = [int(item,16) for \
-                                              item in write_data[2:]]
-                            int_write_data.append(0x0a)
-                            data = array('B', int_write_data)  
-                            # Write the data to the slave device
-                            aardvark_py.aa_i2c_write(Aardvark_in_use, 
-                                                     raw_addr, 
-                                                     aardvark_py.AA_I2C_NO_FLAGS, 
-                                                     data)
-                            print 'Raw Write:\t\t[' + \
-                                  ', '.join([str(item) for \
-                                             item in write_data[2:]]) + \
-                                  '] to address ' + write_data[1][:-1]
-                            # end if                        
-                        else:
-                            print '*** Invalid WRITE command, please refer'\
-                                  ' to the Read me for proper syntax ***'
-                        # end if  
+                        # it is a raw write command to send that
+                        send_raw_command(command, AArdvark_in_use)
                         
-                    elif not pySCPI_config.is_raw_read(command):
-                        # Prepare the data for transmission
-                        write_data = list(command)
-                        write_data = [ord(item) for item in write_data]
-                        write_data.append(0x0a)
-                        data = array('B', write_data)  
-                        # Write the data to the slave device
-                        aardvark_py.aa_i2c_write(Aardvark_in_use, 
-                                                 dec_addr, 
-                                                 aardvark_py.AA_I2C_NO_FLAGS,
-                                                 data)
-                        if 'TEL?' in commands:
-                            print 'Read:\t\t' + command
-                        else:
-                            print 'Write:\t\t' + command
-                        # end if
+                    elif pySCPI_config.is_raw_read(command):
+                        # it is a rew read command so read the data and 
+                        # add it to the csv row
+                        csv_row.append(read_raw_command(command, 
+                                                        AArdvark_in_use,
+                                                        logging = True))
                         
                     else:
-                        # is a raw read command
-                        if pySCPI_config.is_valid_raw(command):
-                            data_list = command.split(' ')
-                            data_len = int(data_list[2][:-1])
-                            raw_addr = int(data_list[1][2:-1],16)
-                            
-                            data = array('B', [1]*data_len)
-                            read_data = aardvark_py.aa_i2c_read(Aardvark_in_use, 
-                                                                raw_addr, 
-                                                                aardvark_py.AA_I2C_NO_FLAGS, 
-                                                                data)
-                            
-                            print 'Raw Read:\t\t[' + \
-                                  ', '.join(['0x%02x' % x for \
-                                             x in list(read_data[1])]) + \
-                                  '] from address ' + data_list[1][:-1]
-                            
-                            pySCPI_formatting.log_read(command, 
-                                                       list(read_data[1]), 
-                                                       csv_row)
-                        else:
-                            print '*** Invalid READ command, please refer'\
-                                  'to the Read me for proper syntax ***'
-                        # end if    
+                        # it is a normal command
+                        send_scpi_command(command, Aardvark_in_use, 
+                                          dec_addr)
                     # end if
                 # end if
-            # end if
-            
-            if 'TEL?' in command:
-                # if the Aardvark is free read from it
-                if Aardvark_free:
+                
+                if 'TEL?' in command:
+                    # the command is telemetry so log that
+                    
+                    # is it an ascii command
                     if command.endswith('ascii'):
+                        # perform as ascii dealy
                         aardvark_py.aa_sleep_ms(Ascii_delay)
+                        
                     else:
+                        # perform a regular intermessage delay
                         aardvark_py.aa_sleep_ms(Delay)
                     # end if
                     
-                    # read from the slave device
+                    # define array to read data into
                     data = array('B', [1]*pySCPI_formatting.read_length(command, gui)) 
+                    
+                    # read from the slave device
                     read_data = aardvark_py.aa_i2c_read(Aardvark_in_use, 
                                                         dec_addr, 
                                                         aardvark_py.AA_I2C_NO_FLAGS, 
@@ -726,59 +456,366 @@ def log_aardvark(commands, addr, Delay, Ascii_delay,
                     # log data
                     pySCPI_formatting.log_read(command, list(read_data[1]),
                                                csv_row, gui)
-                    # write to log file              
                 # end if
+                
+                # print a blank line
+                print ''
+                
+                # intermessage delay
+                aardvark_py.aa_sleep_ms(Delay)
+                
+                # check to see if logging needs to stop
+                if gui.terminator.kill_event.isSet():
+                    # End if a stop has been issued
+                    break            
+                # end if
+            # end while
+            
+            # get the earliest timestamp from the row
+            first_timestamp = csv_row[0]
+            
+            # check to see if it is actually a timestamp
+            if type(first_timestamp) == float:
+                # it is a timestamp so convert it to a byte array of 
+                # the  elapsed time in hundredths of a second
+                timestamp_list = [ord(x) for x in '[1:' + 
+                                  str(int(first_timestamp*100)) + ']']
+                
+                # convert the byte list to an ascii time
+                timestamp_string = pySCPI_formatting.get_ascii_time(timestamp_list)
+                
+                # insert this timestamp at the beginning of the row
+                csv_row.insert(0,timestamp_string)
+                
+            else:
+                # the first entry is not a timestamp so leave it blank
+                csv_row.insert(0,'-')
             # end if
-            print ''
-            aardvark_py.aa_sleep_ms(Delay)
             
-            if gui.terminator.kill_event.isSet():
-                # End if a stop has been issued
-                break            
+            # write the row to the log file
+            output_writer.writerow(csv_row)         
+            
+            # pace the loop to the correct logging period
+            while (time.time() - start_time) < logging_p:
+                # sleep to prevent resource hogging
+                time.sleep(0.1)
+                
+                # check to see if logging should end
+                if gui.terminator.kill_event.isSet():
+                    # it should so exit
+                    break
             # end if
+            # end while
             
-        # end while
-        
-        first_timestamp = csv_row[0]
-        if type(first_timestamp) == float:
-            timestamp_list = [ord(x) for x in '[1:' + 
-                              str(int(first_timestamp*100)) + ']']
-            timestamp_string = pySCPI_formatting.get_ascii_time(timestamp_list)
-            csv_row.insert(0,timestamp_string)
-        else:
-            csv_row.insert(0,'-')
+            start_time = time.time()
             
-        
-        # write to log file
-        output_writer.writerow(csv_row)         
-        
-        while (time.time() - start_time) < logging_p:
-            # delay to maintain the logging period
-            time.sleep(0.1)
-            if gui.terminator.kill_event.isSet():
-                break
-        # end if
+            # check to see if we can clear the gui for the next period
+            if not gui.terminator.root_destroyed:        
+                # clear the output display on the GUI
+                gui.output_clear()
+            # end if
         # end while
-        
-        start_time = time.time()
-        
-        
-        if not gui.terminator.root_destroyed:        
-            # clear the output display on the GUI
-            gui.output_text.config(state = 'normal')
-            gui.output_text.delete('1.0', 'end')
-            gui.output_text.config(state='disabled')
-        # end if
-        
-    # end while
     
-    # close the csv file
-    csv_output.close()   
-
-    if Aardvark_free:
+        # close the csv file
+        csv_output.close()   
+        
         # close the aardvark
-        aardvark_py.aa_close(Aardvark_port)
-        print 'Aardvark communications finished'
+        aardvark_py.aa_close(Aardvark_in_use)
+        print 'Aardvark logging finished'
+    
+    else: 
+        # no aardvark connection was established
+        return 0
     # end if
 # end def
 
+
+#
+# ----------------
+# Private Functions
+
+
+def query_delay_command(command):
+    """
+    Function to investigate a delay command, and if it is deemed valid
+    then return the delay
+    
+    @param[in] command:          The command to be tested and executed
+                                 (string).
+    @return    (int)             The delay to be executed in miliseconds
+                                 0 if the command is invalid
+    """  
+    
+    
+    # strip out the number
+    delay_list = command.split(' ')
+    delay_number = delay_list[1][0:-1]
+    
+    # verify that it is a number and that the beginning of 
+    # the command was correct
+    if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
+        # it is correct so retunr the delay period
+        print 'Implementing additional ' + delay_number + 'ms delay.'
+        delay = int(delay_number)
+    else:
+        # the delay is not valid
+        print '*** The requested DELAY command is not valid. '\
+              'Use <DELAY x>***'
+        delay = 0
+    # end if
+    
+    return delay
+# end def
+
+def configure_aardvark():
+    """ 
+    Function to configure the aardvark for pySCPI operation if there is one
+    available.
+    
+    @return  (aardvark_py.aardvark)   The handle of the aardvark to be used
+                                      'None' if there is not one available
+    """
+    # define the handle to return
+    Aardvark_in_use = None
+    
+    # find all connected aardvarks
+    AA_Devices = aardvark_py.aa_find_devices(1)
+    
+    # define a port mask
+    Aardvark_port = 8<<7
+    
+    # assume that an aardvark can be found until proved otherwise
+    Aardvark_free = True
+    
+    # Check if there is an Aardvark present
+    if (AA_Devices[0] < 1):
+        # there is no aardvark to be found
+        print '*** No Aardvark is present ***'
+        Aardvark_free = False
+        
+    else:
+        # there is an aardvark connected to select the first one if there
+        # are many
+        Aardvark_port = AA_Devices[1][0]
+    # end if
+    
+    
+    # If there is an Aardvark there is it free?
+    if Aardvark_port >= 8<<7 and Aardvark_free:
+        # the aardvark is not free
+        print '*** Aardvark is being used, '\
+              'disconnect other application or Aardvark device ***'
+        # close the aardvark
+        aardvark_py.aa_close(Aardvark_port)
+        Aardvark_free = False
+        
+    elif Aardvark_free:
+        # Aardvark is available so configure it
+        
+        # open the connection with the aardvark
+        Aardvark_in_use = aardvark_py.aa_open(Aardvark_port)
+        
+        # set it up in teh mode we need for pumpkin modules
+        aardvark_py.aa_configure(Aardvark_in_use, 
+                                 aardvark_py.AA_CONFIG_SPI_I2C)
+        
+        # default to both pullups on
+        aardvark_py.aa_i2c_pullup(Aardvark_in_use, 
+                                  aardvark_py.AA_I2C_PULLUP_BOTH)
+        
+        # set the bit rate to be the default
+        aardvark_py.aa_i2c_bitrate(Aardvark_in_use, Bitrate)
+        
+        # free the bus
+        aardvark_py.aa_i2c_free_bus(Aardvark_in_use)
+        
+        # delay to allow the config to be registered
+        aardvark_py.aa_sleep_ms(200)    
+        
+        print "Starting Aardvark communications\n"
+    # end if    
+    
+    return Aardvark_in_use
+# end def
+
+
+def send_raw_command(command, Aardvark_in_use):
+    """
+    Function to send a <RAW> command to a slave device.
+    
+    @param[in]    command:         The command to send (string).
+    @param[in]    Aardvark_in_use: The Aaardvark to use to send the command
+                                   (aardvark_py.aardvark)
+    """
+    
+    # determine if it is a valid raw command
+    if pySCPI_config.is_valid_raw(command):
+        # it is so extract the data to write
+        write_data = command[:-1].split(' ')
+        
+        # extract the address to write to
+        raw_addr = int(write_data[1][:-1],16)
+        
+        # convert all of the data specified in the string to integers
+        int_write_data = [int(item,16) for \
+                          item in write_data[2:]]
+        
+        # add the terminator
+        int_write_data.append(0x0a)
+        
+        # convert the data to an array to be compatible with the aardvark
+        data = array('B', int_write_data)  
+        
+        # Write the data to the slave device
+        aardvark_py.aa_i2c_write(Aardvark_in_use, raw_addr,
+                                 aardvark_py.AA_I2C_NO_FLAGS, 
+                                 data)
+        # write output
+        print 'Raw Write:\t\t[' + \
+              ' '.join([str(item) for item in write_data[2:]]) + \
+              '] to address ' + write_data[1][:-1]
+        # end if                        
+    else:
+        # it is not a valid raw command
+        print '*** Invalid WRITE command, please refer '\
+              'to the Read me for proper syntax ***'
+    # end if   
+# end def
+
+def read_raw_command(command, AArdvark_in_use, logging = False):
+    """
+    Function to read a <RAW> command from a slave device.
+    
+    @param[in]    command:         The command with the read information
+                                   (string).
+    @param[in]    Aardvark_in_use: The Aaardvark to use to read the data
+                                   (aardvark_py.aardvark).
+    @param[in]    logging:         Is the data read going to be logged. 
+                                   If so, return the data (bool).
+    @return       (string)         The data to be logged if logging 
+                                   parameter is True.
+    """    
+    
+    # check if the command is valid
+    if pySCPI_config.is_valid_raw(command):
+        # it is valid so break the command into parts
+        data_list = command.split(' ')
+        
+        # extract the length to read
+        data_len = int(data_list[2][:-1])
+        
+        # extract the address to read from
+        raw_addr = int(data_list[1][:-1],16)
+        
+        # define the destination array
+        data = array('B', [1]*data_len)
+        
+        # read the data
+        read_data = aardvark_py.aa_i2c_read(Aardvark_in_use, raw_addr, 
+                                            aardvark_py.AA_I2C_NO_FLAGS,
+                                            data)
+        
+        # convert date to a string
+        data_string = ' '.join(['%02X' % x for x in list(read_data[1])])
+        
+        # print the result
+        print 'Raw Read:\t\t[' + data_string + '] from address ' + \
+              data_list[1][:-1]
+        
+        # if the data is to be logged retun the data in a string format
+        if logging:
+            return data_string
+        # end if
+        
+    else:
+        # it is not a valid command
+        print '*** Invalid READ command, please refer '\
+              'to the Read me for proper syntax ***'
+    # end if     
+# end def
+
+def send_scpi_command(command, Aardvark_in_use, dec_addr):
+    """
+    Function to send a SCPI command to the slave device
+    
+    @param[in]    command:         the command to send (string)
+    @param[in]    Aardvark_in_use: The Aaardvark to use to read the data
+                                   (aardvark_py.aardvark)
+    @param[in]    dec_addr:        the decimal address to write to (int)
+    """  
+    
+    # convert the data into a list of bytes and append the terminator
+    write_data = list(command)
+    write_data = [ord(item) for item in write_data]
+    write_data.append(0x0a)
+    
+    # convert to an array to be compiant with the aardvark
+    data = array('B', write_data)  
+    
+    
+    # Write the data to the slave device
+    aardvark_py.aa_i2c_write(Aardvark_in_use, dec_addr, 
+                             aardvark_py.AA_I2C_NO_FLAGS, data)
+    
+    # print what was done
+    if 'TEL?' in command:
+        # there is data to follow
+        print 'Read:\t\t' + command
+    else:
+        # there is not
+        print 'Write:\t\t' + command
+    # end if   
+# end def
+
+
+def create_csv_header(commands, gui):
+    """
+    Create a header line for the logging csv file by assiging a title to 
+    every command.
+    
+    @param[in]  commands:          the command to look at (list of strings)
+    @return     (list of strings)  The strings to form the csv header with.
+    """   
+    
+    # start the header
+    csv_line = ['Timestamp']
+    
+    # iterate through command list
+    for command in commands:
+        
+        # only log telemetry requests and raw data reads
+        if 'TEL?' in command:
+            # is a telemetry request
+            
+            # does the command have time information
+            if pySCPI_config.has_preamble(command):
+                # can extract time data
+                csv_line.append(command + ': Time (s)')
+            # end if
+            
+            # find the print format for that command
+            print_format = gui.scpi_commands.SCPI_Data[command][1]
+            
+            # check the print format
+            if ',' not in print_format:
+                # is only a single data item so append title
+                csv_line.append(command + ': Data')
+                
+            else:
+                # is a list so create a column for every item in the list
+                for i in range(len(print_format.split(','))):
+                    csv_line.append(command + ': Data[' + str(i) + ']')
+                # end for
+            # end if
+            
+        elif is_raw_read(command):
+            # the command is a raw_read command
+            if is_valid_raw(command):
+                # and it is a valid raw command
+                csv_line.append(command)
+            # end if
+        # end if
+    # end for  
+    
+    return csv_line
+# end def

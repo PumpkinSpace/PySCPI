@@ -35,8 +35,14 @@
 	
 	<!-- GPSRM Commands -->
 	
-	<!-- Vinti Propogator results -->
+	<!-- GPSRM Status -->
+	<command name="GPS:TEL? 0"   data_length='2'   data_format='hex' />	
+	<!-- NMEA String -->
+	<command name="GPS:TEL? 1"   data_length='128' data_format='ascii' />	
+	<!-- Propagator results -->
 	<command name="GPS:TEL? 2"   data_length='56'  data_format='double, double, double, double, double, double, double' />	
+	<!-- OEM615 Power -->
+	<command name="GPS:TEL? 3"   data_length='32'  data_format='double, double, double, double' />		
 	
 	
 	<!-- PIM Commands -->

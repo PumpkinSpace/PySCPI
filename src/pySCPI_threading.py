@@ -15,7 +15,7 @@ Module to handle the multi-threading aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -24,8 +24,6 @@ __version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 import pySCPI_aardvark
 import threading
-from functools import partial
-import time
 
 
 # ----------------
@@ -36,7 +34,11 @@ class terminator_event:
     Class to control the termination of threads
     """
     def __init__(self):
+        
+        # threading event to manage thread closure
         self.kill_event = threading.Event()
+        
+        # boolean to indicate if the gui itself has been closed
         self.root_destroyed = False
     # end def
 
@@ -45,6 +47,7 @@ class terminator_event:
         """
         Kill all threads, intended for use with the logging thread.
         """      
+        # set the thread termination event
         self.kill_event.set()
     # end def
 
@@ -53,35 +56,33 @@ class terminator_event:
         """
         Kill all threads and close the program.
         """      
+        # set the thread termination event
         self.kill_event.set()
+        
+        # indicate that the gui is being closed
         self.root_destroyed = True
+        
+        # close the gui
         gui.root.destroy()
     # end def
-# end def
+# end class
 
 
 # ----------------
 # Public Functions
 
-def I2C_thread(command_list, addr_num, delay_time, 
-               ascii_time, gui):
+def I2C_thread(write_directives, gui):
     """
     Wrapper for the I2C writing thread to control the startup and 
     shut down of the thread.
     
-    @param[in]  command_list: List of commands to be sent 
-                              (list of strings).
-    @param[in]  addr_num:     I2C address of the slave device (int).
-    @param[in]  delay_time:   Millisecond delay to wait between 
-                              transmissions (int).
-    @param[in]  ascii_time:   Millisecond delay to wait before reading an 
-                              'ascii' request (int).
-    @param[in]  gui:          Instance of the gui that this thread is 
-                              started by (pySCPI_gui.main_gui).
+    @param[in]  write_directives: Instructions to direct the sending of 
+                                  data (pySCPI_config.write_directives)
+    @param[in]  gui:              Instance of the gui that this thread is 
+                                  started by (pySCPI_gui.main_gui).
     """      
     # write via the Aardvark
-    pySCPI_aardvark.write_aardvark(command_list, addr_num, delay_time, 
-                                   ascii_time, gui)
+    pySCPI_aardvark.write_aardvark(write_directives, gui)
     # clear the thread termination flag
     gui.terminator.kill_event.clear()
     
@@ -92,40 +93,34 @@ def I2C_thread(command_list, addr_num, delay_time,
 # end def
 
 
-def I2C_log_thread(command_list, addr_num, delay_time, 
-                   ascii_time, logging_p, filename, gui):
+def I2C_log_thread(write_directives, filename, gui):
     """
     Wrapper for the logging thread to control the startup and shut down of 
     the thread.
     
-    @param[in]  command_list: List of commands to be sent 
-                              (list of strings).
-    @param[in]  addr_num:     I2C address of the slave device (int).
-    @param[in]  delay_time:   Millisecond delay to wait between 
-                              transmissions (int).
-    @param[in]  ascii_time:   Millisecond delay to wait before reading 
-                              an 'ascii' request (int).
-    @param[in]  logging_p:    Period of the logging task in seconds (int)
-    @param[in]  filename:     absolute directory of the file to log to 
-                              (string).
-    @param[in]  gui:          Instance of the gui that this thread is 
-                              started by (pySCPI_gui.main_gui).
+    @param[in]  write_directives: Instructions to direct the sending of 
+                                  data (pySCPI_config.write_directives)
+    @param[in]  filename:         absolute directory of the file to log to 
+                                  (string).
+    @param[in]  gui:              Instance of the gui that this thread is 
+                                  started by (pySCPI_gui.main_gui).
     """      
     # Change the role of the logging button so that it stops logging
-    gui.logging_button.config(state = 'normal', text = 'Stop Logging', 
-                              command = gui.terminator.kill_log)
+    gui.logging_button_state('stop')
+    
     # start logging
-    pySCPI_aardvark.log_aardvark(command_list, addr_num, delay_time, 
-                                 ascii_time, logging_p, filename, gui)
+    pySCPI_aardvark.log_aardvark(write_directives, filename, gui)
+    
     # clear the flag that stopped logging
     gui.terminator.kill_event.clear()
     
+    # determine if there is still a gui to update
     if not gui.terminator.root_destroyed:
-        # unlock all GUI buttons
+        # there is so unlock all GUI buttons
         gui.action_lock('Unlock')
+        
         # Reset the logging button back to it's initial state
-        gui.logging_button.config(text = 'Start Logging', 
-                                  command = partial(pySCPI_aardvark.start_logging, gui))
+        gui.logging_button_state('start')
     # end if
 # end def
 
