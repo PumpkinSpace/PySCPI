@@ -20,7 +20,7 @@
 	<!-- SCPI Command Errors -->
 	<command name="SUP:TEL? 2"   data_length='8'   data_format='long long' />
 	<!-- Voltstat -->
-	<command name="SUP:TEL? 3"   data_length='2'   data_format='uint' />
+	<command name="SUP:TEL? 3"   data_length='8'   data_format='uint, uint, uint, uint' />
 	<!-- SupMCU CPU Selftests -->	
 	<command name="SUP:TEL? 4"   data_length='22'  data_format='long, long, int, int, int' />	
 	<!-- Elapsed time in seconds -->
@@ -30,7 +30,7 @@
 	<!-- Idling hooks remaining -->
 	<command name="SUP:TEL? 7"   data_length='8'   data_format='long long' />	
 	<!-- MCU Load -->
-	<command name="SUP:TEL? 8"   data_length='8'   data_format='double' />	
+	<command name="SUP:TEL? 8"   data_length='4'   data_format='float' />	
 	
 	
 	<!-- GPSRM Commands -->
@@ -42,7 +42,7 @@
 	<!-- Propagator results -->
 	<command name="GPS:TEL? 2"   data_length='56'  data_format='double, double, double, double, double, double, double' />	
 	<!-- OEM615 Power -->
-	<command name="GPS:TEL? 3"   data_length='32'  data_format='double, double, double, double' />		
+	<command name="GPS:TEL? 3"   data_length='16'  data_format='float, float, float, float' />		
 	
 	
 	<!-- PIM Commands -->
@@ -54,9 +54,9 @@
 	<!-- Channel Current Limits -->
 	<command name="PIM:TEL? 2"   data_length='8'   data_format='uint, uint, uint, uint' />	
 	<!-- Channel Current Offsets -->
-	<command name="PIM:TEL? 3"   data_length='32'  data_format='double, double, double, double' />	
+	<command name="PIM:TEL? 3"   data_length='16'  data_format='float, float, float, float' />	
 	<!-- Channel Current Scaling Factors -->
-	<command name="PIM:TEL? 4"   data_length='32'  data_format='double, double, double, double' />	
+	<command name="PIM:TEL? 4"   data_length='16'  data_format='float, float, float, float' />	
 	<!-- PIM Status Register -->
 	<command name="PIM:TEL? 5"   data_length='1'   data_format='hex' />	
 	<!-- Channel Over Current Event log -->
@@ -72,9 +72,9 @@
 	<!-- Channel Current Limits -->
 	<command name="BSM:TEL? 2"   data_length='10'  data_format='uint, uint, uint, uint, uint' />	
 	<!-- Channel Current Offsets -->
-	<command name="BSM:TEL? 3"   data_length='40'  data_format='double, double, double, double, double' />	
+	<command name="BSM:TEL? 3"   data_length='20'  data_format='float, float, float, float, float' />	
 	<!-- Channel Current Scaling Factors -->
-	<command name="BSM:TEL? 4"   data_length='40'  data_format='double, double, double, double, double' />	
+	<command name="BSM:TEL? 4"   data_length='20'  data_format='float, float, float, float, float' />	
 	<!-- BSM Status Register -->
 	<command name="BSM:TEL? 5"   data_length='1'   data_format='hex' />	
 	<!-- Channel Over Current Event log -->
@@ -190,7 +190,7 @@
 	<!-- BIM Commands -->
 	
 	<!-- Temperature -->
-	<command name="BIM:TEL? 0"   data_length='48'   data_format='double, double, double, double, double, double' />
+	<command name="BIM:TEL? 0"   data_length='24'   data_format='float, float, float, float, float, float' />
 	<!-- UART Status -->
 	<command name="BIM:TEL? 1"   data_length='6'   data_format='int, int, int' />
 	<!-- IMU Data -->
