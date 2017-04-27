@@ -289,11 +289,11 @@ def write_aardvark(directives, gui):
                 # Prepare the data for transmission
                 if pySCPI_config.is_raw_write(command):
                     # it is a raw write command to send that
-                    send_raw_command(command, AArdvark_in_use)
+                    send_raw_command(command, Aardvark_in_use)
                     
                 elif pySCPI_config.is_raw_read(command):
                     # it is a rew read command so read the data
-                    read_raw_command(command, AArdvark_in_use)
+                    read_raw_command(command, Aardvark_in_use)
                     
                 else:
                     # it is a normal command
@@ -674,12 +674,8 @@ def send_raw_command(command, Aardvark_in_use):
         print 'Raw Write:\t\t[' + \
               ' '.join([str(item) for item in write_data[2:]]) + \
               '] to address ' + write_data[1][:-1]
-        # end if                        
-    else:
-        # it is not a valid raw command
-        print '*** Invalid WRITE command, please refer '\
-              'to the Read me for proper syntax ***'
-    # end if   
+        # end if   
+    # end if
 # end def
 
 def read_raw_command(command, AArdvark_in_use, logging = False):
@@ -726,11 +722,6 @@ def read_raw_command(command, AArdvark_in_use, logging = False):
         if logging:
             return data_string
         # end if
-        
-    else:
-        # it is not a valid command
-        print '*** Invalid READ command, please refer '\
-              'to the Read me for proper syntax ***'
     # end if     
 # end def
 
