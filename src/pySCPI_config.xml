@@ -23,6 +23,7 @@
 		<SIM address="0x50" />
 		<BIM address="0x52" />
 		<BSM address="0x58" />
+		<EPS address="0x54" />
 	</addresses>
 	
 	<!-- Default commands to be shown on startup -->
