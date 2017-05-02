@@ -198,6 +198,17 @@
 	<!-- TINI Status -->
 	<command name="BIM:TEL? 3"   data_length='1'   data_format='char' />
 	
+	<!-- EPS Commands -->
+	
+	<!-- Current -->
+	<command name="EPS:TEL? 0"   data_length='8'   data_format='uint, uint, uint, uint' />
+	
+	<!-- Current Offsets-->
+	<command name="EPS:TEL? 1"   data_length='16'   data_format='float, float, float, float' />
+	
+	<!-- Current Scale Factors-->
+	<command name="EPS:TEL? 2"   data_length='16'   data_format='float, float, float, float' />
+	
 </SCPI_Commands>
 	
 	
