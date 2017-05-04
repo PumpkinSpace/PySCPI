@@ -185,28 +185,6 @@
 	<command name="BM2:TEL? 107" data_length='2'   data_format='hex' />
 	<!-- Temperature Range -->
 	<command name="BM2:TEL? 114" data_length='2'   data_format='hex' />
-	<!-- External Temperature Sensor 1 -->
-	<command name="BM2:TEL? 48"  data_length='2'   data_format='uint' />
-	<!-- External Temperature Sensor 2 -->
-	<command name="BM2:TEL? 49"  data_length='2'   data_format='uint' />
-	<!-- External Temperature Sensor 3 -->
-	<command name="BM2:TEL? 50"  data_length='2'   data_format='uint' />
-	<!-- External Temperature Sensor 4 -->
-	<command name="BM2:TEL? 51"  data_length='2'   data_format='uint' />
-	<!-- BM2 Status Register -->
-	<command name="BM2:TEL? 52"  data_length='1'   data_format='hex' />
-	<!-- Last Permanent Failure time -->
-	<command name="BM2:TEL? 53"  data_length='15'  data_format='ascii' />
-	<!-- Last Permanent Failure Registers -->
-	<command name="BM2:TEL? 54"  data_length='4'   data_format='hex' />
-	<!-- Requested SBS Data -->
-	<command name="BM2:TEL? 55"  data_length='32'  data_format='hex' />
-	<!-- Requested Flash Data -->
-	<command name="BM2:TEL? 56"  data_length='32'  data_format='hex' />
-	<!-- Requested Manufacturer Access Data -->
-	<command name="BM2:TEL? 57"  data_length='2'   data_format='hex' />
-	<!-- Requested Function call Data -->
-	<command name="BM2:TEL? 58"  data_length='8'   data_format='hex' />
 	<!-- External Temperature Sensor 5 -->
 	<command name="BM2:TEL? 71"  data_length='2'   data_format='uint' />
 	<!-- External Temperature Sensor 6 -->
