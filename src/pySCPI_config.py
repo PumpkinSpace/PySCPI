@@ -186,8 +186,8 @@ class command_library:
                         self.SCPI_Data[keys[i]] = [key_bytes[i], 
                                                    formats[i]]
                         
-                    else:
-                        self.error_log.append('*** ' + key[i] + 
+                    elif (i == 0):
+                        self.error_log.append('*** ' + command + 
                                               ' already in library ***')    
                     # end if                                              
                 # end for
