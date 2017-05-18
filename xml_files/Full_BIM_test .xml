@@ -15,18 +15,18 @@
 <!--BIM:TEL? 0,length-->
 	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 30 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="6" radix="16" />
+	<i2c_read addr="0x52" count="7" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 0,data-->
 	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 30 2c 64 61 74 61 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="13" radix="16" />
+	<i2c_read addr="0x52" count="29" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 0,ascii-->
 	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 30 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="150" />
+	<sleep ms="600" />
 	<i2c_read addr="0x52" count="133" radix="16" />
 	<sleep ms="150" />
 
@@ -39,18 +39,18 @@
 <!--BIM:TEL? 1,length-->
 	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 31 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="6" radix="16" />
+	<i2c_read addr="0x52" count="7" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 1,data-->
 	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 31 2c 64 61 74 61 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="13" radix="16" />
+	<i2c_read addr="0x52" count="11" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 1,ascii-->
 	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 31 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="150" />
+	<sleep ms="600" />
 	<i2c_read addr="0x52" count="133" radix="16" />
 	<sleep ms="150" />
 
@@ -63,18 +63,18 @@
 <!--BIM:TEL? 2,length-->
 	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 32 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="6" radix="16" />
+	<i2c_read addr="0x52" count="7" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 2,data-->
 	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 32 2c 64 61 74 61 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="13" radix="16" />
+	<i2c_read addr="0x52" count="17" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 2,ascii-->
 	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 32 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="150" />
+	<sleep ms="600" />
 	<i2c_read addr="0x52" count="133" radix="16" />
 	<sleep ms="150" />
 
@@ -87,18 +87,66 @@
 <!--BIM:TEL? 3,length-->
 	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 33 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="6" radix="16" />
+	<i2c_read addr="0x52" count="7" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 3,data-->
 	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 33 2c 64 61 74 61 0a</i2c_write>
 	<sleep ms="150" />
-	<i2c_read addr="0x52" count="37" radix="16" />
+	<i2c_read addr="0x52" count="6" radix="16" />
 	<sleep ms="150" />
 
 <!--BIM:TEL? 3,ascii-->
 	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 33 2c 61 73 63 69 69 0a</i2c_write>
+	<sleep ms="600" />
+	<i2c_read addr="0x52" count="133" radix="16" />
 	<sleep ms="150" />
+
+<!--BIM:TEL? 4,name-->
+	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 34 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="37" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 4,length-->
+	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 34 2c 6c 65 6e 67 74 68 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="7" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 4,data-->
+	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 34 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="29" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 4,ascii-->
+	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 34 2c 61 73 63 69 69 0a</i2c_write>
+	<sleep ms="600" />
+	<i2c_read addr="0x52" count="133" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 5,name-->
+	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 35 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="37" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 5,length-->
+	<i2c_write addr="0x52" count="18" radix="16">42 49 4d 3a 54 45 4c 3f 20 35 2c 6c 65 6e 67 74 68 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="7" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 5,data-->
+	<i2c_write addr="0x52" count="16" radix="16">42 49 4d 3a 54 45 4c 3f 20 35 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="150" />
+	<i2c_read addr="0x52" count="29" radix="16" />
+	<sleep ms="150" />
+
+<!--BIM:TEL? 5,ascii-->
+	<i2c_write addr="0x52" count="17" radix="16">42 49 4d 3a 54 45 4c 3f 20 35 2c 61 73 63 69 69 0a</i2c_write>
+	<sleep ms="600" />
 	<i2c_read addr="0x52" count="133" radix="16" />
 	<sleep ms="150" />
 

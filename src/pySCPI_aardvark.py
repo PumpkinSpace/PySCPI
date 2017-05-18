@@ -272,6 +272,9 @@ def write_aardvark(directives, gui):
     Delay = directives.delay_time
     Ascii_delay = directives.ascii_time
     
+    # configure the progress bar
+    gui.progress.config(maximum = len([c for c in commands if not c.startswith('#')]))
+    
     # configure Aardvark if available
     Aardvark_in_use = configure_aardvark()
     
@@ -338,6 +341,9 @@ def write_aardvark(directives, gui):
                 # this thread has been asked to terminate
                 break
             # end
+            
+            # increment the progress bar
+            gui.progress.step()
         # end for
         
         # close the AArdvark device
@@ -369,6 +375,11 @@ def log_aardvark(directives, filename, gui):
     Delay = directives.delay_time
     Ascii_delay = directives.ascii_time
     logging_p = directives.logging_p
+    
+    # configure the progress bar to be the correct length
+    gui.progress.config(maximum = logging_p*10)
+    # increment the progress bar every 100 ms
+    gui.progress.start(100)
     
     # set up the csv writing output
     csv_output = open(filename, 'wb')
@@ -514,7 +525,10 @@ def log_aardvark(directives, filename, gui):
                 # clear the output display on the GUI
                 gui.output_clear()
             # end if
+            
+            gui.progress.config(value = 0)
         # end while
+        gui.progress.stop()
     
         # close the csv file
         csv_output.close()   

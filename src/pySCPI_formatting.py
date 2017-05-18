@@ -123,10 +123,11 @@ def print_read(command, raw_data, gui):
             print '*** Read failed, Write flag = 0, '\
                   'try increasing the messgage delay***'
             
-        elif all(byte == 1 for byte in raw_data):
+        elif (all(byte == 1 for byte in raw_data) or
+              all(byte == 0 for byte in raw_data)):
             # The device is not connected
             print '*** Read failed, ensure the slave device is '\
-                  'connected and powered ***'            
+                  'connected and powered ***'        
     
         # else the data is good or is in ascii formatting
         elif ',' not in print_format:
@@ -481,7 +482,11 @@ def get_ascii_time(data):
     string_data = ''.join([chr(x) for x in data])
     
     # extract the time
-    ticks = int(string_data[3:string_data.find(']')])
+    try:
+        ticks = int(string_data[3:string_data.find(']')])
+    except ValueError:
+        return '[]'
+    # end try
     
     # break it down into parts
     sec = ticks/100 # total seconds

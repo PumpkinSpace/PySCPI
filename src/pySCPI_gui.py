@@ -23,6 +23,7 @@ __version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
 # Imports
 import sys
 import Tkinter as TK
+import ttk
 import pySCPI_aardvark
 import pySCPI_config    
 import platform
@@ -519,10 +520,21 @@ class main_gui:
         self.button_frame.columnconfigure(2, weight = 1)
         
         ############################## Output Frame ####################################
+        
+        # Output Title Frame
+        self.output_title_frame = TK.Frame(self.Output_frame)
+        self.output_title_frame.config(bg = default_color)
+        self.output_title_frame.grid(row = 0, column = 0, columnspan = 2, sticky = 'nsew')
+        
+        
         # Output title
-        self.output_label = TK.Label(self.Output_frame, text = 'Output:')
+        self.output_label = TK.Label(self.output_title_frame, text = 'Output:')
         self.output_label.config(font=title_font, bg = default_color)
-        self.output_label.grid(row = 0, column = 0, columnspan = 2)
+        self.output_label.grid(row = 0, column = 0)
+        
+        # Output Progress Bar
+        self.progress = ttk.Progressbar(self.output_title_frame, orient = 'horizontal', mode = 'determinate', length = 200)
+        self.progress.grid(row = 0, column = 1)
         
         # output text box
         self.output_text = TK.Text(self.Output_frame, height = 20, width = 100, padx = 3, pady = 3)
@@ -559,6 +571,8 @@ class main_gui:
         # allow for resizing of the otuput frame column
         self.Output_frame.columnconfigure(0, weight = 2)
         self.root.columnconfigure(1, weight = 5, minsize = 200)
+        self.output_title_frame.columnconfigure(0, weight = 2)
+        self.output_title_frame.columnconfigure(1, weight = 2)
         
         # set window minsize to prevent objects crashing
         self.root.minsize(width = 900, height = 500)      
