@@ -56,7 +56,7 @@ def Write_XML(gui):
     
     
     # get the desired I2C address from the gui.
-    addr = hex(gui.get_i2c_address())
+    addr = "0x%X" % gui.get_i2c_address()
     
     
     # get the list of commands from the gui

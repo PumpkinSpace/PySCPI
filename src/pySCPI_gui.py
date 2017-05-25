@@ -297,7 +297,7 @@ class main_gui:
         # Load XML Button
         self.xml_button = TK.Button(self.but_frame, text = 'Load Commands', command = partial(pySCPI_XML.Load_XML,self), activebackground = 'green', width = 15)
         self.xml_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
-        self.xml_button.grid(row = 0, column=0, padx = 5)
+        self.xml_button.grid(row = 0, column=0, padx = 5)        
         
         # View README Button
         self.readme_button = TK.Button(self.but_frame, text = 'View ReadMe', command = partial(View_Readme,self), activebackground = 'green', width = 15)
