@@ -22,14 +22,12 @@ __version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 # -------
 # Imports
 
-import sys
 import aardvark_py
 import pySCPI_formatting
 import tkFileDialog as TKFD
 import time
 import pySCPI_config
 import pySCPI_threading
-import pySCPI_formatting
 import os
 import threading
 from array import array
@@ -421,13 +419,13 @@ def log_aardvark(directives, filename, gui):
                     # Prepare the data for transmission
                     if pySCPI_config.is_raw_write(command):
                         # it is a raw write command to send that
-                        send_raw_command(command, AArdvark_in_use)
+                        send_raw_command(command, Aardvark_in_use)
                         
                     elif pySCPI_config.is_raw_read(command):
                         # it is a rew read command so read the data and 
                         # add it to the csv row
                         csv_row.append(read_raw_command(command, 
-                                                        AArdvark_in_use,
+                                                        Aardvark_in_use,
                                                         logging = True))
                         
                     else:
@@ -692,7 +690,7 @@ def send_raw_command(command, Aardvark_in_use):
     # end if
 # end def
 
-def read_raw_command(command, AArdvark_in_use, logging = False):
+def read_raw_command(command, Aardvark_in_use, logging = False):
     """
     Function to read a <RAW> command from a slave device.
     

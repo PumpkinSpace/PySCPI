@@ -1,5 +1,4 @@
 from distutils.core import setup
-import py2exe
 import sys
 sys.path.insert(0, 'src/')
 import os

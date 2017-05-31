@@ -1,28 +1,91 @@
 import subprocess
 import os
 import time
+import sys
+sys.path.insert(0, 'src/')
 
-exit = False
-######################### Requires py2exe Installed ########################
+exit_flag = False
+######################## Requires pylint Installed ########################
+try:
+    # does pylint exist?
+    from pylint import epylint as lint
+except ImportError, e:
+    print '**** this build requires \'pylint\' ****'
+    exit_flag  = True
+# end try
+
+######################## Requires py2exe Installed ########################
 try:
     # Does py2exe exist?
+    # import to verify it's existance
     import py2exe
 except ImportError, e:
     print '**** this build requires \'py2exe\' ****'
-    exit = True
-# end
+    exit_flag = True
+# end try
 
+##################### Requires Inno Setup 5 Installed #####################
 if not os.path.isdir('C:/Program Files (x86)/Inno Setup 5'):
     # is Inno Setup 5 installed?
     print '**** this build requires \'Inno Setup 5\' ****'
-    exit = True
-# end
+    exit_flag = True
+# end try
 
-if exit:
+if exit_flag:
+    # one or more modules is not present
     sys.exit()
 # end
 
-############## Modify Installer builder file for current file system ###########
+###################### Run Static Analysis on pySCPI ######################
+
+error_buffer = []
+file_list = ['pySCPI.pyw', 'src/pySCPI_config.py', 'src/pySCPI_gui.py',
+             'src/pySCPI_aardvark.py', 'src/pySCPI_threading.py',
+             'src/pySCPI_XML.py', 'setup.py', 'install_builder.py']
+             
+for filename in file_list:
+    (pylint_stdout, pylint_stderr) = lint.py_run(filename, return_std=True)
+
+    error_buffer = error_buffer + pylint_stdout.buf.split('\n')
+# end for
+
+# check to see if any warnings were raised
+if any(' warning ' in item for item in error_buffer):
+    # warnings were raised so print all of the warnings
+    print '*** Warning raised: ***'
+    for item in error_buffer:
+        if ' warning ' in item:
+            print '\t' + item
+        # end if
+    # end for
+    
+else:
+    print '*** No warning rasied ***'
+# end if
+
+
+# check to see if any errors were found in the code
+if any(' error ' in item for item in error_buffer):
+    # errors were found so print all of the errors
+    print '\n*** Errors found: ***'
+    for item in error_buffer:
+        if ' error ' in item:
+            print '\t' + item
+        # end if
+    # end for
+    
+    # exit
+    print '\n*** Fix these errors and re-run install_builder.py ***'
+    sys.exit()
+    
+else:
+    print '*** No warning rasied ***\n'
+# end if
+
+
+    
+
+########### Modify Installer builder file for current file system #########
 
 # get current directory
 root = os.getcwd()
@@ -100,5 +163,5 @@ time.sleep(1)
 if installer_found and installer_dir_found and os.path.isfile(installer_dir + '/' + installer_name):
     stp = subprocess.Popen([installer_name], cwd = installer_dir, shell=True)
 else:
-    '*** No installer was found to open ***'
+    print '*** No installer was found to open ***'
 # end if

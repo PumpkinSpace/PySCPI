@@ -126,7 +126,7 @@ class command_library:
             # end if
             
         else:
-            self.error_log.append('*** Invalid ' + srt(target) + 
+            self.error_log.append('*** Invalid ' + str(target) + 
                                   ' in xml file ***')
         # end if  
     # end def        
@@ -295,7 +295,7 @@ def file_is_free(filename):
         try:
             os.rename(filename,filename)
             
-        except OSError as e:
+        except OSError:
             # renaming was not possible as another program is using it.
             file_free = False
         # end try
@@ -386,7 +386,7 @@ def is_raw_read(command):
                          False:   The command is not a raw read command.
     """    
     if command.startswith('<READ') and command.endswith('>') and \
-       is_vaild_raw(command):
+       is_valid_raw(command):
         return True
     else:      
         return False

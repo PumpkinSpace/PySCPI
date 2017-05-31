@@ -124,7 +124,6 @@ def Load_XML(gui):
     previous_line = ''    
     
     # define boolean flags
-    printed = False
     config_found = False
     first_bitrate = True
     ascii_last = False
@@ -297,7 +296,7 @@ def update_gui_defaults(GUI_defaults):
         tree = ET.parse(src_dir + '\\pySCPI_config.xml')
         root = tree.getroot()
         
-    except (IOError, ET.ParseError) as err:
+    except (IOError, ET.ParseError):
         # parsing failed for some reason
         config_import_error = True
         GUI_defaults.log_error('*** pySCPI_config.xml is'
@@ -396,7 +395,7 @@ def update_commands(SCPI_library):
         tree = ET.parse(src_dir + '\\SCPI_Commands.xml')
         root = tree.getroot()
         
-    except (IOError, ET.ParseError) as err:
+    except (IOError, ET.ParseError):
         # parsing failed for some reason
         config_import_error = True
         SCPI_library.log_error('*** SCPI_Commands.xml is'
@@ -486,15 +485,15 @@ def create_XML(directives, gui):
                          'gpio':    str(int(pySCPI_aardvark.GPIO)),
                          'pullups': str(int(pySCPI_aardvark.Pullups))}
     
-    config = ET.SubElement(aardvark, 'configure', config_attributes)
+    ET.SubElement(aardvark, 'configure', config_attributes)
     
     # Bitrate
     rate_attributes = {'khz': str(pySCPI_aardvark.Bitrate)}
     
-    rate = ET.SubElement(aardvark, 'i2c_bitrate', rate_attributes)
+    ET.SubElement(aardvark, 'i2c_bitrate', rate_attributes)
     
     # Start I2C
-    start = ET.SubElement(aardvark, 'i2c_free_bus')
+    ET.SubElement(aardvark, 'i2c_free_bus')
     
     # delay attributes
     delay_attributes = {'ms': str(Delay)}    
@@ -536,8 +535,8 @@ def create_XML(directives, gui):
                                    'count': raw_list[2],
                                    'radix': str(pySCPI_aardvark.radix)}     
                 
-                read = ET.SubElement(aardvark, 'i2c_read', 
-                                     read_attributes) 
+                ET.SubElement(aardvark, 'i2c_read', 
+                              read_attributes) 
             # end if
             
             # intermessage delay
@@ -584,7 +583,7 @@ def create_XML(directives, gui):
                                    'radix': str(pySCPI_aardvark.radix)}        
                     
                 # create the read element
-                read = ET.SubElement(aardvark, 'i2c_read', read_attributes)             
+                ET.SubElement(aardvark, 'i2c_read', read_attributes)             
             # end if
             
             # delay
@@ -696,8 +695,8 @@ def update_XML(command, address, XML):
     
     elif (command_list[0] == '<BITRATE') and command_arg.isdigit():
         # is a good bitrate so change the bitrate
-        rate_attributes = {'khz': speed_num}
-        rate = ET.SubElement(XML, 'i2c_bitrate', rate_attributes)
+        rate_attributes = {'khz': str(command_arg)}
+        ET.SubElement(XML, 'i2c_bitrate', rate_attributes)
         
         # sleep to allow the config to take effect
         ET.SubElement(XML, 'sleep', {'ms': '200'})                  
@@ -711,7 +710,7 @@ def update_XML(command, address, XML):
                                  'gpio':    str(int(pySCPI_aardvark.GPIO)),
                                  'pullups': '1'}
     
-            config = ET.SubElement(XML, 'configure', config_attributes)
+            ET.SubElement(XML, 'configure', config_attributes)
             
             # sleep to allow the config to take effect
             ET.SubElement(XML, 'sleep', {'ms': '200'})  
@@ -723,7 +722,7 @@ def update_XML(command, address, XML):
                                  'gpio':    str(int(pySCPI_aardvark.GPIO)),
                                  'pullups': '0'}
     
-            config = ET.SubElement(XML, 'configure', config_attributes)
+            ET.SubElement(XML, 'configure', config_attributes)
             
             # sleep to allow the config to take effect
             ET.SubElement(XML, 'sleep', {'ms': '200'})              

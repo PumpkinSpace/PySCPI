@@ -21,15 +21,12 @@ __version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
 #
 # -------
 # Imports
-import sys
+
 import Tkinter as TK
 import ttk
 import pySCPI_aardvark
 import pySCPI_config    
 import platform
-import threading
-import xml.etree.ElementTree as ET
-import os
 import pySCPI_XML
 from functools import partial
 from PIL import Image, ImageTk
@@ -273,7 +270,6 @@ class main_gui:
         self.aspect_ratio = float(self.input_image.size[1])/float(self.input_image.size[0])
         # resize to fit the window
         self.header_image = self.input_image.resize((root_width, int(root_width*self.aspect_ratio)), Image.ANTIALIAS)
-        image_copy = self.header_image.copy()
         
         # Header Image
         self.header_photo = ImageTk.PhotoImage(self.header_image)
@@ -628,13 +624,13 @@ class main_gui:
         Increment the GUI error counter
         """
         try:
-            self.current = int(self.errors.get())
+            current = int(self.errors.get())
         except ValueError:
-            self.current = 1
+            current = 1
         # end try
         self.errors.config(state = 'normal', disabledforeground = 'red')
         self.errors.delete(0,'end')
-        self.errors.insert(0, str(self.current + 1))     
+        self.errors.insert(0, str(current + 1))     
         self.errors.config(state = 'disabled')  
     # end        
     
@@ -730,7 +726,7 @@ class main_gui:
         # end if
     # end def
     
-    def update_filename(self, event = None, filename = ''):
+    def update_filename(self, filename = ''):
         """
         Function to change the loaded filename to display
         
@@ -832,7 +828,7 @@ class main_gui:
         # read the delay from the gui
         delay_text = self.delay.get()
         # establish the default delay
-        delay_time = self.defaults.default_delay;
+        delay_time = self.defaults.default_delay
         
         # verify if the delay is valid
         if delay_text.isdigit():
@@ -861,7 +857,7 @@ class main_gui:
         # read the ascii delay from the gui
         ascii_text = self.ascii.get()
         # establish the default delay
-        ascii_time = self.defaults.default_delay*4;
+        ascii_time = self.defaults.default_delay*4
         
         # verify that the delay is valid
         if ascii_text.isdigit():
@@ -904,7 +900,7 @@ class main_gui:
                   'reverting to device default ***'
             
             # restore the defalut delay for the selected module
-            self.addr_string = address_of[self.slave_var.get()]
+            addr_string = self.defaults.address_of[self.slave_var.get()]
             self.addr_var.set(addr_string)
             addr_num = int(addr_string,16)
         # end if
@@ -969,7 +965,7 @@ class main_gui:
                 
             elif command.startswith('<DELAY'):
                 # is is a delay command so add that delay
-                delay_command = query_delay_command(command)
+                delay_command = int(command.split(' ')[2][:-1])
                 loop_time += delay_command 
                 
             else:
@@ -979,7 +975,7 @@ class main_gui:
         # end for
         
         # convert the loop time into seconds and round up.
-        loop_time = (loop_time/1000)+1;
+        loop_time = (loop_time/1000)+1
         
         
         # extract the requested logging period from the gui
@@ -1049,10 +1045,11 @@ class GUI_Writer(object):
 # ----------------
 # Private Functions 
 
-"""
-Function to display the readme file in the GUI window.
-"""
+
 def View_Readme(gui):
+    """
+    Function to display the readme file in the GUI window.
+    """    
     # lock buttons
     gui.action_lock('Lock', gui.readme_button)
     # clear output
