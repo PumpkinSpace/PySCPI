@@ -25,7 +25,7 @@ __version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 # Imports
 
 import sys
-sys.path.insert(0, 'src/')
+sys.path.insert(1, 'src/')
 import pySCPI_config  
 import pySCPI_gui
 import pySCPI_XML

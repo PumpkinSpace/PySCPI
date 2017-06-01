@@ -52,10 +52,9 @@ Bitrate = 100
 
 def Write_I2C(gui):
     """
-    Function to command the I2C writing thread to start if all tests 
+    Function to command the I2C writing thread to start if all tests
     are passed.
-    
-    @param[in]  gui:          Instance of the gui that this function is 
+    @param[in]  gui:          Instance of the gui that this function is
                               called by (pySCPI_gui.main_gui).
     """    
     # Lock all buttons
@@ -213,7 +212,7 @@ def update_aardvark(command, address, Aardvark_in_use):
         speed_num = speed_list[1][0:-1] 
         if speed_num.isdigit() and (speed_list[0] == '<BITRATE'):
             # is a good bitrate
-            bitrate = aa_i2c_bitrate(Aardvark_in_use, int(speed_num))
+            bitrate = aardvark_py.aa_i2c_bitrate(Aardvark_in_use, int(speed_num))
             aardvark_py.aa_sleep_ms(200)             
             print 'Changed I2C bitrate to ' + str(bitrate) + 'kHz.'
         else:
@@ -811,9 +810,9 @@ def create_csv_header(commands, gui):
                 # end for
             # end if
             
-        elif is_raw_read(command):
+        elif pySCPI_config.is_raw_read(command):
             # the command is a raw_read command
-            if is_valid_raw(command):
+            if pySCPI_config.is_valid_raw(command):
                 # and it is a valid raw command
                 csv_line.append(command)
             # end if

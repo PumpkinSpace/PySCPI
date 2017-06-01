@@ -3,6 +3,7 @@ import sys
 sys.path.insert(0, 'src/')
 import os
 from glob import glob
+import py2exe # is needed!!!
 
 # get current working directory
 root = os.getcwd()
@@ -11,7 +12,9 @@ root = os.getcwd()
 sys.path.append("C:\\Program Files\\Microsoft Visual Studio 9.0\\VC\\redist\\x86\\Microsoft.VC90.CRT")
 
 # list of required .dll files
-dll_files = [('src', [root + '/src/aardvark.dll']),('Microsoft.VC90.CRT', glob(r'C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*'))]
+dll_files = [('src', [root + '/src/aardvark.dll']),
+             ('Microsoft.VC90.CRT', 
+              glob(r'C:\Program Files\Microsoft Visual Studio 9.0\VC\redist\x86\Microsoft.VC90.CRT\*.*'))]
 
 # find all .xml files in directory
 xml_files = []
@@ -20,7 +23,8 @@ xml_list = os.listdir(root + '/xml_files')
 for filename in xml_list:
     if 'example' in filename:
         # only include files that are labelled as examples
-        xml_files = xml_files + [('xml_files', [root + '/xml_files/' + filename])]
+        xml_files = xml_files + [('xml_files', 
+                                  [root + '/xml_files/' + filename])]
     # end
 # end
 
@@ -30,7 +34,8 @@ log_list = os.listdir(root + '/log_files')
 for filename in log_list:
     if 'example' in filename:
         # only include files that are labelled as examples
-        log_files = log_files + [('log_files', [root + '/log_files/' + filename])]
+        log_files = log_files + [('log_files', 
+                                  [root + '/log_files/' + filename])]
     # end
 # end
 
@@ -45,6 +50,8 @@ setup(windows=[{'script':'pySCPI.pyw', # Top level file to read in
                   ('src', [root + '/src/pySCPI README.txt']), # readme file
                   ('src', [root + '/src/pySCPI_config.xml']), # configuration file
                   ('src', [root + '/src/SCPI_Commands.xml'])], # SCPI Command Library
-      options = {'py2exe':{'includes': ['pySCPI_aardvark', 'pySCPI_config', 'pySCPI_formatting', 'aardvark_py', 'pySCPI_XML', 'pySCPI_gui'], # include files required by program
+      options = {'py2exe':{'includes': ['pySCPI_aardvark', 'pySCPI_config', 
+                                        'pySCPI_formatting', 'aardvark_py', 
+                                        'pySCPI_XML', 'pySCPI_gui'], # include files required by program
                            'dll_excludes': ['MSVCP90.dll']}} # TODO!!!!!! should not need this exclude
       )

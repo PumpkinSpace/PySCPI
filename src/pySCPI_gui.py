@@ -10,7 +10,7 @@
 #FITNESS FOR A PARTICULAR PURPOSE.
 ###########################################################################
 """
-@package pySCPI_cgui.py
+@package pySCPI_gui.py
 Module to handle the creation and management of the pySCPI GUI
 """
 
