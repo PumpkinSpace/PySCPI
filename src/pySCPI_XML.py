@@ -250,8 +250,6 @@ def Load_XML(gui):
             previous_line = line
         # end if
         
-         
-        
         # update the filename display window to show the filename loaded   
         gui.update_filename(filename = filename)
         
@@ -643,7 +641,7 @@ def beautify_xml(XML):
     @return           (string) The beautiful xml string
     """
     # convert XML file to modifiable string to beautify it
-    text_string = ET.tostring(XML, encoding='utf8', method='xml')
+    text_string = ET.tostring(XML, encoding='UTF-8', method='xml')
     
     # insert line breaks before end of file tag
     file_string = text_string.replace('</aardvark>', '\n\n</aardvark>')
@@ -656,7 +654,7 @@ def beautify_xml(XML):
     file_string = file_string.replace('><', '>\n\t<')
     
     # remove header
-    file_string = file_string.replace('<?xml version=\'1.0\' encoding=\'utf8\'?>\n', '')   
+    # file_string = file_string.replace('<?xml version=\'1.0\' encoding=\'utf8\'?>\n', '')   
     
     return file_string
 # end def

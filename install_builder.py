@@ -16,7 +16,7 @@ and installer for pySCPI.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -27,6 +27,8 @@ import subprocess
 import os
 import sys
 import imp
+import xml.etree.ElementTree as ET
+import shutil
 
 # append file directory to the PYTHONPATH
 sys.path.append('src/')
@@ -83,12 +85,28 @@ if not exit_flag:
     file_list = ['pySCPI.pyw', 'setup.py', 'install_builder.py', 
                  'src/pySCPI_config.py', 'src/pySCPI_gui.py',
                  'src/pySCPI_aardvark.py', 'src/pySCPI_threading.py',
-                 'src/pySCPI_XML.py']         
+                 'src/pySCPI_XML.py']   
+    
+    # xml files to verify the validity of
+    xml_list = ['src/SCPI_Commands.xml', 'src/pySCPI_config.xml']
+    
+    # list of .py file version numbers
+    version_list = []
 
     # iterate through the desired files            
     for filename in file_list:
         # perform static analysis on the file
         (lint_stdout, lint_stderr) = lint.py_run(filename, return_std=True)
+        
+        py_file = open(filename, 'r')
+        file_lines = py_file.readlines()
+        
+        # extract the version number for each file
+        for line in file_lines:
+            if line.startswith('__version__'):
+                version_list = version_list + [line.split('\'')[1]]
+            # end if
+        # end for
     
         # add all output to the buffer of errors
         error_buffer = error_buffer + lint_stdout.buf.split('\n')
@@ -110,6 +128,88 @@ if not exit_flag:
         print '\t' + print_name + '\tanalysis complete'
     # end for
     
+    # add all example .xml files to the xml_list
+    for filename in os.listdir(os.getcwd() + '/xml_files'):
+        if ((filename == 'aardvark_script.xml') or 
+            filename.endswith('example.xml')):
+            # add to the xml_list
+            xml_list = xml_list + ['xml_files/' + filename]
+        # end if
+    # end for
+    
+    # attempt to parse all of the xml files
+    for filename in xml_list:
+        # attempt to parse each xml file
+        try:
+            x = ET.parse(filename)
+            
+            # remove subdirectories from filename
+            if '/' in filename:
+                print_name = filename.split('/')[1]
+                
+            else:
+                print_name = filename
+            # end if
+        
+            # add extra tabs to short filenames
+            if len(print_name) < 16:
+                print_name = print_name + '\t'
+            # end if
+            
+            # print the progress
+            print '\t' + print_name + '\tanalysis complete'
+        
+        except ET.ParseError as e:
+            # remove subdirectories from filename
+            if '/' in filename:
+                print_name = filename.split('/')[1]
+                
+            else:
+                print_name = filename
+            # end if            
+            error_buffer = error_buffer + [print_name + ': Parse error - ' + str(e)]
+        # end try
+    # end for  
+    
+    # check if all version numbers are the same
+    if all(n == version_list[0] for n in version_list):
+        exe_version = version_list[0]
+    
+    else:
+        # convert the version numbers of each file into actual numbers
+        version_numbers = []
+        for version in version_list:
+            version_split = version.split('.')
+            version_number = 100000*int(version_split[0]) + \
+                1000*int(version_split[1]) + int(version_split[2])
+            version_numbers = version_numbers + [version_number]
+        # end for
+        
+        # find the indeces of all files that are behind in revs.
+        lagging_indices = [i for i, x in enumerate(version_numbers) 
+                           if x == min(version_numbers)]
+        
+        exe_version = version_list[lagging_indices[0]]
+        
+        lagging_files = [file_list[x] for x in lagging_indices]
+        
+        for filename in lagging_files:
+            # remove subdirectories from filename
+            if '/' in filename:
+                print_name = filename.split('/')[1]
+                
+            else:
+                print_name = filename
+            # end if   
+            
+            # log the version warning
+            version_warning = '; version warning - The version number in'+\
+                ' this file is behind the others'
+            
+            error_buffer = error_buffer + [' ' + print_name + version_warning]
+        # end for
+    # end if
+
     # check to see if any warnings were raised
     if any(' warning ' in item for item in error_buffer):
         # warnings were raised so print all of the warnings
@@ -173,16 +273,17 @@ if not exit_flag:
             # update it to this file system
             new_lines.append('SourceDir='+dist_dir + '\n')
             
+        elif line.startswith('OutputBaseFilename'):
+            # this detotes the name of the installer that will be created
+            installer_name = 'pySCPI v' + exe_version + ' setup'
+            installer_found = True
+            new_lines.append('OutputBaseFilename='+installer_name + '\n')
+            installer_name = installer_name + '.exe'
+            
         else:
             new_lines.append(line)
         # end if
-        
-        if line.startswith('OutputBaseFilename'):
-            # this detotes the name of the installer that will be created
-            installer_name = '' + line.split('=')[1].strip() + '.exe'
-            installer_found = True
-        # end if
-        
+                
         if line.startswith('OutputDir'):
             # this line specifies where the installer will be put
             installer_dir = dist_dir + '\\' + line.split('=')[1].strip()
@@ -201,7 +302,7 @@ if not exit_flag:
 
 ############################# Install Setup.py ############################
 if not exit_flag:
-    print "Installing setup.py"
+    print "\nInstalling setup.py"
     # install setup.py
     inst = subprocess.Popen(['python', 'setup.py', 'install'], 
                             cwd=os.getcwd(), stdout=subprocess.PIPE,
@@ -281,8 +382,12 @@ if not exit_flag:
 # end if
 
 ########################## Build the Installer ############################
-if not exit_flag:
+
+if not exit_flag:   
     print '\nCreating the installer for pySCPI\n'
+    
+    # remove the old installer
+    shutil.rmtree(installer_dir)     
     
     # full filename of the fuile that controls the installer generation
     install_file = os.getcwd().replace('\\', '/') +\
@@ -324,13 +429,15 @@ if not exit_flag:
 
 ########################## Run the Installer ############################
 if not exit_flag:
-    print '\nOpening the Installer'
+    print 'Opening the Installer'
     # attempt to run the installer
     
     if installer_found and installer_dir_found and os.path.isfile(installer_dir + '/' + installer_name):
+        
+        # run the installer
         stp = subprocess.Popen([installer_name], cwd = installer_dir, shell=True)
         
-        print 'Install building process completed successfully!'
+        print '\nInstall building process completed successfully!'
         
     else:
         print '\n*** No installer was found to open ***'
@@ -338,4 +445,4 @@ if not exit_flag:
 # end if
 
 # keep the console open
-input()s
+input()

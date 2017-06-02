@@ -726,16 +726,17 @@ class main_gui:
         # end if
     # end def
     
-    def update_filename(self, filename = ''):
+    def update_filename(self, event = None, filename = ''):
         """
         Function to change the loaded filename to display
         
         @param[in]  filename:   The filename to updte the gui to show
                                 (string).
         """     
+        
         self.file_window.config(state='normal')
         self.file_window.delete('1.0', 'end')
-        if filename != '':
+        if event == None:
             self.file_window.insert('insert', filename.split('/')[-1])
         # end
         self.file_window.config(state = 'disabled')

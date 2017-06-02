@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <aardvark>
 
 <!--Configuration (Need pullups, not sure why...)-->
@@ -16,8 +17,8 @@
 	<i2c_write addr="0x5C" count="11" radix="16">53 55 50 3a 4c 45 44 20 4f 4e 0a</i2c_write>
 	<sleep ms="20" />
 
-<!--BM2:FUN 6-->
-	<i2c_write addr="0x5C" count="10" radix="16">42 4d 32 3a 46 55 4e 20 36 0a</i2c_write>
+<!--BM2:HEATER ON-->
+	<i2c_write addr="0x5C" count="14" radix="16">42 4d 32 3a 48 45 41 54 45 52 20 4f 4e 0a</i2c_write>
 	<sleep ms="20" />
 
 <!--BM2:TEL? 8,name-->
@@ -29,7 +30,7 @@
 <!--BM2:TEL? 8,length-->
 	<i2c_write addr="0x5C" count="18" radix="16">42 4d 32 3a 54 45 4c 3f 20 38 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="20" />
-	<i2c_read addr="0x5C" count="6" radix="16" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
 	<sleep ms="20" />
 
 <!--BM2:TEL? 8,data-->
@@ -44,11 +45,12 @@
 	<i2c_read addr="0x5C" count="133" radix="16" />
 	<sleep ms="20" />
 
-<!--BM2:FUN 7-->
-	<i2c_write addr="0x5C" count="10" radix="16">42 4d 32 3a 46 55 4e 20 37 0a</i2c_write>
+<!--BM2: HEATER OFF-->
+	<i2c_write addr="0x5C" count="16" radix="16">42 4d 32 3a 20 48 45 41 54 45 52 20 4f 46 46 0a</i2c_write>
 	<sleep ms="20" />
 
 <!--SUP:LED FLASH-->
 	<i2c_write addr="0x5C" count="14" radix="16">53 55 50 3a 4c 45 44 20 46 4c 41 53 48 0a</i2c_write>
+	<sleep ms="20" />
 
 </aardvark>

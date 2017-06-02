@@ -1,9 +1,36 @@
+#!/usr/bin/env python
+###########################################################################
+#(C) Copyright Pumpkin, Inc. All Rights Reserved.
+#
+#This file may be distributed under the terms of the License
+#Agreement provided with this software.
+#
+#THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
+#INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
+#FITNESS FOR A PARTICULAR PURPOSE.
+###########################################################################
+"""
+@package setup.py
+Script to control the generation of the .exe for pySCPI
+"""
+
+__author__ = 'David Wright (david@pumpkininc.com)'
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
+
+
+#
+# -------
+# Imports
 from distutils.core import setup
 import sys
 sys.path.insert(0, 'src/')
 import os
 from glob import glob
 import py2exe # is needed!!!
+
+# dummy usage to suppress py2exe import warning
+not_used = py2exe.__doc__
+
 
 # get current working directory
 root = os.getcwd()

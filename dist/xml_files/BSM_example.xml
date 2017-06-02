@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <aardvark>
 
 <!--Configuration (Need pullups, not sure why...)-->
@@ -25,7 +26,7 @@
 <!--BSM:TEL? 1,length-->
 	<i2c_write addr="0x58" count="18" radix="16">42 53 4d 3a 54 45 4c 3f 20 31 2c 6c 65 6e 67 74 68 0a</i2c_write>
 	<sleep ms="20" />
-	<i2c_read addr="0x58" count="6" radix="16" />
+	<i2c_read addr="0x58" count="7" radix="16" />
 	<sleep ms="20" />
 
 <!--BSM:TEL? 1,data-->
@@ -36,7 +37,8 @@
 
 <!--BSM:TEL? 1,ascii-->
 	<i2c_write addr="0x58" count="17" radix="16">42 53 4d 3a 54 45 4c 3f 20 31 2c 61 73 63 69 69 0a</i2c_write>
-	<sleep ms="100" />
+	<sleep ms="80" />
 	<i2c_read addr="0x58" count="133" radix="16" />
+	<sleep ms="20" />
 
 </aardvark>

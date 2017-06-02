@@ -20,7 +20,7 @@ DisableProgramGroupPage=yes
 DisableDirPage=no
 AlwaysShowDirOnReadyPage=yes
 ; Installer filename
-OutputBaseFilename=pySCPI setup
+OutputBaseFilename=pySCPI v0.3.0 setup
 ; Installer location
 OutputDir=Installer
 ; Compression specifiers
