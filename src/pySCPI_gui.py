@@ -1027,10 +1027,10 @@ class GUI_Writer(object):
     def write(self, string):
         self.output_text.config(state='normal')
         if string.startswith('*'):
-            self.output_text.insert('insert', string, 'error')
+            self.output_text.insert('end', string, 'error')
             self.add_error()
         else:
-            self.output_text.insert('insert', string)
+            self.output_text.insert('end', string)
         # end
         self.output_text.config(state='disabled')
     # end def
