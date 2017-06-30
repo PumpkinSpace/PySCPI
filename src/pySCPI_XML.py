@@ -552,12 +552,14 @@ def create_XML(directives, gui):
             # create write element if it is not a comment
             if not command.startswith('#'):
                 scpi = ET.SubElement(aardvark,'i2c_write',write_attributes)
+                
+                # add hexidecimal null terminated command as 
+                # text to the write element
+                scpi.text = ' '.join("{:02x}".format(ord(c)) for \
+                                     c in command) + ' 0a'                  
             # end if
             
-            # add hexidecimal null terminated command as 
-            # text to the write element
-            scpi.text = ' '.join("{:02x}".format(ord(c)) for \
-                                 c in command) + ' 0a'        
+                  
             
             if ('TEL?' in command) and not command.startswith('#'):
                 # Read command was issued so a read needs to be performed

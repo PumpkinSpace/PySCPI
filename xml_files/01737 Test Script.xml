@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<aardvark>
+
+<!--Configuration (Need pullups, not sure why...)-->
+	<configure gpio="0" i2c="1" pullups="1" spi="1" />
+	<i2c_bitrate khz="100" />
+	<i2c_free_bus />
+	<sleep ms="500" />
+
+<!--# Set all pins as high outputs-->
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 06 F0>-->
+	<i2c_write addr="0x74" count="3" radix="16">06 f0 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 FF>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 ff 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--# one by one turn on the LEDS-->
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 FE>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 fe 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 FC>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 fc 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F8>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f8 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F0>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f0 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--# one by one turn the LEDS off again-->
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F1>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f1 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F3>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f3 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F7>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f7 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 FF>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 ff 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--# turn all the LEDS on again-->
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 F0>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 f0 0a</i2c_write>
+	<sleep ms="500" />
+
+<!--# turn all the LEDS off again-->
+	<sleep ms="500" />
+
+<!--<WRITE 0x74, 02 FF>-->
+	<i2c_write addr="0x74" count="3" radix="16">02 ff 0a</i2c_write>
+	<sleep ms="500" />
+
+</aardvark>
