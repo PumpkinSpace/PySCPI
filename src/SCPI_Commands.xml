@@ -203,6 +203,8 @@
 	<command name="BM2:TEL? 75"  data_length='24'  data_format='float, float, float, float, float, float' />
 	<!-- Temperature Scaling Factors -->
 	<command name="BM2:TEL? 76"  data_length='24'  data_format='float, float, float, float, float, float' />
+	<!-- Cell Balancing Status -->
+	<command name="BM2:TEL? 77"   data_length='1'   data_format='hex' />	
 	
 	
 	<!-- BIM Commands -->
