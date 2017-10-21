@@ -32,19 +32,22 @@ import shutil
 
 # append file directory to the PYTHONPATH
 sys.path.append('src/')
+sys.path.append('C:\\Python27\\Scripts')
 
 # remove unicode references to files in PYTHONPATH so that subprocess works
-while u'C:\\Users\\pumpkinadmin\\Desktop\\Codebase\\PySCPI' in sys.path:
-    sys.path.remove(u'C:\\Users\\pumpkinadmin\\Desktop\\Codebase\\PySCPI')
-# end while
-
-# re-add the non-unicode reference to PYTHONPATH
-sys.path.append('C:\\Users\\pumpkinadmin\\Desktop\\Codebase\\PySCPI')
+for path in sys.path:
+    if isinstance(path, unicode):
+        sys.path.remove(path)
+        new_path = path.encode('ascii', 'ignore')
+        sys.path.append(new_path)
+    # end if
+# end for
 
 # flag to control exit from the program
 exit_flag = False
 
-
+print sys.path
+print [type(i) for i in sys.path] 
 ######################## Check program dependancies #######################
 # Requires pylint Installed 
 try:
