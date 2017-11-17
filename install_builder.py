@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-###########################################################################
+################################################################################
 #(C) Copyright Pumpkin, Inc. All Rights Reserved.
 #
 #This file may be distributed under the terms of the License
@@ -8,7 +8,7 @@
 #THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
 #INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
 #FITNESS FOR A PARTICULAR PURPOSE.
-###########################################################################
+################################################################################
 """
 @package install_builder.py
 Script to check for errors in the code and then build the exeutable file
@@ -46,9 +46,7 @@ for path in sys.path:
 # flag to control exit from the program
 exit_flag = False
 
-print sys.path
-print [type(i) for i in sys.path] 
-######################## Check program dependancies #######################
+######################## Check program dependancies ############################
 # Requires pylint Installed 
 try:
     # does pylint exist?
@@ -77,7 +75,7 @@ if not os.path.isdir('C:/Program Files (x86)/Inno Setup 5'):
 # end try
 
 
-###################### Run Static Analysis on pySCPI ######################
+###################### Run Static Analysis on pySCPI ###########################
 if not exit_flag:
     print '\nPerforming static analysis on the pySCPI code...'
     
@@ -170,7 +168,7 @@ if not exit_flag:
             else:
                 print_name = filename
             # end if            
-            error_buffer = error_buffer + [print_name + ': Parse error - ' + str(e)]
+            error_buffer = error_buffer + [print_name+': Parse error - '+str(e)]
         # end try
     # end for  
     
@@ -243,7 +241,7 @@ if not exit_flag:
 # end if
 
 
-########### Modify Installer builder file for current file system #########
+########### Modify Installer builder file for current file system ##############
 if not exit_flag:
     # get current directory
     root = os.getcwd()
@@ -303,7 +301,7 @@ if not exit_flag:
 # end if
 
 
-############################# Install Setup.py ############################
+############################# Install Setup.py #################################
 if not exit_flag:
     print "\nInstalling setup.py"
     # install setup.py
@@ -357,7 +355,7 @@ if not exit_flag:
 # end if
 
 
-############################### run py2exe ################################
+############################### run py2exe #####################################
 if not exit_flag:
     print '\nCreating the executable file\n'
     # build the .exe file
@@ -384,7 +382,7 @@ if not exit_flag:
     # end if
 # end if
 
-########################## Build the Installer ############################
+########################## Build the Installer #################################
 
 if not exit_flag:   
     print '\nCreating the installer for pySCPI\n'
@@ -430,15 +428,16 @@ if not exit_flag:
 # end if
 
 
-########################## Run the Installer ############################
+########################## Run the Installer ###################################
 if not exit_flag:
     print 'Opening the Installer'
     # attempt to run the installer
     
-    if installer_found and installer_dir_found and os.path.isfile(installer_dir + '/' + installer_name):
+    if (installer_found and installer_dir_found and 
+        os.path.isfile(installer_dir + '/' + installer_name)):
         
         # run the installer
-        stp = subprocess.Popen([installer_name], cwd = installer_dir, shell=True)
+        stp = subprocess.Popen([installer_name], cwd=installer_dir, shell=True)
         
         print '\nInstall building process completed successfully!'
         

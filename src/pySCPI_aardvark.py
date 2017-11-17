@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-###########################################################################
+################################################################################
 #(C) Copyright Pumpkin, Inc. All Rights Reserved.
 #
 #This file may be distributed under the terms of the License
@@ -8,7 +8,7 @@
 #THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
 #INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
 #FITNESS FOR A PARTICULAR PURPOSE.
-###########################################################################
+################################################################################
 """
 @package pySCPI_aardvark.py
 Module to handle the aardvark aspects of pySCPI
@@ -689,6 +689,7 @@ def send_raw_command(command, Aardvark_in_use):
     # end if
 # end def
 
+
 def read_raw_command(command, Aardvark_in_use, logging = False):
     """
     Function to read a <RAW> command from a slave device.
@@ -735,6 +736,7 @@ def read_raw_command(command, Aardvark_in_use, logging = False):
         # end if
     # end if     
 # end def
+
 
 def send_scpi_command(command, Aardvark_in_use, dec_addr):
     """

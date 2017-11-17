@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-###########################################################################
+################################################################################
 #(C) Copyright Pumpkin, Inc. All Rights Reserved.
 #
 #This file may be distributed under the terms of the License
@@ -8,7 +8,7 @@
 #THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
 #INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
 #FITNESS FOR A PARTICULAR PURPOSE.
-###########################################################################
+################################################################################
 """
 @package pySCPI.pyw
 Top level interface for the pySCPI program. to facilitate to control of 

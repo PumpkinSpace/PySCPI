@@ -15,7 +15,7 @@ Module to handle the creation and management of the pySCPI GUI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -49,6 +49,16 @@ root_height = 600
 class gui_defaults:
     """
     Class containing all of the defalut values used to build the pySCPI GUI
+    
+    @attribute default_filename (string) The default filename to save/load
+    @attribute default_delay    (int)    The default intermessage delay in ms
+    @attribute default_length   (int)    The default command length in bytes
+    @attribute default_dp       (int)    The default number of dp for floats
+    @attribute address_of       (dict)   The default module addresses
+    @attribute default_commands (list)   The default set of commands (strings)
+    @attribute error_log        (list)   List of errors (strings) thrown on boot
+    @attribute no_commands      (bool)   True if no commands were loaded on boot
+    @attribute no_addresses     (bool)   True if no addresses were loaded
     """
     
     def __init__(self):
@@ -227,321 +237,431 @@ class gui_defaults:
 
 class main_gui:
     """
-    The main loop GUI for pySCPI
+    Class that manages the main loop of the gui and all the actions that occur 
+    within it.
+    
+    @attribute version         (string)           PySCPI version number
+    @attribute defaults        (GUI_defaults)     Default values for GUI
+    @attribute terminator      (terminator_event) Controls exiting pySCPI
+    @attribute scpi_commands   (list)             Known commands (strings)
+    @attribute root            (TK root)          GUI root object
+    @attribute Header          (TK Frame)         Frame for the header image
+    @attribute input_image     (Image)            Raw header image
+    @attribute aspect_ratio    (int)              AR of the header image
+    @attribute img_canvas      (TK Canvas)        Canvas for the header image
+    @attribute canvas_img      (Image)            Image on the canvas
+    @attribute canvas_txt      (TK label)         Version text on header image
+    @attribute xml_button      (TK Button)        'Load XML' Button
+    @attribute readme_button   (TK Button)        'View Readme' Button
+    @attribute slave_var       (TK string var)    Name of slave device in use
+    @attribute addr_var        (TK string var)    Slave address in use
+    @attribute addr_text       (TK Entry)         Slave address text box
+    @attribute delay           (TK Entry)         Intermessage Delay text box
+    @attribute ascii           (TK Entry)         Ascii Delay text box
+    @attribute logging         (TK Entry)         Logging Period text box 
+    @attribute errors          (TK Entry)         Error counter text box
+    @attribute error_button    (TK Button)        'Zero Errors' Button
+    @attribute file_window     (TK Entry)         Filename display text box
+    @attribute Command_text    (TK Text)          Text box for writing commands
+    @attribute save_button     (TK Button)        'Save to XML' Button
+    @attribute aardvark_button (TK Button)        'Write Commands' Button
+    @attribute logging_button  (TK Button)        'Start Logging' Button
+    @attribute progress        (ttk Progressbar)  Progress bar on the GUI
+    @attribute output_text     (TK text)          Output text box
     """
     
-    def __init__(self, default_values, version_number, terminator, scpi_commands):
+    def __init__(self,default_values,version_number,terminator,scpi_commands):
+        """ 
+        Construct the GUI
+        
+        @param[in]  default_values: The default values to load into the GUI
+                                    (pySCPI_gui.gui_defaults)
+        @param[in]  version_number: The version number for pySCPI (string)
+        @param[in]  terminator:     The object to control pySCPI termination 
+                                    (pySCPI_threading.terminator_event)
+        @param[in]  scpi_commands:  Library of all of the known SCPI commands 
+                                    (Dictionary)
+        """           
         
         self.version = version_number
         self.defaults = default_values
-        self.scpi_commands = scpi_commands
         self.terminator = terminator
+        self.scpi_commands = scpi_commands
         
         self.root = TK.Tk()
         self.root.geometry(str(root_width) + 'x' + str(root_height))
         self.root.config(bg = 'white') # to show through the gaps between frames
         current_column = 0        
     
-        ############################ Parent Frames #####################################
+        ############################ Parent Frames #############################
         # Frame for the header image
         self.Header = TK.Frame(self.root)
         self.Header.config(bg = default_color)
         self.Header.grid(row = 0, column = 0, columnspan = 2, sticky = 'NSEW')
         
         # Frame for the configuration options
-        self.Config_frame = TK.Frame(self.root)
-        self.Config_frame.config(bg = default_color)
-        self.Config_frame.grid(row = 1, column = 0, columnspan = 2, sticky = 'nsew', pady = 2)
+        Config_frame = TK.Frame(self.root)
+        Config_frame.config(bg = default_color)
+        Config_frame.grid(row = 1, column = 0, columnspan = 2, 
+                          sticky = 'nsew', pady = 2)
         
         # frame for the inputs
-        self.Input_frame = TK.Frame(self.root)
-        self.Input_frame.config(bg = default_color)
-        self.Input_frame.grid(row = 2, column = 0, sticky = 'nsew', padx = 1)
+        Input_frame = TK.Frame(self.root)
+        Input_frame.config(bg = default_color)
+        Input_frame.grid(row = 2, column = 0, sticky = 'nsew', padx = 1)
         
         # Frame for the outputs
-        self.Output_frame = TK.Frame(self.root)
-        self.Output_frame.config(bg = default_color)
-        self.Output_frame.grid(row = 2, column = 1, sticky = 'nsew', padx = 1)   
+        Output_frame = TK.Frame(self.root)
+        Output_frame.config(bg = default_color)
+        Output_frame.grid(row = 2, column = 1, sticky = 'nsew', padx = 1)   
         
-        ################################ Header Image ##################################
+        ################################ Header Image #########################
         
         self.input_image = Image.open('src/Header.jpg')
         # find the images aspect ratio so it can be maintained
-        self.aspect_ratio = float(self.input_image.size[1])/float(self.input_image.size[0])
+        self.aspect_ratio = (float(self.input_image.size[1])/
+                             float(self.input_image.size[0]))
         # resize to fit the window
-        self.header_image = self.input_image.resize((root_width, int(root_width*self.aspect_ratio)), Image.ANTIALIAS)
+        header_height = int(root_width*self.aspect_ratio)
+        header_image = self.input_image.resize((root_width, header_height), 
+                                               Image.ANTIALIAS)
         
         # Header Image
-        self.header_photo = ImageTk.PhotoImage(self.header_image)
-        #image_label = Label(Header, image=header_photo)
-        #image_label.grid(row = 0, column = 0, sticky = NSEW)
-        self.image_canvas = TK.Canvas(self.Header, width=root_width, height=int(root_width*self.aspect_ratio), highlightthickness=0, borderwidth=0)
-        self.image_on_canvas = self.image_canvas.create_image(0,0, image=self.header_photo, anchor='nw')
-        self.text_on_canvas = self.image_canvas.create_text(root_width-2, int(root_width*self.aspect_ratio), anchor='se', text=('v'+str(version_number)), font=button_font, fill='white')
-        self.image_canvas.grid(row = 0, column = 0, sticky='nsew')
-        self.Header.bind('<Configure>', self.resize_image) # link the resizing event        
+        header_photo = ImageTk.PhotoImage(header_image)
+        self.img_canvas = TK.Canvas(self.Header, width=root_width, 
+                                      height=header_height, 
+                                      highlightthickness=0, borderwidth=0)
+        self.canvas_img = self.img_canvas.create_image(0,0, image=header_photo, 
+                                                       anchor='nw')
+        
+        # Version text on the image
+        version_text = ('v'+str(version_number))
+        self.canvas_txt = self.img_canvas.create_text(root_width-2, 
+                                                      header_height, 
+                                                      anchor='se', 
+                                                      text=version_text, 
+                                                      font=button_font, 
+                                                      fill='white')
+        
+        self.img_canvas.grid(row = 0, column = 0, sticky='nsew')
+        self.Header.bind('<Configure>', self.resize_image) # link the event        
 
         
-        ##################### Configuration Elements #############################
+        ##################### Configuration Elements ###########################
         
         # sub-frame for the buttons
-        self.but_frame = TK.Frame(self.Config_frame)
-        self.but_frame.config(bg = default_color)
-        self.but_frame.grid(row = 0, column = current_column, rowspan = 3, padx = 10)
-        self.but_frame.columnconfigure(0, weight = 1)
+        but_frame = TK.Frame(Config_frame)
+        but_frame.config(bg = default_color)
+        but_frame.grid(row = 0, column = current_column, rowspan = 3, padx = 10)
+        but_frame.columnconfigure(0, weight = 1)
         
         # Load XML Button
-        self.xml_button = TK.Button(self.but_frame, text = 'Load Commands', command = partial(pySCPI_XML.Load_XML,self), activebackground = 'green', width = 15)
-        self.xml_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
+        self.xml_button = TK.Button(but_frame, text = 'Load Commands', 
+                                    command = partial(pySCPI_XML.Load_XML,self),
+                                    activebackground = 'green', width = 15)
+        self.xml_button.config(font = button_font, bg = default_color, 
+                               highlightbackground= default_color)
         self.xml_button.grid(row = 0, column=0, padx = 5)        
         
         # View README Button
-        self.readme_button = TK.Button(self.but_frame, text = 'View ReadMe', command = partial(View_Readme,self), activebackground = 'green', width = 15)
-        self.readme_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
+        self.readme_button = TK.Button(but_frame, text = 'View ReadMe', 
+                                       command = partial(View_Readme,self), 
+                                       activebackground = 'green', width = 15)
+        self.readme_button.config(font = button_font, bg = default_color, 
+                                  highlightbackground= default_color)
         self.readme_button.grid(row = 1, column=0, padx = 5, pady = 5)
         current_column += 1
         
         # Slave Device selector sub-frame
-        self.slave_frame = TK.Frame(self.Config_frame)
-        self.slave_frame.config(bg = default_color)
-        self.slave_frame.grid(row = 2, column = current_column, padx = 5, sticky = 'nsew')
-        self.slave_frame.columnconfigure(0,weight = 2)
-        self.slave_frame.columnconfigure(1,weight = 2)
+        slave_frame = TK.Frame(Config_frame)
+        slave_frame.config(bg = default_color)
+        slave_frame.grid(row = 2, column = current_column, 
+                         padx = 5, sticky = 'nsew')
+        slave_frame.columnconfigure(0,weight = 2)
+        slave_frame.columnconfigure(1,weight = 2)
         
         # Slave selector title
-        self.slave_label = TK.Label(self.Config_frame, text = 'Slave Device')
-        self.slave_label.config(font = label_font, bg = default_color)
-        self.slave_label.grid(row = 1, column= current_column, sticky = 's')
+        slave_label = TK.Label(Config_frame, text = 'Slave Device')
+        slave_label.config(font = label_font, bg = default_color)
+        slave_label.grid(row = 1, column= current_column, sticky = 's')
         
         # device name variable
-        self.devices = scpi_commands.get_devices()
+        devices = scpi_commands.get_devices()
         self.slave_var = TK.StringVar(self.root)
-        self.slave_var.set(self.devices[0])
+        self.slave_var.set(devices[0])
         
         # device address variable
         self.addr_var = TK.StringVar(self.root)
-        self.addr_var.set(default_values.address_of[self.devices[0]])
+        self.addr_var.set(default_values.address_of[devices[0]])
         
         # device address display box
-        self.addr_text = TK.Entry(self.slave_frame, textvariable=self.addr_var, width = 4, justify = 'center')
-        self.addr_text.config(font = text_font, highlightbackground= default_color)
-        self.addr_text.grid(row = 0, column = 1, ipadx=20, pady = 5,sticky = 'w', ipady = 3)
+        self.addr_text = TK.Entry(slave_frame, textvariable=self.addr_var, 
+                                  width = 4, justify = 'center')
+        self.addr_text.config(font = text_font, 
+                              highlightbackground = default_color)
+        self.addr_text.grid(row = 0, column = 1, ipadx=20, 
+                            pady = 5, sticky = 'w', ipady = 3)
         
         # device selector drop down menu
-        self.slave_menu = TK.OptionMenu(self.slave_frame, self.slave_var, *tuple(self.devices), command = self.update_addr)
+        slave_menu = TK.OptionMenu(slave_frame, self.slave_var, *tuple(devices),
+                                   command = self.update_addr)
         if (platform.system == 'Windows'):
             # Size differently depending on the OS
-            self.slave_menu.config(width = 1, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
+            slave_menu.config(width = 1, bg = default_color, 
+                              activebackground = default_color, 
+                              highlightbackground = default_color, 
+                              font = label_font)
         else:
-            self.slave_menu.config(width = 4, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
+            slave_menu.config(width = 4, bg = default_color, 
+                              activebackground = default_color, 
+                              highlightbackground = default_color, 
+                              font = label_font)
         # end if
-        self.slave_menu["menu"].config(font = label_font, bg = default_color)
-        self.slave_menu.grid(row = 0, column = 0, sticky = 'e', ipadx=20)
+        
+        slave_menu["menu"].config(font = label_font, bg = default_color)
+        slave_menu.grid(row = 0, column = 0, sticky = 'e', ipadx=20)
         current_column += 1
         
         # delay text box sub-frame
-        self.delay_frame = TK.Frame(self.Config_frame)
-        self.delay_frame.config(bg = default_color)
-        self.delay_frame.grid(row = 2, column = current_column, sticky = 'ew')
-        self.delay_frame.columnconfigure(0, weight = 2)
-        self.delay_frame.columnconfigure(1, weight = 2)
+        delay_frame = TK.Frame(Config_frame)
+        delay_frame.config(bg = default_color)
+        delay_frame.grid(row = 2, column = current_column, sticky = 'ew')
+        delay_frame.columnconfigure(0, weight = 2)
+        delay_frame.columnconfigure(1, weight = 2)
         
         # delay title
-        self.delay_label = TK.Label(self.Config_frame, text = 'Intermessage Delay')
-        self.delay_label.grid(row = 1, column = current_column, padx = 5, sticky = 's')
-        self.delay_label.config(font = label_font, bg = default_color)
+        delay_label = TK.Label(Config_frame, text = 'Intermessage Delay')
+        delay_label.grid(row = 1, column = current_column,padx = 5,sticky = 's')
+        delay_label.config(font = label_font, bg = default_color)
         
         # delay entry box
-        self.delay = TK.Entry(self.delay_frame, justify = 'right', width = 7)
+        self.delay = TK.Entry(delay_frame, justify = 'right', width = 7)
         self.delay.config(font = text_font, highlightbackground= default_color)
         self.delay.grid(row = 0, column = 0, ipady = 3, sticky = 'e')
         self.delay.insert(0, str(default_values.default_delay))
         
         # delay units deiplay
-        self.delay_units = TK.Label(self.delay_frame, text = 'ms')
-        self.delay_units.config(font = text_font, bg = default_color)
-        self.delay_units.grid(row = 0, column = 1, sticky = 'w')
+        delay_units = TK.Label(delay_frame, text = 'ms')
+        delay_units.config(font = text_font, bg = default_color)
+        delay_units.grid(row = 0, column = 1, sticky = 'w')
         current_column += 1
         
         # ASCII Delay sub-frame
-        self.ascii_frame = TK.Frame(self.Config_frame)
-        self.ascii_frame.config(bg = default_color)
-        self.ascii_frame.grid(row = 2, column = current_column, sticky = 'ew')
-        self.ascii_frame.columnconfigure(0, weight = 2)
-        self.ascii_frame.columnconfigure(1, weight = 2)
+        ascii_frame = TK.Frame(Config_frame)
+        ascii_frame.config(bg = default_color)
+        ascii_frame.grid(row = 2, column = current_column, sticky = 'ew')
+        ascii_frame.columnconfigure(0, weight = 2)
+        ascii_frame.columnconfigure(1, weight = 2)
         
         # ascii delay title
-        self.ascii_label = TK.Label(self.Config_frame, text = 'ASCII Message Delay')
-        self.ascii_label.config(font = label_font, bg = default_color)
-        self.ascii_label.grid(row = 1, column=current_column, sticky = 's')
+        ascii_label = TK.Label(Config_frame, text = 'ASCII Message Delay')
+        ascii_label.config(font = label_font, bg = default_color)
+        ascii_label.grid(row = 1, column=current_column, sticky = 's')
         
         # ascii delay entry box
-        self.ascii = TK.Entry(self.ascii_frame, justify = 'right', width = 7)
+        self.ascii = TK.Entry(ascii_frame, justify = 'right', width = 7)
         self.ascii.config(font = text_font, highlightbackground= default_color)
         self.ascii.grid(row = 0, column=0, ipady = 3, sticky = 'e')
         self.ascii.insert(0, str(default_values.default_delay*4))
         
         # ascii units display
-        self.ascii_units = TK.Label(self.ascii_frame, text = 'ms')
-        self.ascii_units.config(font = text_font, bg = default_color)
-        self.ascii_units.grid(row = 0, column = 1, sticky = 'w')
+        ascii_units = TK.Label(ascii_frame, text = 'ms')
+        ascii_units.config(font = text_font, bg = default_color)
+        ascii_units.grid(row = 0, column = 1, sticky = 'w')
         current_column += 1
         
         # ouput float size selector title
-        self.float_label = TK.Label(self.Config_frame, text = 'Float DP')
-        self.float_label.config(font = label_font, bg = default_color)
-        self.float_label.grid(row = 1, column=current_column, sticky = 's')
+        float_label = TK.Label(Config_frame, text = 'Float DP')
+        float_label.config(font = label_font, bg = default_color)
+        float_label.grid(row = 1, column=current_column, sticky = 's')
         
         # float size variable
-        self.float_var = TK.IntVar(self.root)
-        self.float_var.set(default_values.default_dp)
+        float_var = TK.IntVar(self.root)
+        float_var.set(default_values.default_dp)
         
         # float size drop down menu
-        self.float_menu = TK.OptionMenu(self.Config_frame, self.float_var, 1,2,3,4,5,6,7,8,9,10,11,12)
+        float_menu = TK.OptionMenu(Config_frame, float_var, 
+                                   1,2,3,4,5,6,7,8,9,10,11,12)
+        
         if platform.system() == 'Windows':
             # adjust size for different OSs
-            self.float_menu.config(width = 1, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
+            float_menu.config(width = 1, bg = default_color, 
+                              activebackground = default_color, 
+                              highlightbackground = default_color, 
+                              font = label_font)
         else:
-            self.float_menu.config(width = 7, bg = default_color, activebackground = default_color, highlightbackground= default_color, font = label_font)
-            self.float_menu["menu"].config(fg = 'black')
+            float_menu.config(width = 7, bg = default_color, 
+                              activebackground = default_color, 
+                              highlightbackground = default_color, 
+                              font = label_font)
+            float_menu["menu"].config(fg = 'black')
         # end if
-        self.float_menu["menu"].config(font = label_font, bg = default_color)
-        self.float_menu.grid(row = 2, column = current_column)
+        
+        float_menu["menu"].config(font = label_font, bg = default_color)
+        float_menu.grid(row = 2, column = current_column)
         current_column += 1  
         
         # Logging period sub-frame
-        self.logging_frame = TK.Frame(self.Config_frame)
-        self.logging_frame.config(bg = default_color)
-        self.logging_frame.grid(row = 2, column = current_column, sticky = 'ew')
-        self.logging_frame.columnconfigure(0, weight = 2)
-        self.logging_frame.columnconfigure(1, weight = 2)
+        logging_frame = TK.Frame(Config_frame)
+        logging_frame.config(bg = default_color)
+        logging_frame.grid(row = 2, column = current_column, sticky = 'ew')
+        logging_frame.columnconfigure(0, weight = 2)
+        logging_frame.columnconfigure(1, weight = 2)
         
         #logging period title
-        self.logging_label = TK.Label(self.Config_frame, text = 'Logging Period')
-        self.logging_label.config(font = label_font, bg = default_color)
-        self.logging_label.grid(row = 1, column=current_column, padx = 5, sticky = 's')
+        logging_label = TK.Label(Config_frame, text = 'Logging Period')
+        logging_label.config(font = label_font, bg = default_color)
+        logging_label.grid(row = 1, column=current_column,padx = 5,sticky = 's')
         
         # logging period entry box
-        self.logging = TK.Entry(self.logging_frame, justify = 'right', width = 7)
-        self.logging.config(font = text_font, highlightbackground= default_color)
+        self.logging = TK.Entry(logging_frame, justify = 'right', width = 7)
+        self.logging.config(font = text_font, highlightbackground=default_color)
         self.logging.grid(row = 0, column=0, ipady = 3, sticky = 'e')
         self.logging.insert(0, '60')
         
         # logging period unit display
-        self.logging_units = TK.Label(self.logging_frame, text = 's')
-        self.logging_units.config(font = text_font, bg = default_color)
-        self.logging_units.grid(row = 0, column = 1, sticky = 'w')
+        logging_units = TK.Label(logging_frame, text = 's')
+        logging_units.config(font = text_font, bg = default_color)
+        logging_units.grid(row = 0, column = 1, sticky = 'w')
         current_column += 1  
         
         # error count sub-frame
-        self.error_frame = TK.Frame(self.Config_frame)
-        self.error_frame.config(bg = default_color)
-        self.error_frame.grid(row = 2, column = current_column, sticky = 'ew', padx = 10)
-        self.error_frame.columnconfigure(0, weight = 2)
-        self.error_frame.columnconfigure(1, weight = 2)
+        error_frame = TK.Frame(Config_frame)
+        error_frame.config(bg = default_color)
+        error_frame.grid(row = 2, column=current_column,sticky = 'ew',padx = 10)
+        error_frame.columnconfigure(0, weight = 2)
+        error_frame.columnconfigure(1, weight = 2)
         
         # error count title
-        self.error_label = TK.Label(self.Config_frame, text = 'Error count')
-        self.error_label.config(font = label_font, bg = default_color)
-        self.error_label.grid(row = 1, column=current_column, padx = 5, sticky = 's')
+        error_label = TK.Label(Config_frame, text = 'Error count')
+        error_label.config(font = label_font, bg = default_color)
+        error_label.grid(row = 1, column=current_column, padx = 5, sticky = 's')
         
         # error count entry box
-        self.errors = TK.Entry(self.error_frame, justify = 'center', width = 7)
-        self.errors.config(font = text_font, highlightbackground= default_color, disabledforeground = 'black', disabledbackground = 'white')
+        self.errors = TK.Entry(error_frame, justify = 'center', width = 7)
+        self.errors.config(font = text_font, highlightbackground= default_color,
+                           disabledforeground = 'black', 
+                           disabledbackground = 'white')
         self.errors.grid(row = 0, column=0, ipady = 3, sticky = 'e')
         self.errors.insert(0, '0')
         self.errors.config(state = 'disabled')  
         
         # error clearing button
-        self.error_button = TK.Button(self.error_frame, text = 'Zero', command = self.zero_errors, activebackground = 'green', width = 5)
-        self.error_button.config(font = label_font, bg = default_color, highlightbackground= default_color)
+        self.error_button = TK.Button(error_frame, text = 'Zero', 
+                                      command = self.zero_errors, 
+                                      activebackground = 'green', width = 5)
+        self.error_button.config(font = label_font, bg = default_color, 
+                                 highlightbackground = default_color)
         self.error_button.grid(row = 0, column=1, sticky = 'w')
         
         
-        ############################ Inputs Section ####################################
+        ############################ Inputs Section ############################
         
         # Input header sub-frame
-        self.input_header_frame = TK.Frame(self.Input_frame)
-        self.input_header_frame.config(bg = default_color)
-        self.input_header_frame.grid(row = 0, column = 0, sticky = 'nsew')
+        input_header_frame = TK.Frame(Input_frame)
+        input_header_frame.config(bg = default_color)
+        input_header_frame.grid(row = 0, column = 0, sticky = 'nsew')
         
         # input title
-        self.input_header = TK.Label(self.input_header_frame, text = 'Input Commands:')
-        self.input_header.config(font=title_font, bg = default_color)
-        self.input_header.grid(row = 0, column = 0, sticky = 'w', padx = 5)
+        input_header = TK.Label(input_header_frame, text = 'Input Commands:')
+        input_header.config(font=title_font, bg = default_color)
+        input_header.grid(row = 0, column = 0, sticky = 'w', padx = 5)
         
         # file text_box
-        self.file_window = TK.Text(self.input_header_frame, height = 1, width = 33)
-        self.file_window.config(font = text_font, bg = default_color, state = 'disabled', highlightbackground= default_color)
+        self.file_window = TK.Text(input_header_frame, height = 1, width = 33)
+        self.file_window.config(font = text_font, bg = default_color, 
+                                state = 'disabled', 
+                                highlightbackground = default_color)
         self.file_window.grid(row = 0, column=1, ipady = 3, sticky = 'e')
         
         # Command input sub-frame
-        self.command_frame = TK.Frame(self.Input_frame)
-        self.command_frame.config(bg = default_color)
-        self.command_frame.grid(row = 1, column = 0, sticky = 'nsew')
+        command_frame = TK.Frame(Input_frame)
+        command_frame.config(bg = default_color)
+        command_frame.grid(row = 1, column = 0, sticky = 'nsew')
         
         # text box to enter commands into
-        self.Command_text = TK.Text(self.command_frame, height = 10, width = 58, padx = 3, pady = 3)
-        self.Command_text.config(font = text_font, highlightbackground= default_color)
-        self.Command_text.insert('insert', '\n'.join(default_values.default_commands))
+        self.Command_text = TK.Text(command_frame, height = 10, width = 58, 
+                                    padx = 3, pady = 3)
+        self.Command_text.config(font = text_font, 
+                                 highlightbackground = default_color)
+        self.Command_text.insert('insert', 
+                                 '\n'.join(default_values.default_commands))
         self.Command_text.bind('<Key>', self.update_filename)
         self.Command_text.grid(row = 0, column=0, sticky = 'nsew')
         
         # scrollbar for the command text box, linked to the text box
-        self.command_scroll = TK.Scrollbar(self.command_frame, command = self.Command_text.yview)
-        self.command_scroll.grid(column = 1, row = 0, sticky = 'nsew')
-        self.Command_text['yscrollcommand'] = self.command_scroll.set
+        command_scroll = TK.Scrollbar(command_frame, 
+                                      command = self.Command_text.yview)
+        command_scroll.grid(column = 1, row = 0, sticky = 'nsew')
+        self.Command_text['yscrollcommand'] = command_scroll.set
         
         # Buttons subframe
-        self.button_frame = TK.Frame(self.Input_frame)
-        self.button_frame.config(bg = default_color)
-        self.button_frame.grid(row = 2, column = 0, sticky = 'nsew')
+        button_frame = TK.Frame(Input_frame)
+        button_frame.config(bg = default_color)
+        button_frame.grid(row = 2, column = 0, sticky = 'nsew')
         
         # Write XML Button
-        self.save_button = TK.Button(self.button_frame, text = 'Save Commands', command = partial(pySCPI_XML.Write_XML, self), activebackground = 'green', width = 13)
-        self.save_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
-        self.save_button.grid(row = 0, column=0, pady = 5, padx = 10, sticky = 'ew')
-        self.button_frame.columnconfigure(0, weight = 1)
+        self.save_button = TK.Button(button_frame, text = 'Save Commands', 
+                                     command=partial(pySCPI_XML.Write_XML,self), 
+                                     activebackground = 'green', width = 13)
+        self.save_button.config(font = button_font, bg = default_color, 
+                                highlightbackground = default_color)
+        self.save_button.grid(row = 0, column=0, pady = 5, 
+                              padx = 10, sticky = 'ew')
+        button_frame.columnconfigure(0, weight = 1)
         
         # Use Aardvark Button
-        self.aardvark_button = TK.Button(self.button_frame, text = 'Send Commands', command = partial(pySCPI_aardvark.Write_I2C, self), activebackground = 'green', width = 13)
-        self.aardvark_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
+        self.aardvark_button = TK.Button(button_frame, text = 'Send Commands', 
+                                         command = partial(pySCPI_aardvark.Write_I2C, self), 
+                                         activebackground = 'green', width = 13)
+        self.aardvark_button.config(font = button_font, bg = default_color, 
+                                    highlightbackground = default_color)
         self.aardvark_button.grid(row = 0, column=1, pady = 5, sticky = 'ew')
-        self.button_frame.columnconfigure(1, weight = 1)
+        button_frame.columnconfigure(1, weight = 1)
         
         # Logging button
-        self.logging_button = TK.Button(self.button_frame, text = 'Start Logging', command = partial(pySCPI_aardvark.start_logging, self), activebackground = 'green', width = 13)
-        self.logging_button.config(font = button_font, bg = default_color, highlightbackground= default_color)
-        self.logging_button.grid(row = 0, column=2, pady = 5, padx = 10, sticky = 'ew')
-        self.button_frame.columnconfigure(2, weight = 1)
+        self.logging_button = TK.Button(button_frame, text = 'Start Logging', 
+                                        command = partial(pySCPI_aardvark.start_logging, self), 
+                                        activebackground = 'green', width = 13)
+        self.logging_button.config(font = button_font, bg = default_color, 
+                                   highlightbackground = default_color)
+        self.logging_button.grid(row = 0, column=2, pady = 5, 
+                                 padx = 10, sticky = 'ew')
+        button_frame.columnconfigure(2, weight = 1)
         
-        ############################## Output Frame ####################################
+        ############################## Output Frame ############################
         
         # Output Title Frame
-        self.output_title_frame = TK.Frame(self.Output_frame)
-        self.output_title_frame.config(bg = default_color)
-        self.output_title_frame.grid(row = 0, column = 0, columnspan = 2, sticky = 'nsew')
+        output_title_frame = TK.Frame(Output_frame)
+        output_title_frame.config(bg = default_color)
+        output_title_frame.grid(row = 0, column = 0, columnspan = 2, 
+                                sticky = 'nsew')
         
         
         # Output title
-        self.output_label = TK.Label(self.output_title_frame, text = 'Output:')
-        self.output_label.config(font=title_font, bg = default_color)
-        self.output_label.grid(row = 0, column = 0)
+        output_label = TK.Label(output_title_frame, text = 'Output:')
+        output_label.config(font=title_font, bg = default_color)
+        output_label.grid(row = 0, column = 0)
         
         # Output Progress Bar
-        self.progress = ttk.Progressbar(self.output_title_frame, orient = 'horizontal', mode = 'determinate', length = 200)
+        self.progress = ttk.Progressbar(output_title_frame, 
+                                        orient = 'horizontal', 
+                                        mode = 'determinate', length = 200)
         self.progress.grid(row = 0, column = 1)
         
         # output text box
-        self.output_text = TK.Text(self.Output_frame, height = 20, width = 100, padx = 3, pady = 3)
-        self.output_text.config(font = text_font, highlightbackground= default_color)
+        self.output_text = TK.Text(Output_frame, height = 20, width = 100, 
+                                   padx = 3, pady = 3)
+        self.output_text.config(font = text_font, 
+                                highlightbackground = default_color)
         self.output_text.grid(row = 1, column=0, sticky = 'nsew')
         self.output_text.config(state='disabled', wrap='word')
         
         # scrolbar for the output textbox, linked to the text box
-        self.output_scroll = TK.Scrollbar(self.Output_frame, command = self.output_text.yview)
-        self.output_scroll.grid(column = 1, row = 1, sticky = 'nsew')
-        self.output_text['yscrollcommand'] = self.output_scroll.set
+        output_scroll = TK.Scrollbar(Output_frame, 
+                                     command = self.output_text.yview)
+        output_scroll.grid(column = 1, row = 1, sticky = 'nsew')
+        self.output_text['yscrollcommand'] = output_scroll.set
         
         # highlight tag
         self.output_text.tag_config('error', foreground = 'red')
@@ -549,26 +669,26 @@ class main_gui:
         ############################# Resizing #########################################
         
         # allow for resizing of the configuration frame columns
-        self.Config_frame.columnconfigure(1, weight = 1, minsize = 200)
-        self.Config_frame.columnconfigure(2, weight = 2, minsize = 100)
-        self.Config_frame.columnconfigure(3, weight = 2, minsize = 80)
-        self.Config_frame.columnconfigure(4, weight = 2, minsize = 60)
-        self.Config_frame.columnconfigure(5, weight = 2, minsize = 80)
-        self.Config_frame.columnconfigure(6, weight = 1, minsize = 80)
+        Config_frame.columnconfigure(1, weight = 1, minsize = 200)
+        Config_frame.columnconfigure(2, weight = 2, minsize = 100)
+        Config_frame.columnconfigure(3, weight = 2, minsize = 80)
+        Config_frame.columnconfigure(4, weight = 2, minsize = 60)
+        Config_frame.columnconfigure(5, weight = 2, minsize = 80)
+        Config_frame.columnconfigure(6, weight = 1, minsize = 80)
         
         # allow for resizing of the input frame row containing the text box
-        self.Input_frame.rowconfigure(1, weight = 2)
-        self.command_frame.rowconfigure(0, weight = 2)
+        Input_frame.rowconfigure(1, weight = 2)
+        command_frame.rowconfigure(0, weight = 2)
         
         # allow for resizing of the otuput frame row containing the text box
-        self.Output_frame.rowconfigure(1, weight = 2)
+        Output_frame.rowconfigure(1, weight = 2)
         self.root.rowconfigure(2, weight = 2)
         
         # allow for resizing of the otuput frame column
-        self.Output_frame.columnconfigure(0, weight = 2)
+        Output_frame.columnconfigure(0, weight = 2)
         self.root.columnconfigure(1, weight = 5, minsize = 200)
-        self.output_title_frame.columnconfigure(0, weight = 2)
-        self.output_title_frame.columnconfigure(1, weight = 2)
+        output_title_frame.columnconfigure(0, weight = 2)
+        output_title_frame.columnconfigure(1, weight = 2)
         
         # set window minsize to prevent objects crashing
         self.root.minsize(width = 900, height = 500)      
@@ -579,7 +699,8 @@ class main_gui:
         
         # define window title
         self.root.title("PySCPI: PC control of pumpkin SCPI modules")
-        self.root.protocol("WM_DELETE_WINDOW", partial(terminator.kill_threads, self))
+        self.root.protocol("WM_DELETE_WINDOW", 
+                           partial(terminator.kill_threads, self))
         
     # end def
     
@@ -595,7 +716,12 @@ class main_gui:
     def start(self, gui_defs, command_defs):
         """
         Begin the GUI execution after printing any start up errors
-        """
+        
+        @param[in]  gui_defs:     The default values to load into the GUI
+                                  (pySCPI_gui.gui_defaults)
+        @param[in]  command_defs: Library of all of the known SCPI commands 
+                                  (Dictionary)
+        """   
         for error in gui_defs.error_log:
             print error
         # end for
@@ -635,11 +761,14 @@ class main_gui:
     # end        
     
     
-    def update_addr(self, value):
+    def update_addr(self, device):
         """
         Update the address in the GUI
+        
+        @param[in]  device:     The name of the address whose address should be
+                                put in the address box (String).
         """
-        self.addr_var.set(self.defaults.address_of[value])
+        self.addr_var.set(self.defaults.address_of[device])
         self.addr_text.config(background = 'white')
     # end def       
        
@@ -649,36 +778,45 @@ class main_gui:
         Event function to auto-resize the header image with the window
         
         TODO try and speed up this function
+        
+        @param[in]  event:      The event that called this function
         """            
         # find new geometry
         new_width = event.width
         new_height = int(new_width * self.aspect_ratio)
         # resize
-        self.header_image = self.input_image.resize((new_width, new_height), Image.ANTIALIAS)
+        self.header_image = self.input_image.resize((new_width, new_height), 
+                                                    Image.ANTIALIAS)
         # snap the Frame rows around it
         self.root.rowconfigure(0, minsize = new_height)
         self.Header.rowconfigure(0, minsize = new_height)
         # load the new image
         self.header_photo = ImageTk.PhotoImage(self.header_image)
-        self.image_canvas.config(width=new_width, height=new_height)
-        self.image_canvas.itemconfig(self.image_on_canvas, image=self.header_photo)
-        text_move_x = new_width - self.image_canvas.coords(self.text_on_canvas)[0] - 2
-        text_move_y = new_height - self.image_canvas.coords(self.text_on_canvas)[1]
-        self.image_canvas.move(self.text_on_canvas, text_move_x, text_move_y)
+        self.img_canvas.config(width=new_width, height=new_height)
+        self.img_canvas.itemconfig(self.canvas_img, image=self.header_photo)
+        text_move_x = new_width - self.img_canvas.coords(self.canvas_txt)[0] - 2
+        text_move_y = new_height - self.img_canvas.coords(self.canvas_txt)[1]
+        self.img_canvas.move(self.canvas_txt, text_move_x, text_move_y)
     # end def   
         
     
     def action_lock(self, state, active_button=None):
         """
-        Disable the function of all the buttons on the GUI except the one requested 
-        and then reenable them.
+        Disable the function of all the buttons on the GUI except the one 
+        requested and then reenable them.
         
-        @param[in]  state (string): 'Lock':   Lock all buttons except the active_button
+        @param[in]  state (string): 'Lock':   Lock all buttons except the 
+                                              active_button
                                     'Unlock': Unlock all of the buttons
-        @param[in]  active_button:  Optional-The button not to lock (tkinter.Button).
+        @param[in]  active_button:  Optional-The button not to lock 
+                                    (tkinter.Button).
         """      
         # list of all the buttons
-        button_list = [self.readme_button, self.xml_button, self.aardvark_button, self.save_button, self.logging_button]
+        button_list = [self.readme_button, 
+                       self.xml_button, 
+                       self.aardvark_button, 
+                       self.save_button, 
+                       self.logging_button]
         if (state == 'Lock'):
             # lock the bottons
             for button in button_list:
@@ -1017,14 +1155,28 @@ class main_gui:
 class GUI_Writer(object):
     """
     Class to handle the re-mapping of stdout to the GUI
+    
+    @attribute output_text (TK text) Text box on gui to write to.
+    @attribute add_error   (Fuction) remapping of gui.add_error function to 
+                                     log errors that are counted.
     """    
     def __init__(self, gui):
+        """
+        Construct the GUI_Writer object
+        
+        @param[in] gui:      The GUI to print output to (pySCPI_gui.main_gui)
+        """           
         self.output_text = gui.output_text
         self.add_error = gui.add_error
     # end def
         
     # what to do when a 'print' command is issued 
     def write(self, string):
+        """
+        Write to the GUI text box.
+        
+        @param[in] string:   The string to write to the GUI.
+        """             
         self.output_text.config(state='normal')
         if string.startswith('*'):
             self.output_text.insert('end', string, 'error')
@@ -1039,17 +1191,14 @@ class GUI_Writer(object):
                 
 #
 # ----------------
-# Public Functions 
-
-
-#
-# ----------------
 # Private Functions 
 
 
 def View_Readme(gui):
     """
     Function to display the readme file in the GUI window.
+    
+    @param  gui:   The GUI in which to display the readme (pySCPI_gui.main_gui)
     """    
     # lock buttons
     gui.action_lock('Lock', gui.readme_button)
@@ -1078,6 +1227,9 @@ def View_Readme(gui):
 
          
 def test():
+    """
+    Test code for this module.
+    """
     # test the gui defaults code
     sample_gui_defaults = gui_defaults()
     
@@ -1101,10 +1253,10 @@ def test():
     
     new_errors = len(sample_gui_defaults.error_log) - first_errors
     
-    print str(new_errors)  + '/8 sample tests failed (want 6)'    
+    print str(new_errors)  + '/8 sample tests failed (want 5)'    
 
 
 if __name__ == '__main__':
+    # if this code is not running as an imported module run test code
     test()
 # end if
-        

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-###########################################################################
+################################################################################
 #(C) Copyright Pumpkin, Inc. All Rights Reserved.
 #
 #This file may be distributed under the terms of the License
@@ -8,7 +8,7 @@
 #THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
 #INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
 #FITNESS FOR A PARTICULAR PURPOSE.
-###########################################################################
+################################################################################
 """
 @package pySCPI_threading.py
 Module to handle the multi-threading aspects of pySCPI
@@ -32,9 +32,14 @@ import threading
 class terminator_event:
     """ 
     Class to control the termination of threads
+    
+    @attribute kill_event     (Event) The event that controls termination
+    @attribute root_destroyed (bool)  True if the gui has been exited
     """
     def __init__(self):
-        
+        """
+        Initialise the terminator event.
+        """        
         # threading event to manage thread closure
         self.kill_event = threading.Event()
         

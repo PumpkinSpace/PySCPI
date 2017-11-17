@@ -284,7 +284,6 @@ def print_read(command, raw_data, gui):
 # end def
 
 
-
 def log_read(command, raw_data, csv_row, gui):
     """
     Formats the data that was returned from the AArdvark and then adds it to a 

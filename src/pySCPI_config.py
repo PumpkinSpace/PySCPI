@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-###########################################################################
+################################################################################
 #(C) Copyright Pumpkin, Inc. All Rights Reserved.
 #
 #This file may be distributed under the terms of the License
@@ -8,7 +8,7 @@
 #THIS FILE IS PROVIDED AS IS WITH NO WARRANTY OF ANY KIND,
 #INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND
 #FITNESS FOR A PARTICULAR PURPOSE.
-###########################################################################
+################################################################################
 """
 @package pySCPI_config.py
 Module to handle the configureation of pySCPI including setting default 
@@ -32,6 +32,16 @@ class command_library:
     """
     Class containing the information that defines all the supported 
     SCPI commands
+    
+    @attribute name_size   (int)  The length of a name request in bytes
+    @attribute chksum_size (int)  The length of the checksum in bytes
+    @attribute wflag_size  (int)  The length of the write flag in bytes
+    @attribute time_size   (int)  The length of the timestamp in bytes
+    @attribute length_size (int)  The length of a length request in bytes
+    @attribute ascii_size  (int)  The length of an ascii request in bytes
+    @attribute no_commands (bool) True if no commands have been loaded on boot
+    @attribute SCPI_Data   (dict) Dictionary of all the known SCPI commands
+    @attribute error_log   (list) List of errors (strings) thrown during boot 
     """
     
     def __init__(self):
@@ -252,16 +262,24 @@ class write_directives:
     """ 
     Class to contain all of the information required by the 
     writing functions.
+    
+    @attribute command_list (list) List of cammands (strings) to be sent.
+    @attribute addr         (int)  The address to send commands to.
+    @attribute delay_time   (int)  The time to delay between commands.
+    @attribute ascii_time   (int)  The time to delay after an ascii command.
+    @attribute logging_p    (int)  The period to use for logging.
+
     """  
     def __init__(self, commands, address, delay, ascii, logging_p = 0):
         """
         Combine the passed vlaues into an object.
         
-        @param[in]     commands:    The list of commands to send.
-        @param[in]     address:     The address to send to.
-        @param[in]     delay:       The intermessage delay to use.
-        @param[in]     ascii:       The ascii delay to use.
-        @param[in]     logging_p:   OPTIONAL, the logging period to use.
+        @param[in]     commands:    The list of commands to send 
+                                    (list of strings).
+        @param[in]     address:     The address to send to (int).
+        @param[in]     delay:       The intermessage delay to use (int).
+        @param[in]     ascii:       The ascii delay to use (int).
+        @param[in]     logging_p:   OPTIONAL, the logging period to use (int).
         """        
         self.command_list = commands
         self.addr = address
