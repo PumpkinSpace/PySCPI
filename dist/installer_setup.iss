@@ -6,7 +6,7 @@
 AppId={{8C27620E-EEDD-49FD-9D68-775CC81BDDC1}
 ; Application info
 AppName=pySCPI
-AppVersion=2.1
+AppVersion=0.3.1
 AppPublisher=Pumpkin Inc.
 AppPublisherURL=http://www.pumpkinspace.com/
 AppSupportURL=http://www.pumpkinspace.com/
@@ -29,6 +29,10 @@ SolidCompression=yes
 ; Image to use in the installer window
 WizardImageStretch=yes
 WizardSmallImageFile=src\CubeSatKit.bmp
+#define MyAppExeName "PySCPI.exe"
+UninstallDisplayIcon={app}\{#MyAppExeName}
+UninstallDisplayName=pySCPI
+
 
 
 

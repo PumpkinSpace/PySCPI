@@ -281,6 +281,10 @@ if not exit_flag:
             new_lines.append('OutputBaseFilename='+installer_name + '\n')
             installer_name = installer_name + '.exe'
             
+        elif line.startswith('AppVersion'):
+            # this is the app version line
+            new_lines.append('AppVersion=' + exe_version + '\n')
+            
         else:
             new_lines.append(line)
         # end if
