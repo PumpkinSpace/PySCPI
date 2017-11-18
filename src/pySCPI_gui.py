@@ -323,15 +323,16 @@ class main_gui:
                              float(self.input_image.size[0]))
         # resize to fit the window
         header_height = int(root_width*self.aspect_ratio)
-        header_image = self.input_image.resize((root_width, header_height), 
+        self.header_image = self.input_image.resize((root_width, header_height), 
                                                Image.ANTIALIAS)
         
         # Header Image
-        header_photo = ImageTk.PhotoImage(header_image)
+        self.header_photo = ImageTk.PhotoImage(self.header_image)
         self.img_canvas = TK.Canvas(self.Header, width=root_width, 
                                       height=header_height, 
                                       highlightthickness=0, borderwidth=0)
-        self.canvas_img = self.img_canvas.create_image(0,0, image=header_photo, 
+        self.canvas_img = self.img_canvas.create_image(0,0, 
+                                                       image=self.header_photo, 
                                                        anchor='nw')
         
         # Version text on the image
