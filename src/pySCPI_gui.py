@@ -477,11 +477,11 @@ class main_gui:
         float_label.grid(row = 1, column=current_column, sticky = 's')
         
         # float size variable
-        float_var = TK.IntVar(self.root)
-        float_var.set(default_values.default_dp)
+        self.float_var = TK.IntVar(self.root)
+        self.float_var.set(default_values.default_dp)
         
         # float size drop down menu
-        float_menu = TK.OptionMenu(Config_frame, float_var, 
+        float_menu = TK.OptionMenu(Config_frame, self.float_var, 
                                    1,2,3,4,5,6,7,8,9,10,11,12)
         
         if platform.system() == 'Windows':
@@ -1255,7 +1255,7 @@ def test():
     new_errors = len(sample_gui_defaults.error_log) - first_errors
     
     print str(new_errors)  + '/8 sample tests failed (want 5)'    
-
+#end def
 
 if __name__ == '__main__':
     # if this code is not running as an imported module run test code

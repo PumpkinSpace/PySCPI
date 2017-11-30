@@ -31,6 +31,8 @@
 	<command name="SUP:TEL? 7"   data_length='8'   data_format='long long' />	
 	<!-- MCU Load -->
 	<command name="SUP:TEL? 8"   data_length='4'   data_format='float' />	
+<!-- Serial Number-->
+	<command name="SUP:TEL? 9"   data_length='2'   data_format='uint' />
 	
 	
 	<!-- GPSRM Commands -->
@@ -108,9 +110,9 @@
 	<!-- Relative State of Charge -->
 	<command name="BM2:TEL? 13"  data_length='2'   data_format='uint' />
 	<!-- Absolute State of Charge -->
-	<command name="BM2:TEL? 14"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 14"  data_length='1'   data_format='char' />
 	<!-- Remaining Capacity -->
-	<command name="BM2:TEL? 15"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 15"  data_length='1'   data_format='char' />
 	<!-- Full Charge Capacity -->
 	<command name="BM2:TEL? 16"  data_length='2'   data_format='uint' />
 	<!-- Run time to Empty -->
@@ -128,9 +130,9 @@
 	<!-- Cycle Count -->
 	<command name="BM2:TEL? 23"  data_length='2'   data_format='uint' />
 	<!-- Design Capacity -->
-	<command name="BM2:TEL? 24"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 24"  data_length='2'   data_format='int' />
 	<!-- Design Voltage -->
-	<command name="BM2:TEL? 25"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 25"  data_length='2'   data_format='int' />
 	<!-- Extra temperature sensor 3 -->
 	<command name="BM2:TEL? 48"  data_length='2'   data_format='uint' />
 	<!-- Extra temperature sensor 4 -->
@@ -178,9 +180,9 @@
 	<!-- Average Voltage -->
 	<command name="BM2:TEL? 93"  data_length='2'   data_format='uint' />
 	<!-- TS1 temperature -->
-	<command name="BM2:TEL? 94"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 94"  data_length='2'   data_format='int' />
 	<!-- TS2 temperature -->
-	<command name="BM2:TEL? 95"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 95"  data_length='2'   data_format='int' />
 	<!-- Safety Alert Register 2 -->
 	<command name="BM2:TEL? 104" data_length='2'   data_format='hex' />
 	<!-- Safety Status Register 2 -->
