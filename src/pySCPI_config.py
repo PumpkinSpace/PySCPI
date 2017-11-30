@@ -488,7 +488,7 @@ def is_valid_format(format_string):
     is_valid = True
     
     # list of valid formats
-    valid_formats = ['hex', 'char', 'uint', 'int', 'double', 
+    valid_formats = ['hex', 'char', 'schar','uint', 'int', 'double', 
                      'ascii', 'long', 'long long', 'float']
     
     # list of formats provided (may be a single format)

@@ -183,6 +183,9 @@ def print_read(command, raw_data, gui):
                 
             elif print_format == 'char':
                 print 'Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
+                
+            elif print_format == 'schar':
+                print 'Data:\t\t' + str(unpack('<b', ''.join([chr(x) for x in data]))[0])                 
             
             elif print_format == 'hex':
                 print 'Data:\t\t' + ' '.join(['%02X' % x for x in data])
@@ -241,6 +244,11 @@ def print_read(command, raw_data, gui):
                 elif spec == 'char':
                     output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
                     start_index += 1
+                    
+                elif spec == 'schar':
+                    output[i] =  unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
+                    start_index += 1   
+                    
                 else:
                     # the format is not accepted by this code
                     print '*** No valid format at list entry ' + \
@@ -376,6 +384,9 @@ def log_read(command, raw_data, csv_row, gui):
                 
             elif print_format == 'char':
                 csv_row.append(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
+                
+            elif print_format == 'schar':
+                csv_row.append(unpack('<b', ''.join([chr(x) for x in data]))[0])                 
             
             elif print_format == 'hex':
                 csv_row.append(' '.join(['%02X' % x for x in data]))
@@ -427,6 +438,10 @@ def log_read(command, raw_data, csv_row, gui):
                 elif spec == 'char':
                     csv_row.append(unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
                     start_index += 1
+                    
+                elif spec == 'schar':
+                    csv_row.append(unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
+                    start_index += 1                    
                 else:
                     # the format is not accepted by this code
                     csv_row.append('invalid format') 
