@@ -241,7 +241,51 @@
 	
 	<!-- Current Scale Factors-->
 	<command name="EPS:TEL? 2"   data_length='16'   data_format='float, float, float, float' />
-	
+
+	<!-- AIM Commands -->
+
+	<!-- GPSRM Status -->
+	<command name="AIM:TEL? 0"   data_length='2'   data_format='hex' />	
+	<!-- NMEA String -->
+	<command name="AIM:TEL? 1"   data_length='128' data_format='ascii' />	
+	<!-- Propagator results -->
+	<command name="AIM:TEL? 2"   data_length='56'  data_format='double, double, double, double, double, double, double' />	
+	<!-- OEM615 Power -->
+	<command name="AIM:TEL? 3"   data_length='16'  data_format='float, float, float, float' />	
+	<!-- GPS UART Status -->
+	<command name="AIM:TEL? 4"   data_length='1'   data_format='char' />	
+	<!-- GPS Event Status -->
+	<command name="AIM:TEL? 5"   data_length='1'   data_format='hex' />	
+	<!-- GPS Power Status -->
+	<command name="AIM:TEL? 6"   data_length='1'   data_format='hex' />	
+	<!-- ADCS UART Status -->
+	<command name="AIM:TEL? 7"   data_length='1'   data_format='char' />	
+	<!-- ADCS FTDI Status-->
+	<command name="AIM:TEL? 8"   data_length='1'   data_format='char' />	
+	<!-- ADCS Status-->
+	<command name="AIM:TEL? 9"   data_length='1'   data_format='char' />	
+	<!-- WDT Period-->
+	<command name="AIM:TEL? 10"   data_length='4'   data_format='long' />	
+
+	<!-- RHM Commands -->
+
+	<!-- Lithium Power Status -->
+	<command name="RHM:TEL? 0"   data_length='1'   data_format='hex' />
+	<!-- Lithium UART Status -->
+	<command name="RHM:TEL? 1"   data_length='1'   data_format='char' />	
+	<!-- Lithium Config-->
+	<command name="RHM:TEL? 2"   data_length='1'   data_format='hex' />
+	<!-- GlobalStar Power Status -->
+	<command name="RHM:TEL? 3"   data_length='1'   data_format='hex' />
+	<!-- GlobalStar UART Status -->
+	<command name="RHM:TEL? 4"   data_length='1'   data_format='char' />	
+	<!-- GlobalStar Digital inputs-->
+	<command name="RHM:TEL? 5"   data_length='1'   data_format='hex' />
+	<!-- GlobalStar Busy-->
+	<command name="RHM:TEL? 6"   data_length='1'   data_format='hex' />
+	<!-- WDT Period-->
+	<command name="RHM:TEL? 7"   data_length='4'   data_format='long' />	
+
 </SCPI_Commands>
 	
 	
