@@ -26,6 +26,8 @@
 		<EPS address="0x54" />
 		<RHM address="0x55" />
 		<AIM address="0x56" />
+		<!-- External interface DAC address="0x60"-->
+		<!-- RTC address="0x68"-->
 	</addresses>
 	
 	<!-- Default commands to be shown on startup -->

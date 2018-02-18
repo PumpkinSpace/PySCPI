@@ -566,7 +566,7 @@ def query_delay_command(command):
     # the command was correct
     if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
         # it is correct so retunr the delay period
-        print 'Implementing additional ' + delay_number + 'ms delay.'
+        print '<DELAY>:\t\t ' + delay_number + 'ms'
         delay = int(delay_number)
     else:
         # the delay is not valid

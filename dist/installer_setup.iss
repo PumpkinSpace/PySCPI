@@ -13,7 +13,7 @@ AppSupportURL=http://www.pumpkinspace.com/
 AppUpdatesURL=http://www.pumpkinspace.com/
 AppCopyright=Copyright (C) 2017 Pumpkin Inc.
 ; Location where all of the source files can be found
-SourceDir=c:\Pumpkin\PySCPI_src\dist
+SourceDir=C:\Pumpkin\PySCPI_src\dist
 ; Install loaction specifiers
 DefaultDirName=C:\Pumpkin\pySCPI
 DisableProgramGroupPage=yes
