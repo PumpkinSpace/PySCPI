@@ -43,7 +43,6 @@ SCPI_library = pySCPI_config.command_library()
 # Update the library from XML
 pySCPI_XML.update_commands(SCPI_library)
 
-
 # Initialise the defalut values for the GUI
 GUI_defaults = pySCPI_gui.gui_defaults()
 

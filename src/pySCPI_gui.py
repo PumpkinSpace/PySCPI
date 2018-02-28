@@ -15,7 +15,7 @@ Module to handle the creation and management of the pySCPI GUI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.2' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -588,6 +588,7 @@ class main_gui:
         self.Command_text.insert('insert', 
                                  '\n'.join(default_values.default_commands))
         self.Command_text.bind('<Key>', self.update_filename)
+        self.Command_text.bind('<Control-Key-3>', self.comment_line) 
         self.Command_text.grid(row = 0, column=0, sticky = 'nsew')
         
         # scrollbar for the command text box, linked to the text box
@@ -865,22 +866,82 @@ class main_gui:
         # end if
     # end def
     
+    def is_altering_keypress(self, event):
+        """
+        Function to determine whether a key press alters the text in the 
+        command text box.
+    
+        @param[in]    event:    The keypress event that is to be examined 
+                                (TK.event)
+        @return       (bool)    Whether or not this kepress affects the text.
+                                
+        """
+        
+        # catch for Null events
+        if event == None:
+            return False
+        # end if
+        
+        # initialise the return boolean
+        is_altering = False
+        
+        # extract the character of the keypress
+        key_char = event.char
+        
+        # determin the keypress's ascii value
+        key_ascii = 0
+        if len(key_char) != 0:
+            key_ascii = ord(key_char)
+        # end if
+        
+        # extract the name of the key
+        key_name = event.keysym
+        
+        # a list of altering key names
+        key_names = ['Enter', 'Return', 'Delete', 'BackSpace', 'Tab', '3']
+        
+        # check to see if the keypress is altering.
+        if (key_ascii >= 32) and (key_ascii <= 254):
+            # key is a printing ascii character
+            is_altering = True
+            
+        elif (key_name in key_names):
+            # key changes the text in another way
+            is_altering = True
+        # end if
+        
+        return is_altering
+    # end def
+        
     def update_filename(self, event = None, filename = ''):
         """
         Function to change the loaded filename to display
         
         @param[in]  filename:   The filename to updte the gui to show
                                 (string).
-        """     
+        """
         
-        self.file_window.config(state='normal')
-        self.file_window.delete('1.0', 'end')
-        if event == None:
+        if (event == None):
+            # this function was called not by a keypress
+            self.file_window.config(state='normal')
+            self.file_window.delete('1.0', 'end')
             self.file_window.insert('insert', filename.split('/')[-1])
-        # end
-        self.file_window.config(state = 'disabled')
-        self.file_window.tag_configure('center', justify = 'center')
-        self.file_window.tag_add('center', '1.0', 'end') 
+            self.file_window.config(state = 'disabled')
+            self.file_window.tag_configure('center', justify = 'center')
+            self.file_window.tag_add('center', '1.0', 'end') 
+            
+        else:
+            # a keypress called this function
+            if self.is_altering_keypress(event):
+                # the keypress changed what was in the text box so delete
+                # the filename
+                self.file_window.config(state='normal')
+                self.file_window.delete('1.0', 'end')
+                self.file_window.config(state = 'disabled')
+                self.file_window.tag_configure('center', justify = 'center')
+                self.file_window.tag_add('center', '1.0', 'end') 
+            # end if
+        # end if
     # end def
     
     def update_fields(self, directives, device_detected):
@@ -1150,6 +1211,34 @@ class main_gui:
         
         return logging_time
     # end def
+    
+    def comment_line(self, event):
+        
+        # delete the filename displayed
+        self.update_filename(event)
+        
+        # get the line that the cursor is on
+        cursor_line = self.Command_text.index(TK.INSERT).split('.')[0]
+        
+        # find the start and end indexes of that line
+        line_start = cursor_line + '.0'
+        line_end = str(int(cursor_line)+1) + '.0'
+        
+        # get the text of the line from the text box
+        line_text = self.Command_text.get(line_start, line_end).encode('ascii', 'ignore')
+        
+        # check whether the line is already commented
+        if line_text.startswith('#'):
+            # it is so remove the comment
+            self.Command_text.delete(line_start)
+            
+        else:
+            # it is not so comment the line
+            self.Command_text.insert(line_start, '#')
+        # end if
+        
+    # end def
+        
 # end class
 
 

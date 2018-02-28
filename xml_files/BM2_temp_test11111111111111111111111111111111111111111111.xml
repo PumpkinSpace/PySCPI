@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<aardvark>
+
+<!--Configuration (Need pullups, not sure why...)-->
+	<configure gpio="0" i2c="1" pullups="1" spi="1" />
+	<i2c_bitrate khz="100" />
+	<i2c_free_bus />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 48,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 34 38 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 48,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 34 38 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 49,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 34 39 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 49,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 34 39 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 50,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 35 30 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 50,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 35 30 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 51,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 35 31 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 51,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 35 31 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 71,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 31 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 71,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 31 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 72,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 32 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 72,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 32 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 73,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 33 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 73,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 33 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 74,name-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 34 2c 6e 61 6d 65 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="37" radix="16" />
+	<sleep ms="50" />
+
+<!--BM2:TEL? 74,data-->
+	<i2c_write addr="0x5C" count="17" radix="16">42 4d 32 3a 54 45 4c 3f 20 37 34 2c 64 61 74 61 0a</i2c_write>
+	<sleep ms="50" />
+	<i2c_read addr="0x5C" count="7" radix="16" />
+	<sleep ms="50" />
+
+</aardvark>
