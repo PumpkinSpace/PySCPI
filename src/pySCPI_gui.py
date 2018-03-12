@@ -15,7 +15,7 @@ Module to handle the creation and management of the pySCPI GUI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.2' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -866,6 +866,37 @@ class main_gui:
         # end if
     # end def
     
+    def aardvark_button_state(self, state):
+        """
+        Function to change the configuration of the send commands button.
+        
+        @param[in]    state:    The desired state of the button, 
+                                Either 'start' or 'stop' (string).
+        """
+        # define the partial to start the logging
+        start_command = partial(pySCPI_aardvark.Write_I2C, self)
+        
+        # determine which state to put the button into
+        if state == 'start':
+            # Change the button so that it sends commands
+            self.aardvark_button.config(text = 'Send Commands', 
+                                       command = start_command)   
+            
+        elif state == 'stop':
+            # Change the button so that it stops commands
+            self.aardvark_button.config(state = 'normal', 
+                                      text = 'Stop Commands', 
+                                      command = self.terminator.kill_log) 
+            
+        else:
+            # a valid button state was not requested, default to stop
+            print '*** invalid Send commands button state requested ***'
+            self.aardvark_button.config(state = 'normal', 
+                                      text = 'Stop Commands', 
+                                      command = self.terminator.kill_log)  
+        # end if
+    # end def    
+    
     def is_altering_keypress(self, event):
         """
         Function to determine whether a key press alters the text in the 
@@ -923,9 +954,16 @@ class main_gui:
         
         if (event == None):
             # this function was called not by a keypress
+            
+            # shorten the filename if required
+            print_filename = filename.split('/')[-1]
+            if (len(print_filename) > 33):
+                print_filename = print_filename[0:29] + '...'
+            # end if            
+            
             self.file_window.config(state='normal')
             self.file_window.delete('1.0', 'end')
-            self.file_window.insert('insert', filename.split('/')[-1])
+            self.file_window.insert('insert', print_filename)
             self.file_window.config(state = 'disabled')
             self.file_window.tag_configure('center', justify = 'center')
             self.file_window.tag_add('center', '1.0', 'end') 
@@ -1213,32 +1251,99 @@ class main_gui:
     # end def
     
     def comment_line(self, event):
+        """
+        Function to comment the current line of execution, called by 
+        a particular keypress (Ctrl+3).
+    
+        @param[in] event:        The keypress event that called this function.
+        """ 
         
         # delete the filename displayed
         self.update_filename(event)
         
-        # get the line that the cursor is on
-        cursor_line = self.Command_text.index(TK.INSERT).split('.')[0]
-        
-        # find the start and end indexes of that line
-        line_start = cursor_line + '.0'
-        line_end = str(int(cursor_line)+1) + '.0'
-        
-        # get the text of the line from the text box
-        line_text = self.Command_text.get(line_start, line_end).encode('ascii', 'ignore')
-        
-        # check whether the line is already commented
-        if line_text.startswith('#'):
-            # it is so remove the comment
-            self.Command_text.delete(line_start)
+        if self.Command_text.tag_ranges(TK.SEL):
+            # if there is selected text, find the start and end positions of 
+            # that text.
+            [start, end] = self.Command_text.tag_ranges(TK.SEL)
+            
+            # extract the first and last line indicies of the selected text.
+            line_start = int(str(start).split('.')[0])
+            line_end = int(str(end).split('.')[0])
+            
+            # build a list of the selected line indicies
+            line_list = range(line_start, line_end+1)
             
         else:
-            # it is not so comment the line
-            self.Command_text.insert(line_start, '#')
+            # there is no selected text so pull the cursor line index
+            line_list = [int(self.Command_text.index(TK.INSERT).split('.')[0])]
         # end if
         
-    # end def
+        line_starts = []
+        line_ends = []
+        line_texts = []
         
+        # find the start and end indicies of the selected lines
+        for index in range(len(line_list)):
+            line_starts.append(str(line_list[index]) + '.0')
+            line_ends.append(str(line_list[index]+1) + '.0')
+            line_texts.append(self.Command_text.get(line_starts[index], line_ends[index]).encode('ascii', 'ignore'))
+        # end for
+        
+        # if any line in the range is commented the uncomment those lines
+        if any([line.startswith('#') for line in line_texts]):
+            
+            # check each line to see if a comment needs to be removed
+            for index in range(len(line_texts)):
+                if line_texts[index].startswith('#'):
+                    # this line has a comment so remove it
+                    self.Command_text.delete(line_starts[index])
+                # end if
+            # end for
+            
+        else:
+            # no lines have comments
+            for index in range(len(line_texts)):
+                # add a comment character to each line
+                self.Command_text.insert(line_starts[index], '#')
+            # end for
+        # end if
+    # end def
+    
+    def highlight_line(self, line=None):
+        """
+        Function to highlight a particular line in the command list.
+    
+        @param[in] line:         The line to highlight(0 indexed), 
+                                 None = remove all comments (int)
+        """         
+        
+        # get the names of all tags currently in use
+        names = self.Command_text.tag_names()
+        
+        if 'hlight' in names:
+            # if the highlighting tag is already present, remove it
+            self.Command_text.tag_delete('hlight')
+        # end if
+        
+        if line != None:
+            # highlighting of a line has been requested
+            # enable editing of the text box
+            self.Command_text.config(state = 'normal')
+            
+            # define the start and end points for the highlighting
+            self.Command_text.mark_set('tag_start', str(line+1) + '.0')
+            self.Command_text.mark_set('tag_end', str(line+2) + '.0')
+            
+            # highlight that line
+            self.Command_text.tag_config('hlight', background='blue', 
+                                         foreground = 'white')
+            self.Command_text.tag_add('hlight', 'tag_start', 'tag_end')
+            
+            # re-lock the command text box
+            self.Command_text.config(state = 'disabled')
+        # end if
+    # end def
+
 # end class
 
 

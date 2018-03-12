@@ -15,7 +15,7 @@ Module to handle the formatting of data in the pySCPI program.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.0' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -121,7 +121,7 @@ def print_read(command, raw_data, gui):
         if (not write_flag[0] & 1) and pySCPI_config.has_preamble(command):
             # The command was sent too fast, bad data was recieved
             print '*** Read failed, Write flag = 0, '\
-                  'try increasing the messgage delay***'
+                  'try increasing the message delay***'
             
         elif (all(byte == 1 for byte in raw_data) or
               all(byte == 0 for byte in raw_data)):

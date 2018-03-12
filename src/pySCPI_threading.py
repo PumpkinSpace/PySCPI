@@ -15,7 +15,7 @@ Module to handle the multi-threading aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -86,14 +86,23 @@ def I2C_thread(write_directives, gui):
     @param[in]  gui:              Instance of the gui that this thread is 
                                   started by (pySCPI_gui.main_gui).
     """      
+    # Change the role of the button so that it stops commands
+    gui.aardvark_button_state('stop')    
+    
     # write via the Aardvark
     pySCPI_aardvark.write_aardvark(write_directives, gui)
     # clear the thread termination flag
     gui.terminator.kill_event.clear()
     
+    # re-allow access to hte command text box
+    gui.Command_text.config(state = 'normal')
+    
     if not gui.terminator.root_destroyed:
         # unlock all of the GUI buttons
         gui.action_lock('Unlock')
+        
+        # Reset the button back to it's initial state
+        gui.aardvark_button_state('start')        
     # end if
 # end def
 
@@ -118,6 +127,9 @@ def I2C_log_thread(write_directives, filename, gui):
     
     # clear the flag that stopped logging
     gui.terminator.kill_event.clear()
+    
+    # re-allow access to hte command text box
+    gui.Command_text.config(state = 'normal')    
     
     # determine if there is still a gui to update
     if not gui.terminator.root_destroyed:

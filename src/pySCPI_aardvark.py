@@ -15,7 +15,7 @@ Module to handle the aardvark aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.1' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -62,6 +62,9 @@ def Write_I2C(gui):
     # make the pressed button green
     gui.aardvark_button.config(background = 'green')
     
+    # block access to the command text box
+    gui.Command_text.config(state = 'disabled')
+    
     # clear the output
     gui.output_clear()
     
@@ -103,6 +106,9 @@ def start_logging(gui):
     gui.action_lock('Lock', None)
     # highlight the button that was pressed
     gui.logging_button.config(background = 'green')
+    
+    # block access to the command text box
+    gui.Command_text.config(state = 'disabled')    
     
     # clear output
     gui.output_clear()
@@ -146,6 +152,9 @@ def start_logging(gui):
         # unlock buttons
         gui.action_lock('Unlock')
         
+        # re-allow access to hte command text box
+        gui.Command_text.config(state = 'normal')        
+        
     elif pySCPI_config.file_is_free(filename_full): 
         # the file is free so can be logged to
         
@@ -165,7 +174,10 @@ def start_logging(gui):
         print'*** Requested log file is in use by another program ***'
         
         # unlock buttons
-        gui.action_lock('Unlock')        
+        gui.action_lock('Unlock')   
+        
+        # re-allow access to hte command text box
+        gui.Command_text.config(state = 'normal')        
     # end if            
 # end def
 
@@ -278,8 +290,18 @@ def write_aardvark(directives, gui):
     # Check to see if an Aardvark was actually found
     if Aardvark_in_use != None:
         # iterate through commands and add them to the aardvark file
-        # commands that start with # are deemed comments
-        for command in [c for c in commands if not c.startswith('#')]:
+        command_count = 0
+        for command in commands:
+            
+            # ignore comment lines that start with a #
+            if command.startswith('#'):
+                command_count +=1
+                continue
+            # end if
+            
+            # find the line of execution and highlight it
+            gui.highlight_line(command_count)
+            
             # determine if the command is a configuration command
             if pySCPI_config.is_config(command):
                 # configure the system based on the config command
@@ -341,7 +363,13 @@ def write_aardvark(directives, gui):
             
             # increment the progress bar
             gui.progress.step()
+            
+            # increment the command counter
+            command_count += 1
         # end for
+        
+        # unhighlight the last row
+        gui.highlight_line()
         
         # close the AArdvark device
         aardvark_py.aa_close(Aardvark_in_use)
@@ -406,8 +434,18 @@ def log_aardvark(directives, filename, gui):
             first_timestamp = ''
             
             # iterate through commands and add them to the aardvark file
+            command_count = 0
             # commands that start with # are deemed comments
-            for command in [c for c in commands if not c.startswith('#')]:
+            for command in commands:
+                
+                # skip comments that start with #
+                if command.startswith('#'):
+                    command_count += 1
+                    continue
+                # end if
+                
+                gui.highlight_line(command_count)
+                
                 # determine if the command is a configuration command
                 if pySCPI_config.is_config(command):
                     # configure the system based on the config command
@@ -477,6 +515,8 @@ def log_aardvark(directives, filename, gui):
                     # End if a stop has been issued
                     break            
                 # end if
+                
+                command_count += 1
             # end while
             
             # get the earliest timestamp from the row
@@ -501,7 +541,10 @@ def log_aardvark(directives, filename, gui):
             # end if
             
             # write the row to the log file
-            output_writer.writerow(csv_row)         
+            output_writer.writerow(csv_row)      
+            
+            # unhighlight the last row
+            gui.highlight_line()                 
             
             # pace the loop to the correct logging period
             while (time.time() - start_time) < logging_p:
@@ -512,10 +555,10 @@ def log_aardvark(directives, filename, gui):
                 if gui.terminator.kill_event.isSet():
                     # it should so exit
                     break
-            # end if
+                # end if
             # end while
             
-            start_time = time.time()
+            start_time = time.time()        
             
             # check to see if we can clear the gui for the next period
             if not gui.terminator.root_destroyed:        
@@ -529,6 +572,9 @@ def log_aardvark(directives, filename, gui):
     
         # close the csv file
         csv_output.close()   
+        
+        # unhighlight the last row
+        gui.highlight_line()        
         
         # close the aardvark
         aardvark_py.aa_close(Aardvark_in_use)
