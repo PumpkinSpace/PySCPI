@@ -39,6 +39,9 @@
 	<command name="SUP:TEL? 11"   data_length='1'   data_format='schar' />
 <!-- NVM Cycles-->
 	<command name="SUP:TEL? 12"   data_length='2'   data_format='uint' />
+<!-- Reset Source-->
+	<command name="SUP:TEL? 13"   data_length='2'   data_format='uint' />
+
 
 	
 	
