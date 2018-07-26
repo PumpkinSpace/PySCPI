@@ -15,7 +15,7 @@ Module to handle the aardvark aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -298,6 +298,8 @@ def write_aardvark(directives, gui):
                 command_count +=1
                 continue
             # end if
+            
+            command = command.upper()
             
             # find the line of execution and highlight it
             gui.highlight_line(command_count)

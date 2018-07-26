@@ -16,7 +16,7 @@ values and declaring the dictionaries of address and commands.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.3' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -167,8 +167,8 @@ class command_library:
                 # the command is valid so proceed
                 
                 # define list of keys to use
-                keys = [command + ',name', command + ',data',
-                        command + ',length', command + ',ascii']
+                keys = [command + ',NAME', command + ',DATA',
+                        command + ',LENGTH', command + ',ASCII']
                 
                 # define list of bbyte lengths to use
                 key_bytes = [# name length
