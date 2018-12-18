@@ -17,7 +17,7 @@ Aardvark device manufactured by Total Phase.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -55,9 +55,6 @@ terminator = pySCPI_threading.terminator_event()
 # construct the GUI
 GUI = pySCPI_gui.main_gui(GUI_defaults, __version__, terminator, 
                           SCPI_library)
-
-# remap stdout to the GUI
-sys.stdout = pySCPI_gui.GUI_Writer(GUI)
 
 # start the GUI
 GUI.start(GUI_defaults, SCPI_library)

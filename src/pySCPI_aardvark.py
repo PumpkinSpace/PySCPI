@@ -15,7 +15,7 @@ Module to handle the aardvark aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -66,7 +66,7 @@ def Write_I2C(gui):
     gui.Command_text.config(state = 'disabled')
     
     # clear the output
-    gui.output_clear()
+    gui.text_queue.put(None)
     
     # get the desired delay from the gui.
     delay_time = gui.get_delay()
@@ -111,7 +111,7 @@ def start_logging(gui):
     gui.Command_text.config(state = 'disabled')    
     
     # clear output
-    gui.output_clear()
+    gui.text_queue.put(None)
     
     # get the desired delay from the gui.
     delay_time = gui.get_delay()
@@ -146,8 +146,8 @@ def start_logging(gui):
     # check the validity of the filename
     if (filename_full == ''):
         # No file was selected
-        gui.output_clear()     
-        print '*** No Logging filename selected ***'
+        gui.text_queue.put(None)     
+        gui.text_queue.put('*** No Logging filename selected ***')
         
         # unlock buttons
         gui.action_lock('Unlock')
@@ -171,7 +171,7 @@ def start_logging(gui):
         
     else:
         # the file is in use by another program
-        print'*** Requested log file is in use by another program ***'
+        gui.text_queue.put('*** Requested log file is in use by another program ***')
         
         # unlock buttons
         gui.action_lock('Unlock')   
@@ -182,7 +182,7 @@ def start_logging(gui):
 # end def
 
 
-def update_aardvark(command, address, Aardvark_in_use):
+def update_aardvark(command, address, Aardvark_in_use, text_queue):
     """
     Perform the configureation requested by a config command
     
@@ -192,13 +192,14 @@ def update_aardvark(command, address, Aardvark_in_use):
                                  (int).
     @param[in]  AArdvark_in_use: The aardvark port in use 
                                  (aardvark_py.Aardvark).
+    @param[out] text_queue:      The queue to write outpuit to (Queue).
     @return     (int)            The new I2C address to use 
                                  (potentially unchanged).
     """    
     new_address = address
     # determine the appropriate action to take
     if 'DELAY ' in command:
-        delay_time = query_delay_command(command)
+        delay_time = query_delay_command(command, text_queue)
         aardvark_py.aa_sleep_ms(delay_time) 
     elif 'ADDRESS ' in command:
         # strip out the number
@@ -211,11 +212,11 @@ def update_aardvark(command, address, Aardvark_in_use):
            (address_list[0] == '<ADDRESS'):
             # is a good address
             new_address = int(address_hex,16)
-            print 'Changed slave I2C address to ' + address_hex + '.'
+            text_queue.put('Changed slave I2C address to ' + address_hex + '.')
         else:
             # the adderss is invlaid
-            print '*** The requested ADDRESS command is not valid. '\
-                  'Use <ADDRESS 0xYY>***'
+            text_queue.put('*** The requested ADDRESS command is not valid. '\
+                  'Use <ADDRESS 0xYY>***')
         # end if        
     
     elif 'BITRATE ' in command:
@@ -226,11 +227,11 @@ def update_aardvark(command, address, Aardvark_in_use):
             # is a good bitrate
             bitrate = aardvark_py.aa_i2c_bitrate(Aardvark_in_use, int(speed_num))
             aardvark_py.aa_sleep_ms(200)             
-            print 'Changed I2C bitrate to ' + str(bitrate) + 'kHz.'
+            text_queue.put('Changed I2C bitrate to ' + str(bitrate) + 'kHz.')
         else:
             # the bitrate is invlaid
-            print '*** The requested BITRATE command is not valid. '\
-                  'Use <BITRATE x>***'
+            text_queue.put('*** The requested BITRATE command is not valid. '\
+                  'Use <BITRATE x>***')
         # end if         
         
     elif 'PULLUPS ' in command:
@@ -240,23 +241,23 @@ def update_aardvark(command, address, Aardvark_in_use):
             aardvark_py.aa_i2c_pullup(Aardvark_in_use, 
                                       aardvark_py.AA_I2C_PULLUP_BOTH)
             aardvark_py.aa_sleep_ms(200)   
-            print 'Turned I2C pullups on.'
+            text_queue.put('Turned I2C pullups on.')
         
         elif command == '<PULLUPS OFF>':
             # turn pullups off
             aardvark_py.aa_i2c_pullup(Aardvark_in_use, 
                                       aardvark_py.AA_I2C_PULLUP_NONE)
             aardvark_py.aa_sleep_ms(200)  
-            print 'Turned I2C pullups off.'
+            text_queue.put('Turned I2C pullups off.')
         
         else:
-            print '*** Invalid Pullup Command, use either '\
-                  '<PULLUPS ON> or <PULLUPS OFF>***'
+            text_queue.put('*** Invalid Pullup Command, use either '\
+                  '<PULLUPS ON> or <PULLUPS OFF>***')
         #end if  
         
     else:
-        print '*** The configuration command requested in not valid, '\
-              'refer to Read Me***'
+        text_queue.put('*** The configuration command requested in not valid, '\
+              'refer to Read Me***')
     # end if  
     
     return new_address
@@ -282,10 +283,10 @@ def write_aardvark(directives, gui):
     Ascii_delay = directives.ascii_time
     
     # configure the progress bar
-    gui.progress.config(maximum = len([c for c in commands if not c.startswith('#')]))
+    gui.progress_queue.put(str(len([c for c in commands if not c.startswith('#')])))
     
     # configure Aardvark if available
-    Aardvark_in_use = configure_aardvark()
+    Aardvark_in_use = configure_aardvark(gui.text_queue)
     
     # Check to see if an Aardvark was actually found
     if Aardvark_in_use != None:
@@ -302,26 +303,26 @@ def write_aardvark(directives, gui):
             command = command.upper()
             
             # find the line of execution and highlight it
-            gui.highlight_line(command_count)
+            gui.line_queue.put(command_count)
             
             # determine if the command is a configuration command
             if pySCPI_config.is_config(command):
                 # configure the system based on the config command
-                dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use)
+                dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use, gui.text_queue)
                 
             else:
                 # Prepare the data for transmission
                 if pySCPI_config.is_raw_write(command):
                     # it is a raw write command to send that
-                    send_raw_command(command, Aardvark_in_use)
+                    send_raw_command(command, Aardvark_in_use, gui.text_queue)
                     
-                elif pySCPI_config.is_raw_read(command):
+                elif pySCPI_config.is_raw_read(command, gui.text_queue):
                     # it is a rew read command so read the data
-                    read_raw_command(command, Aardvark_in_use)
+                    read_raw_command(command, Aardvark_in_use, gui.text_queue)
                     
                 else:
                     # it is a normal command
-                    send_scpi_command(command, Aardvark_in_use, dec_addr)
+                    send_scpi_command(command, Aardvark_in_use, dec_addr, gui.text_queue)
                 # end if
             # end if
             
@@ -353,7 +354,7 @@ def write_aardvark(directives, gui):
             # end if
             
             # print an empty line
-            print ''
+            gui.text_queue.put('')
             
             # intermessage delay
             aardvark_py.aa_sleep_ms(Delay)
@@ -364,18 +365,18 @@ def write_aardvark(directives, gui):
             # end
             
             # increment the progress bar
-            gui.progress.step()
+            gui.progress_queue.put('step')
             
             # increment the command counter
             command_count += 1
         # end for
         
         # unhighlight the last row
-        gui.highlight_line()
+        gui.line_queue.put(None)
         
         # close the AArdvark device
         aardvark_py.aa_close(Aardvark_in_use)
-        print 'Aardvark communications finished'
+        gui.text_queue.put('Aardvark communications finished')
     
     else:
         return 0
@@ -404,9 +405,9 @@ def log_aardvark(directives, filename, gui):
     logging_p = directives.logging_p
     
     # configure the progress bar to be the correct length
-    gui.progress.config(maximum = logging_p*10)
+    gui.progress_queue.put(str(logging_p*10))
     # increment the progress bar every 100 ms
-    gui.progress.start(100)
+    gui.progress_queue.put('start')
     
     # set up the csv writing output
     csv_output = open(filename, 'wb')
@@ -419,7 +420,7 @@ def log_aardvark(directives, filename, gui):
     output_writer.writerow(csv_line)     
     
     # configure Aardvark if available
-    Aardvark_in_use = configure_aardvark()
+    Aardvark_in_use = configure_aardvark(gui.text_queue)
     
     # Check to see if an Aardvark was actually found
     if Aardvark_in_use != None:    
@@ -446,31 +447,34 @@ def log_aardvark(directives, filename, gui):
                     continue
                 # end if
                 
-                gui.highlight_line(command_count)
+                command = command.upper()
+                
+                gui.line_queue.put(command_count)
                 
                 # determine if the command is a configuration command
                 if pySCPI_config.is_config(command):
                     # configure the system based on the config command
                     dec_addr = update_aardvark(command, dec_addr, 
-                                               Aardvark_in_use)
+                                               Aardvark_in_use, gui.text_queue)
                     
                 else:
                     # Prepare the data for transmission
                     if pySCPI_config.is_raw_write(command):
                         # it is a raw write command to send that
-                        send_raw_command(command, Aardvark_in_use)
+                        send_raw_command(command, Aardvark_in_use, gui.text_queue)
                         
-                    elif pySCPI_config.is_raw_read(command):
+                    elif pySCPI_config.is_raw_read(command, gui.text_queue):
                         # it is a rew read command so read the data and 
                         # add it to the csv row
                         csv_row.append(read_raw_command(command, 
                                                         Aardvark_in_use,
+                                                        gui.text_queue,
                                                         logging = True))
                         
                     else:
                         # it is a normal command
                         send_scpi_command(command, Aardvark_in_use, 
-                                          dec_addr)
+                                          dec_addr, gui.text_queue)
                     # end if
                 # end if
                 
@@ -507,7 +511,7 @@ def log_aardvark(directives, filename, gui):
                 # end if
                 
                 # print a blank line
-                print ''
+                gui.text_queue.put('')
                 
                 # intermessage delay
                 aardvark_py.aa_sleep_ms(Delay)
@@ -546,7 +550,11 @@ def log_aardvark(directives, filename, gui):
             output_writer.writerow(csv_row)      
             
             # unhighlight the last row
-            gui.highlight_line()                 
+            gui.line_queue.put(None)
+            
+            if (time.time() - start_time) < logging_p:
+                gui.text_queue.put('Waiting for next logging loop...')
+            # end if
             
             # pace the loop to the correct logging period
             while (time.time() - start_time) < logging_p:
@@ -565,22 +573,22 @@ def log_aardvark(directives, filename, gui):
             # check to see if we can clear the gui for the next period
             if not gui.terminator.root_destroyed:        
                 # clear the output display on the GUI
-                gui.output_clear()
+                gui.text_queue.put(None)
             # end if
             
-            gui.progress.config(value = 0)
+            gui.progress_queue.put(0)
         # end while
-        gui.progress.stop()
+        gui.progress_queue.put(None)
     
         # close the csv file
         csv_output.close()   
         
         # unhighlight the last row
-        gui.highlight_line()        
+        gui.line_queue.put(None)       
         
         # close the aardvark
         aardvark_py.aa_close(Aardvark_in_use)
-        print 'Aardvark logging finished'
+        gui.text_queue.put('Aardvark logging finished')
     
     else: 
         # no aardvark connection was established
@@ -594,13 +602,14 @@ def log_aardvark(directives, filename, gui):
 # Private Functions
 
 
-def query_delay_command(command):
+def query_delay_command(command, text_queue):
     """
     Function to investigate a delay command, and if it is deemed valid
     then return the delay
     
     @param[in] command:          The command to be tested and executed
                                  (string).
+    @param[out] text_queue:      The queue to write outpuit to (Queue).
     @return    (int)             The delay to be executed in miliseconds
                                  0 if the command is invalid
     """  
@@ -614,23 +623,24 @@ def query_delay_command(command):
     # the command was correct
     if delay_number.isdigit() and (delay_list[0] == '<DELAY'):
         # it is correct so retunr the delay period
-        print '<DELAY>:\t\t ' + delay_number + 'ms'
+        text_queue.put('<DELAY>:\t\t ' + delay_number + 'ms')
         delay = int(delay_number)
     else:
         # the delay is not valid
-        print '*** The requested DELAY command is not valid. '\
-              'Use <DELAY x>***'
+        text_queue.put('*** The requested DELAY command is not valid. '\
+              'Use <DELAY x>***')
         delay = 0
     # end if
     
     return delay
 # end def
 
-def configure_aardvark():
+def configure_aardvark(text_queue):
     """ 
     Function to configure the aardvark for pySCPI operation if there is one
     available.
     
+    @param[out] text_queue:      The queue to write outpuit to (Queue).
     @return  (aardvark_py.aardvark)   The handle of the aardvark to be used
                                       'None' if there is not one available
     """
@@ -649,7 +659,7 @@ def configure_aardvark():
     # Check if there is an Aardvark present
     if (AA_Devices[0] < 1):
         # there is no aardvark to be found
-        print '*** No Aardvark is present ***'
+        text_queue.put('*** No Aardvark is present ***')
         Aardvark_free = False
         
     else:
@@ -662,8 +672,8 @@ def configure_aardvark():
     # If there is an Aardvark there is it free?
     if Aardvark_port >= 8<<7 and Aardvark_free:
         # the aardvark is not free
-        print '*** Aardvark is being used, '\
-              'disconnect other application or Aardvark device ***'
+        text_queue.put('*** Aardvark is being used, '\
+              'disconnect other application or Aardvark device ***')
         # close the aardvark
         aardvark_py.aa_close(Aardvark_port)
         Aardvark_free = False
@@ -691,24 +701,25 @@ def configure_aardvark():
         # delay to allow the config to be registered
         aardvark_py.aa_sleep_ms(200)    
         
-        print "Starting Aardvark communications\n"
+        text_queue.put("Starting Aardvark communications\n")
     # end if    
     
     return Aardvark_in_use
 # end def
 
 
-def send_raw_command(command, Aardvark_in_use):
+def send_raw_command(command, Aardvark_in_use, text_queue):
     """
     Function to send a <RAW> command to a slave device.
     
     @param[in]    command:         The command to send (string).
     @param[in]    Aardvark_in_use: The Aaardvark to use to send the command
                                    (aardvark_py.aardvark)
+    @param[out] text_queue:      The queue to write outpuit to (Queue).
     """
     
     # determine if it is a valid raw command
-    if pySCPI_config.is_valid_raw(command):
+    if pySCPI_config.is_valid_raw(command, text_queue):
         # it is so extract the data to write
         write_data = command[:-1].split(' ')
         
@@ -730,15 +741,15 @@ def send_raw_command(command, Aardvark_in_use):
                                  aardvark_py.AA_I2C_NO_FLAGS, 
                                  data)
         # write output
-        print 'Raw Write:\t\t[' + \
+        text_queue.put('Raw Write:\t\t[' + \
               ' '.join([str(item) for item in write_data[2:]]) + \
-              '] to address ' + write_data[1][:-1]
+              '] to address ' + write_data[1][:-1])
         # end if   
     # end if
 # end def
 
 
-def read_raw_command(command, Aardvark_in_use, logging = False):
+def read_raw_command(command, Aardvark_in_use, text_queue, logging = False):
     """
     Function to read a <RAW> command from a slave device.
     
@@ -746,6 +757,7 @@ def read_raw_command(command, Aardvark_in_use, logging = False):
                                    (string).
     @param[in]    Aardvark_in_use: The Aaardvark to use to read the data
                                    (aardvark_py.aardvark).
+    @param[out]   text_queue:      The queue to write outpuit to (Queue).
     @param[in]    logging:         Is the data read going to be logged. 
                                    If so, return the data (bool).
     @return       (string)         The data to be logged if logging 
@@ -753,7 +765,7 @@ def read_raw_command(command, Aardvark_in_use, logging = False):
     """    
     
     # check if the command is valid
-    if pySCPI_config.is_valid_raw(command):
+    if pySCPI_config.is_valid_raw(command, text_queue):
         # it is valid so break the command into parts
         data_list = command.split(' ')
         
@@ -775,8 +787,8 @@ def read_raw_command(command, Aardvark_in_use, logging = False):
         data_string = ' '.join(['%02X' % x for x in list(read_data[1])])
         
         # print the result
-        print 'Raw Read:\t\t[' + data_string + '] from address ' + \
-              data_list[1][:-1]
+        text_queue.put('Raw Read:\t\t[' + data_string + '] from address ' + \
+              data_list[1][:-1])
         
         # if the data is to be logged retun the data in a string format
         if logging:
@@ -786,7 +798,7 @@ def read_raw_command(command, Aardvark_in_use, logging = False):
 # end def
 
 
-def send_scpi_command(command, Aardvark_in_use, dec_addr):
+def send_scpi_command(command, Aardvark_in_use, dec_addr, text_queue):
     """
     Function to send a SCPI command to the slave device
     
@@ -794,6 +806,7 @@ def send_scpi_command(command, Aardvark_in_use, dec_addr):
     @param[in]    Aardvark_in_use: The Aaardvark to use to read the data
                                    (aardvark_py.aardvark)
     @param[in]    dec_addr:        the decimal address to write to (int)
+    @param[out]   text_queue:      The queue to write outpuit to (Queue).
     """  
     
     # convert the data into a list of bytes and append the terminator
@@ -812,10 +825,10 @@ def send_scpi_command(command, Aardvark_in_use, dec_addr):
     # print what was done
     if 'TEL?' in command:
         # there is data to follow
-        print 'Read:\t\t' + command
+        text_queue.put('Read:\t\t' + command)
     else:
         # there is not
-        print 'Write:\t\t' + command
+        text_queue.put('Write:\t\t' + command)
     # end if   
 # end def
 
@@ -834,6 +847,8 @@ def create_csv_header(commands, gui):
     
     # iterate through command list
     for command in commands:
+        
+        command = command.upper()
         
         # only log telemetry requests and raw data reads
         if 'TEL?' in command:
@@ -860,9 +875,9 @@ def create_csv_header(commands, gui):
                 # end for
             # end if
             
-        elif pySCPI_config.is_raw_read(command):
+        elif pySCPI_config.is_raw_read(command, gui.text_queue):
             # the command is a raw_read command
-            if pySCPI_config.is_valid_raw(command):
+            if pySCPI_config.is_valid_raw(command, gui.text_queue):
                 # and it is a valid raw command
                 csv_line.append(command)
             # end if

@@ -15,7 +15,7 @@ Module to handle the creation and management of the pySCPI GUI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -30,6 +30,7 @@ import platform
 import pySCPI_XML
 from functools import partial
 from PIL import Image, ImageTk
+import Queue
 
 
 # ---------
@@ -268,6 +269,9 @@ class main_gui:
     @attribute logging_button  (TK Button)        'Start Logging' Button
     @attribute progress        (ttk Progressbar)  Progress bar on the GUI
     @attribute output_text     (TK text)          Output text box
+    @attribute text_queue      (Queue)            Output text queue
+    @attribute line_queue      (Queue)            Line in the command box highlighting queue
+    @attribute progress_queue  (Queue)            Progressbar position queue
     """
     
     def __init__(self,default_values,version_number,terminator,scpi_commands):
@@ -287,6 +291,11 @@ class main_gui:
         self.defaults = default_values
         self.terminator = terminator
         self.scpi_commands = scpi_commands
+        
+        self.log_file = open("log_file.txt", "w")
+        self.text_queue = Queue.Queue()
+        self.line_queue = Queue.Queue()
+        self.progress_queue = Queue.Queue()
         
         self.root = TK.Tk()
         self.root.geometry(str(root_width) + 'x' + str(root_height))
@@ -706,13 +715,87 @@ class main_gui:
         
     # end def
     
-    def output_clear(self):
+    def update_gui(self):
         """
-        Clear the output text window
-        """        
-        self.output_text.config(state='normal')
-        self.output_text.delete('1.0', 'end')
-        self.output_text.config(state='disabled')   
+        Check the queues for pending change to the gui and implement them.
+        """
+        
+        # check for items to print to the output window
+        if not self.text_queue.empty():
+            # open the output text box for editing
+            self.output_text.config(state='normal')
+            
+            # write any pending messages
+            while not self.text_queue.empty():
+                string = self.text_queue.get()
+                
+                if string ==  None:
+                    self.output_text.delete('1.0', 'end')
+                else:
+                    string = string+ '\n'
+                    
+                    # write to log file
+                    self.log_file.write(string)                
+                    
+                    if string.startswith('*'):
+                        self.output_text.insert('end', string, 'error')
+                        self.add_error()
+                    else:
+                        self.output_text.insert('end', string)
+                    # end if                    
+                # end if
+            # end while
+            
+            self.output_text.see('end')
+            self.output_text.config(state='disabled')        
+        # end if
+        
+        
+        # check for lines to highlight in the command box
+        if not self.line_queue.empty():
+
+            # highlight lines
+            while not self.line_queue.empty():
+                line = self.line_queue.get()
+                
+                self.highlight_line(line)
+                
+                if line != None:
+                    self.Command_text.see(str(line+1) + '.0')
+                    
+                else:
+                    self.Command_text.see('0.0')
+                # end if                
+            # end while
+        #end if
+        
+        # check for progress bar progress
+        if not self.progress_queue.empty():
+
+            # highlight lines
+            while not self.progress_queue.empty():
+                progress = self.progress_queue.get()
+                
+                if progress == 'step':
+                    self.progress.step()
+                    
+                elif progress == 'start':
+                    self.progress.start(100)
+                    
+                elif type(progress) == str:
+                    # changing the maximum
+                    self.progress.config(maximum = int(progress))
+                    
+                elif progress != None:
+                    self.progress.config(value = 0)
+                        
+                else:
+                    self.progress.stop()
+                # end if                
+            # end while
+        #end if        
+        
+        self.root.after(10, self.update_gui)
     # end def
     
     def start(self, gui_defs, command_defs):
@@ -725,13 +808,14 @@ class main_gui:
                                   (Dictionary)
         """   
         for error in gui_defs.error_log:
-            print error
+            self.text_queue.put(error)
         # end for
         
         for error in command_defs.error_log:
-            print error
+            self.text_queue.put(error)
         # end for
             
+        self.root.after(10, self.update_gui)
         self.root.mainloop()
     # end def
        
@@ -859,7 +943,7 @@ class main_gui:
             
         else:
             # a valid button state was not requested, default to stop
-            print '*** invalid logging button state requested ***'
+            self.text_queue.put('*** invalid logging button state requested ***')
             self.logging_button.config(state = 'normal', 
                                       text = 'Stop Logging', 
                                       command = self.terminator.kill_log)  
@@ -890,7 +974,7 @@ class main_gui:
             
         else:
             # a valid button state was not requested, default to stop
-            print '*** invalid Send commands button state requested ***'
+            self.text_queue.put('*** invalid Send commands button state requested ***')
             self.aardvark_button.config(state = 'normal', 
                                       text = 'Stop Commands', 
                                       command = self.terminator.kill_log)  
@@ -1026,8 +1110,8 @@ class main_gui:
                 # so color it yellow as a warning
                 self.addr_text.config(background = 'yellow') 
                 
-                print '*** Warning, loaded device address '\
-                      'does not match a device default ***'
+                self.text_queue.put('*** Warning, loaded device address '\
+                      'does not match a device default ***')
             # end if  
         elif address in local_addrs.values():
             # address matches a device
@@ -1036,8 +1120,8 @@ class main_gui:
         else:
             # address does not so color it yellow as a warning
             self.addr_text.config(background = 'yellow') 
-            print '*** Warning, loaded device address '\
-                  'does not match a device default ***'
+            self.text_queue.put('*** Warning, loaded device address '\
+                  'does not match a device default ***')
         # end if
        
        
@@ -1076,8 +1160,8 @@ class main_gui:
             
         else:
             # the delay is not valid
-            print '*** Requested delay is not valid, '\
-                  'reverting to default ***'
+            self.text_queue.put('*** Requested delay is not valid, '\
+                  'reverting to default ***')
             # restore the default delay
             self.delay.delete(0,'end')
             self.delay.insert(0, str(delay_time))
@@ -1105,8 +1189,8 @@ class main_gui:
             
         else:
             # the delay is invalid
-            print '*** Requested ascii delay is not valid, '\
-                  'reverting to default ***'
+            self.text_queue.put('*** Requested ascii delay is not valid, '\
+                  'reverting to default ***')
             
             # restore the default delay
             self.ascii.delete(0,'end')
@@ -1135,8 +1219,8 @@ class main_gui:
             
         else:
             # is it not a valid delay
-            print '*** Invalid address entered, '\
-                  'reverting to device default ***'
+            self.text_queue.put('*** Invalid address entered, '\
+                  'reverting to device default ***')
             
             # restore the defalut delay for the selected module
             addr_string = self.defaults.address_of[self.slave_var.get()]
@@ -1227,8 +1311,8 @@ class main_gui:
             
         else:
             # the logging delay is unacceptible
-            print '*** Requested logging period is not valid, '\
-                  'reverting to default ***'
+            self.text_queue.put('*** Requested logging period is not valid, '\
+                  'reverting to default ***')
             
             # revert to the length of time taken to execute all commands
             logging_time = loop_time * 2          
@@ -1242,8 +1326,8 @@ class main_gui:
         if logging_time <= loop_time*1.2:
             # this is deemed to short for consistant operaton so 
             # warn the user
-            print '*** Warning, logging period may be shorter than '\
-                  'the duration of the commands requested ***'
+            self.text_queue.put('*** Warning, logging period may be shorter than '\
+                  'the duration of the commands requested ***')
             
         # end if 
         
@@ -1347,41 +1431,57 @@ class main_gui:
 # end class
 
 
-class GUI_Writer(object):
-    """
-    Class to handle the re-mapping of stdout to the GUI
+#class GUI_Writer(object):
+    #"""
+    #Class to handle the re-mapping of stdout to the GUI
     
-    @attribute output_text (TK text) Text box on gui to write to.
-    @attribute add_error   (Fuction) remapping of gui.add_error function to 
-                                     log errors that are counted.
-    """    
-    def __init__(self, gui):
-        """
-        Construct the GUI_Writer object
+    #@attribute output_text (TK text) Text box on gui to write to.
+    #@attribute add_error   (Fuction) remapping of gui.add_error function to 
+                                     #log errors that are counted.
+    #@attribute log_file    (File)    Text file that contains all output
+    #"""    
+    #def __init__(self, gui):
+        #"""
+        #Construct the GUI_Writer object
         
-        @param[in] gui:      The GUI to print output to (pySCPI_gui.main_gui)
-        """           
-        self.output_text = gui.output_text
-        self.add_error = gui.add_error
-    # end def
+        #@param[in] gui:      The GUI to print output to (pySCPI_gui.main_gui)
+        #"""           
+        #self.output_text = gui.output_text
+        #self.add_error = gui.add_error
+        #self.log_file = open("log_file.txt", "w")
+        #self.old_stdout = sys.stdout
         
-    # what to do when a 'print' command is issued 
-    def write(self, string):
-        """
-        Write to the GUI text box.
+    ## end def
         
-        @param[in] string:   The string to write to the GUI.
-        """             
-        self.output_text.config(state='normal')
-        if string.startswith('*'):
-            self.output_text.insert('end', string, 'error')
-            self.add_error()
-        else:
-            self.output_text.insert('end', string)
-        # end
-        self.output_text.config(state='disabled')
-    # end def
-# end class
+    ## what to do when a 'print' command is issued 
+    #def write(self, string):
+        #"""
+        #Write to the GUI text box.
+        
+        #@param[in] string:   The string to write to the GUI.
+        #"""          
+        
+        ## write to log file
+        #self.log_file.write(string)
+        
+        #try:
+            #self.output_text.config(state='normal')
+            #if string.startswith('*'):
+                #self.output_text.insert('end', string, 'error')
+                #self.add_error()
+            #else:
+                #self.output_text.insert('end', string)
+            ## end
+            #self.output_text.see('end')
+            #self.output_text.config(state='disabled')
+            
+        #except:
+            ## could not write to the output text frame
+            #self.old_stdout.write(string + '\n')    
+        ## end try
+        
+    ## end def
+## end class
 
                 
 #
@@ -1398,20 +1498,18 @@ def View_Readme(gui):
     # lock buttons
     gui.action_lock('Lock', gui.readme_button)
     # clear output
-    gui.output_text.config(state='normal')
-    gui.output_text.delete('1.0', 'end')
-    gui.output_text.config(state='disabled') 
+    gui.text_queue.put(None)
     
     # read all lines from the readme
     with open('src/pySCPI README.txt', 'r') as f:
         content = f.readlines() 
     # end with
     
-    print content[0].rstrip() + ' v' + gui.version + '.'
+    gui.text_queue.put(content[0].rstrip() + ' v' + gui.version + '.')
     
     # print each line to the gui
     for line in content[1:]:
-        print line.rstrip()
+        gui.text_queue.put(line.rstrip())
     # end for
     
     gui.zero_errors()

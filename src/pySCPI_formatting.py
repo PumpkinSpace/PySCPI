@@ -15,7 +15,7 @@ Module to handle the formatting of data in the pySCPI program.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -42,6 +42,8 @@ def read_length(command, gui):
     @return     (Int)     The length of that command, or the default 
                           length if the command is not found.
     """    
+    
+    command = command.upper()
     # determine if the command is in the library
     if gui.scpi_commands.SCPI_Data.has_key(command):
         # extract the length from the dictionary
@@ -49,9 +51,9 @@ def read_length(command, gui):
     
     else:
         # command isn't in library so use the default length
-        print '*** Command \"' + command + \
+        gui.text_queue.put('*** Command \"' + command + \
               '\" not found in dictionary, length defaults to ' + \
-              str(gui.defaults.default_length) + ' ***'
+              str(gui.defaults.default_length) + ' ***')
         
         return gui.defaults.default_length
     # end if
@@ -120,14 +122,14 @@ def print_read(command, raw_data, gui):
         # check for error conditions
         if (not write_flag[0] & 1) and pySCPI_config.has_preamble(command):
             # The command was sent too fast, bad data was recieved
-            print '*** Read failed, Write flag = 0, '\
-                  'try increasing the message delay***'
+            gui.text_queue.put('*** Read failed, Write flag = 0, '\
+                  'try increasing the message delay***')
             
         elif (all(byte == 1 for byte in raw_data) or
               all(byte == 0 for byte in raw_data)):
             # The device is not connected
-            print '*** Read failed, ensure the slave device is '\
-                  'connected and powered ***'        
+            gui.text_queue.put('*** Read failed, ensure the slave device is '\
+                  'connected and powered ***')        
     
         # else the data is good or is in ascii formatting
         elif ',' not in print_format:
@@ -135,10 +137,10 @@ def print_read(command, raw_data, gui):
             
             # if a timestamp is present print it out accordingly
             if pySCPI_config.has_preamble(command):
-                print 'Timestamp:\t\t' + get_time(timestamp)
+                gui.text_queue.put('Timestamp:\t\t' + get_time(timestamp))
 
             elif print_format == 'ascii':
-                print 'Timestamp:\t\t' + get_ascii_time(data)
+                gui.text_queue.put('Timestamp:\t\t' + get_ascii_time(data))
             # end if               
  
             # print the data in the appropriate format 
@@ -147,8 +149,8 @@ def print_read(command, raw_data, gui):
                 if 0 in data:
                     # terminate printing at the null terminator 
                     # of the string
-                    print 'Data:\t\t' + ''.join([chr(x) for \
-                                          x in data[0:data.index(0)]])
+                    gui.text_queue.put('Data:\t\t' + ''.join([chr(x) for \
+                                          x in data[0:data.index(0)]]))
                     # store the position of the null terminator depending 
                     # on whether there is a preamble
                     if not pySCPI_config.has_preamble(command):
@@ -158,48 +160,48 @@ def print_read(command, raw_data, gui):
                     # end if
                 else:
                     # no null terminator
-                    print 'Data:\t\t' + ''.join([chr(x) for x in data])
+                    gui.text_queue.put('Data:\t\t' + ''.join([chr(x) for x in data]))
                 # end if
                 
             elif print_format == 'int':
-                print 'Data:\t\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0])
+                gui.text_queue.put('Data:\t\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0]))
                 
             elif print_format == 'long':
-                print 'Data:\t\t' + str(unpack('<l', ''.join([chr(x) for x in data]))[0])
+                gui.text_queue.put('Data:\t\t' + str(unpack('<l', ''.join([chr(x) for x in data]))[0]))
                 
             elif print_format == 'long long':
-                print 'Data:\t\t' + str(unpack('<q', ''.join([chr(x) for x in data]))[0])        
+                gui.text_queue.put('Data:\t\t' + str(unpack('<q', ''.join([chr(x) for x in data]))[0]))        
                 
             elif print_format == 'uint':
-                print 'Data:\t\t' + str(unpack('<H', ''.join([chr(x) for x in data]))[0]) 
+                gui.text_queue.put('Data:\t\t' + str(unpack('<H', ''.join([chr(x) for x in data]))[0])) 
                 
             elif print_format == 'double':
-                print 'Data:\t\t' + '{:.{dp}f}'.format(unpack('<d', ''.join([chr(x) for x in data]))[0], 
-                                                       dp=gui.float_var.get()) 
+                gui.text_queue.put('Data:\t\t' + '{:.{dp}f}'.format(unpack('<d', ''.join([chr(x) for x in data]))[0], 
+                                                       dp=gui.float_var.get())) 
                 
             elif print_format == 'float':
-                print 'Data:\t\t' + '{:.{dp}f}'.format(unpack('<f', ''.join([chr(x) for x in data]))[0], 
-                                                       dp=gui.float_var.get())                 
+                gui.text_queue.put('Data:\t\t' + '{:.{dp}f}'.format(unpack('<f', ''.join([chr(x) for x in data]))[0], 
+                                                       dp=gui.float_var.get()))                 
                 
             elif print_format == 'char':
-                print 'Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
+                gui.text_queue.put('Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0])) 
                 
             elif print_format == 'schar':
-                print 'Data:\t\t' + str(unpack('<b', ''.join([chr(x) for x in data]))[0])                 
+                gui.text_queue.put('Data:\t\t' + str(unpack('<b', ''.join([chr(x) for x in data]))[0]))               
             
             elif print_format == 'hex':
-                print 'Data:\t\t' + ' '.join(['%02X' % x for x in data])
+                gui.text_queue.put('Data:\t\t' + ' '.join(['%02X' % x for x in data]))
             
             else:
                 # the format in the dictionary does not match one 
                 # of the supported types
-                print '*** No valid format for data ***'
+                gui.text_queue.put('*** No valid format for data ***')
             # end if
             
             # print checksum if present
             if (chksum_size != 0) and pySCPI_config.has_preamble(command):
-                print 'Checksum:\t\t' + ' '.join(['%02X' % x for \
-                                                  x in checksum])
+                gui.text_queue.put('Checksum:\t\t' + ' '.join(['%02X' % x for \
+                                                  x in checksum]))
             # end if
             
         else:
@@ -207,7 +209,7 @@ def print_read(command, raw_data, gui):
             # individually does not accept hex or ascii parts in the list
             
             # print the timestamp
-            print 'Timestamp:\t\t' + get_time(timestamp)
+            gui.text_queue.put('Timestamp:\t\t' + get_time(timestamp))
             
             # split the list into individual formats
             formats = print_format.split(', ')
@@ -251,8 +253,8 @@ def print_read(command, raw_data, gui):
                     
                 else:
                     # the format is not accepted by this code
-                    print '*** No valid format at list entry ' + \
-                          str(i) + '***' 
+                    gui.text_queue.put('*** No valid format at list entry ' + \
+                          str(i) + '***' )
                     
                 # end if and iterate
                 i += 1
@@ -276,19 +278,19 @@ def print_read(command, raw_data, gui):
             # end for
             
             # print the formatted data
-            print output_string + ']'
+            gui.text_queue.put(output_string + ']')
             
             # print checksum if present
             if chksum_size != 0:
-                print 'Checksum: ' + \
-                      ' '.join(['%02X' % x for x in checksum])
+                gui.text_queue.put('Checksum: ' + \
+                      ' '.join(['%02X' % x for x in checksum]))
             # end if        
         #end if
     # end if
     
     # print the Hex data at the end, also print in hex by default
-    print 'Hex:\t\t' + \
-          ' '.join(['%02X' % x for x in raw_data[0:stop_index]])
+    gui.text_queue.put('Hex:\t\t' + \
+          ' '.join(['%02X' % x for x in raw_data[0:stop_index]]))
 # end def
 
 

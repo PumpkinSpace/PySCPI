@@ -15,7 +15,7 @@ Module to handle the XML aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -45,7 +45,7 @@ def Write_XML(gui):
     gui.action_lock('Lock', gui.save_button)
     
     # clear output
-    gui.output_clear()  
+    gui.text_queue.put(None)
     
     # get the desired delay from the gui.
     delay_time = gui.get_delay()
@@ -265,8 +265,8 @@ def Load_XML(gui):
         
     else:
         # no file was loaded
-        gui.output_clear()       
-        print '*** No file given to Load ***'
+        gui.text_queue.put(None)       
+        gui.text_queue.put('*** No file given to Load ***')
     # end if
     
     # unlock buttons
@@ -505,9 +505,9 @@ def create_XML(directives, gui):
         
         if pySCPI_config.is_config(command):
             # add the configuration to the XML
-            addr = update_XML(command, addr, aardvark)
+            addr = update_XML(command, addr, aardvark, gui.text_queue)
             
-        elif pySCPI_config.is_valid_raw(command):
+        elif pySCPI_config.is_valid_raw(command, gui.text_queue):
             # it is a valid raw command so comment the command
             aardvark.append(ET.Comment(command))
             
@@ -620,14 +620,14 @@ def create_XML(directives, gui):
             # close file
             myfile.close()    
             
-            print 'XML file \''+ filename.split('/')[-1]+'\' written'
+            gui.text_queue.put('XML file \''+ filename.split('/')[-1]+'\' written')
             
         else:
-            print '*** Requested XML file is open in another program ***'
+            gui.text_queue.put('*** Requested XML file is open in another program ***')
             
     else:    
         # no file was selected
-        print '*** No XML file written ***'
+        gui.text_queue.put('*** No XML file written ***')
     # end if
     
     return filename
@@ -662,7 +662,7 @@ def beautify_xml(XML):
 # end def
     
     
-def update_XML(command, address, XML):
+def update_XML(command, address, XML, text_queue):
     """
     Save the configuration requested by a config command to XML
     
@@ -671,6 +671,7 @@ def update_XML(command, address, XML):
     @param[in]  address:         The current I2C slave address in use 
                                  (int).
     @param[in]  XML:             The XML Element to add to (ET.Element).
+    @param[out] text_queue:      The queue to write outpuit to (Queue).
     @return     (int)            The new I2C address to use 
                                  (potentially unchanged).
     """   
@@ -728,13 +729,13 @@ def update_XML(command, address, XML):
             ET.SubElement(XML, 'sleep', {'ms': '200'})              
         
         else:
-            print '*** Invalid Pullup Command, use either '\
-                  '<PULLUPS ON> or <PULLUPS OFF>'
+            text_queue.put('*** Invalid Pullup Command, use either '\
+                  '<PULLUPS ON> or <PULLUPS OFF>')
         #end if  
         
     else:
-        print '*** The configuration command ' + command + 'requested is '\
-              'not valid, refer to Read Me***'
+        text_queue.put('*** The configuration command ' + command + 'requested is '\
+              'not valid, refer to Read Me***')
     # end if  
     
     return new_address

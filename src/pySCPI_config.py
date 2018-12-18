@@ -16,7 +16,7 @@ values and declaring the dictionaries of address and commands.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.4' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -395,16 +395,17 @@ def is_raw_write(command):
 # end def    
 
 
-def is_raw_read(command):
+def is_raw_read(command, text_queue):
     """
     Determine if the command in question is a raw read command
     
-    @param[in]  command: The command string to be tested (string).
-    @return     (bool)   True:    The command is a raw read command.
-                         False:   The command is not a raw read command.
+    @param[in]  command:    The command string to be tested (string).
+    @param[out] text_queue: The queue to write outpuit to (Queue).
+    @return     (bool)      True:    The command is a raw read command.
+                            False:   The command is not a raw read command.
     """    
     if command.startswith('<READ') and command.endswith('>') and \
-       is_valid_raw(command):
+       is_valid_raw(command, text_queue):
         return True
     else:      
         return False
@@ -412,13 +413,14 @@ def is_raw_read(command):
 # end def 
 
 
-def is_valid_raw(command):
+def is_valid_raw(command, text_queue):
     """
     Determine if the command in question is a raw read command
     s
-    @param[in]  command: The command string to be tested (string).
-    @return     (bool)   True:    The command is a raw read command.
-                         False:   The command is not a raw read command.
+    @param[in]  command:     The command string to be tested (string).
+    @param[out] text_queue:  The queue to write outpuit to (Queue).
+    @return     (bool)       True:    The command is a raw read command.
+                             False:   The command is not a raw read command.
     """    
     # default state
     valid = True
@@ -459,12 +461,12 @@ def is_valid_raw(command):
     
     # print errors associated with commands if required
     if ('READ' in command) and not valid:
-        print '*** Invalid READ command, please refer to the'\
-                      'Read me for proper syntax ***'          
+        text_queue.put('*** Invalid READ command, please refer to the'\
+                      'Read me for proper syntax ***')          
         
     elif ('WRITE' in command) and not valid:
-        print '*** Invalid WRITE command, please refer to the'\
-                      'Read me for proper syntax ***'           
+        text_queue.put('*** Invalid WRITE command, please refer to the'\
+                      'Read me for proper syntax ***')           
     # end if
     
     return valid   
