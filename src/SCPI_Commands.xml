@@ -109,6 +109,8 @@
 	
 	<!-- BM2 Commands -->
 	
+	<!-- Gas gauge version -->
+	<command name="BM2:TEL? 0"   data_length='32'   data_format='ascii' />
 	<!-- Temperature -->
 	<command name="BM2:TEL? 8"   data_length='2'   data_format='uint' />
 	<!-- Voltage -->
