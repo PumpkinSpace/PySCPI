@@ -118,11 +118,11 @@
 	<!-- Average Current -->
 	<command name="BM2:TEL? 11"  data_length='2'   data_format='int' />
 	<!-- Relative State of Charge -->
-	<command name="BM2:TEL? 13"  data_length='2'   data_format='uint' />
+	<command name="BM2:TEL? 13"  data_length='1'   data_format='char' />
 	<!-- Absolute State of Charge -->
 	<command name="BM2:TEL? 14"  data_length='1'   data_format='char' />
 	<!-- Remaining Capacity -->
-	<command name="BM2:TEL? 15"  data_length='1'   data_format='char' />
+	<command name="BM2:TEL? 15"  data_length='2'   data_format='uint' />
 	<!-- Full Charge Capacity -->
 	<command name="BM2:TEL? 16"  data_length='2'   data_format='uint' />
 	<!-- Run time to Empty -->
@@ -143,6 +143,20 @@
 	<command name="BM2:TEL? 24"  data_length='2'   data_format='int' />
 	<!-- Design Voltage -->
 	<command name="BM2:TEL? 25"  data_length='2'   data_format='int' />
+	<!-- Full Safety Alert-->
+	<command name="BM2:TEL? 28"  data_length='4'   data_format='hex' />
+	<!-- Full Safety Status-->
+	<command name="BM2:TEL? 29"  data_length='4'   data_format='hex' />
+	<!-- Full Charging Status-->
+	<command name="BM2:TEL? 30"  data_length='4'   data_format='hex' />
+	<!-- Full PF Alert-->
+	<command name="BM2:TEL? 31"  data_length='4'   data_format='hex' />
+	<!-- Full PF Status-->
+	<command name="BM2:TEL? 32"  data_length='4'   data_format='hex' />
+	<!-- Last Min Voltage -->
+	<command name="BM2:TEL? 33"  data_length='2'   data_format='uint' />
+	<!-- Last Max Voltage-->
+	<command name="BM2:TEL? 34"  data_length='2'   data_format='uint' />
 	<!-- Extra temperature sensor 3 -->
 	<command name="BM2:TEL? 48"  data_length='2'   data_format='uint' />
 	<!-- Extra temperature sensor 4 -->
@@ -193,6 +207,10 @@
 	<command name="BM2:TEL? 94"  data_length='2'   data_format='int' />
 	<!-- TS2 temperature -->
 	<command name="BM2:TEL? 95"  data_length='2'   data_format='int' />
+	<!-- TS3 temperature -->
+	<command name="BM2:TEL? 96"  data_length='2'   data_format='int' />
+	<!-- TS4 temperature -->
+	<command name="BM2:TEL? 97"  data_length='2'   data_format='int' />
 	<!-- Safety Alert Register 2 -->
 	<command name="BM2:TEL? 104" data_length='2'   data_format='hex' />
 	<!-- Safety Status Register 2 -->
@@ -217,6 +235,9 @@
 	<command name="BM2:TEL? 76"  data_length='24'  data_format='float, float, float, float, float, float' />
 	<!-- Cell Balancing Status -->
 	<command name="BM2:TEL? 77"   data_length='1'   data_format='hex' />	
+	<!-- Flash Page Data-->
+	<command name="BM2:TEL? 78"   data_length='33'   data_format='hex' />	
+
 	
 	
 	<!-- BIM Commands -->
