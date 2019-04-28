@@ -31,18 +31,16 @@
 	<command name="SUP:TEL? 7"   data_length='8'   data_format='long long' />	
 	<!-- MCU Load -->
 	<command name="SUP:TEL? 8"   data_length='4'   data_format='float' />	
-<!-- Serial Number-->
+	<!-- Serial Number-->
 	<command name="SUP:TEL? 9"   data_length='2'   data_format='uint' />
-<!-- I2C Address-->
+	<!-- I2C Address-->
 	<command name="SUP:TEL? 10"   data_length='1'   data_format='hex' />
-<!-- FRC Osctune-->
+	<!-- FRC Osctune-->
 	<command name="SUP:TEL? 11"   data_length='1'   data_format='schar' />
-<!-- NVM Cycles-->
+	<!-- NVM Cycles-->
 	<command name="SUP:TEL? 12"   data_length='2'   data_format='uint' />
-<!-- Reset Source-->
+	<!-- Reset Source-->
 	<command name="SUP:TEL? 13"   data_length='2'   data_format='uint' />
-
-
 	
 	
 	<!-- GPSRM Commands -->
@@ -257,16 +255,255 @@
 	<!-- Temperature Scaling Factors-->
 	<command name="BIM:TEL? 5"   data_length='24'   data_format='float, float, float, float, float, float' />
 	
-	<!-- EPS Commands -->
+	<!-- EPSM Commands -->
 	
-	<!-- Current -->
-	<command name="EPS:TEL? 0"   data_length='8'   data_format='uint, uint, uint, uint' />
+	<!-- SAI1 Converter Data -->
+	<command name="EPSM:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI2 Converter Data -->
+	<command name="EPSM:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI3 Converter Data -->
+	<command name="EPSM:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI4 Converter Data -->
+	<command name="EPSM:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI5 Converter Data -->
+	<command name="EPSM:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI6 Converter Data -->
+	<command name="EPSM:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT1 Converter Data -->
+	<command name="EPSM:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT2 Converter Data -->
+	<command name="EPSM:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 3.3V Converter Data -->
+	<command name="EPSM:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 5V Converter Data -->
+	<command name="EPSM:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 12V Converter Data -->
+	<command name="EPSM:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- AUX Converter Data -->
+	<command name="EPSM:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- VREF1 Data -->
+	<command name="EPSM:TEL? 12"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF2 Data -->
+	<command name="EPSM:TEL? 13"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF3 Data -->
+	<command name="EPSM:TEL? 14"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF4 Data -->
+	<command name="EPSM:TEL? 15"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF5 Data -->
+	<command name="EPSM:TEL? 16"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK -5V REF Data -->
+	<command name="EPSM:TEL? 17"   data_length='4'   data_format='uint, uint' />
+	<!-- Core 1.5V REF Data -->
+	<command name="EPSM:TEL? 18"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 3.3V REF Data -->
+	<command name="EPSM:TEL? 19"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 5V REF Data -->
+	<command name="EPSM:TEL? 20"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 10V REF Data -->
+	<command name="EPSM:TEL? 21"   data_length='4'   data_format='uint, uint' />
+	<!-- RING1 REF Data -->
+	<command name="EPSM:TEL? 22"   data_length='4'   data_format='uint, uint' />
+	<!-- RING2 REF Data -->
+	<command name="EPSM:TEL? 23"   data_length='4'   data_format='uint, uint' />
+	<!-- RING3 REF Data -->
+	<command name="EPSM:TEL? 24"   data_length='4'   data_format='uint, uint' />
+	<!-- SAI1 Temperature Data -->
+	<command name="EPSM:TEL? 25"   data_length='2'   data_format='int' />
+	<!-- SAI2 Temperature Data -->
+	<command name="EPSM:TEL? 26"   data_length='2'   data_format='int' />
+	<!-- SAI3 Temperature Data -->
+	<command name="EPSM:TEL? 27"   data_length='2'   data_format='int' />
+	<!-- SAI4 Temperature Data -->
+	<command name="EPSM:TEL? 28"   data_length='2'   data_format='int' />
+	<!-- SAI5A Temperature Data -->
+	<command name="EPSM:TEL? 29"   data_length='2'   data_format='int' />
+	<!-- SAI5B Temperature Data -->
+	<command name="EPSM:TEL? 30"   data_length='2'   data_format='int' />
+	<!-- SAI6A Temperature Data -->
+	<command name="EPSM:TEL? 31"   data_length='2'   data_format='int' />
+	<!-- SAI6B Temperature Data -->
+	<command name="EPSM:TEL? 32"   data_length='2'   data_format='int' />
+	<!-- SNS USB VREF Data -->
+	<command name="EPSM:TEL? 33"   data_length='2'   data_format='uint' />
+	<!-- SNS -RESET Data -->
+	<command name="EPSM:TEL? 34"   data_length='2'   data_format='uint' />
+	<!-- SNS 2048mV REF Data -->
+	<command name="EPSM:TEL? 35"   data_length='2'   data_format='uint' />
+	<!-- FPGA Version-->
+	<command name="EPSM:TEL? 37"   data_length='2'   data_format='hex' />
+	<!-- BAT1 Charging Status -->
+	<command name="EPSM:TEL? 38"   data_length='5'   data_format='int, uint, hex' />
+	<!-- BAT2 Charging Status -->
+	<command name="EPSM:TEL? 39"   data_length='5'   data_format='int, uint, hex' />
+	<!-- Last Register Read-->
+	<command name="EPSM:TEL? 40"   data_length='2'   data_format='hex' />
+
+	<!-- LEPS Commands -->
 	
-	<!-- Current Offsets-->
-	<command name="EPS:TEL? 1"   data_length='16'   data_format='float, float, float, float' />
+	<!-- SAI1 Converter Data -->
+	<command name="LEPS:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI2 Converter Data -->
+	<command name="LEPS:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI3 Converter Data -->
+	<command name="LEPS:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI4 Converter Data -->
+	<command name="LEPS:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI5 Converter Data -->
+	<command name="LEPS:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI6 Converter Data -->
+	<command name="LEPS:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT1 Converter Data -->
+	<command name="LEPS:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT2 Converter Data -->
+	<command name="LEPS:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 3.3V Converter Data -->
+	<command name="LEPS:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 5V Converter Data -->
+	<command name="LEPS:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 12V Converter Data -->
+	<command name="LEPS:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- AUX Converter Data -->
+	<command name="LEPS:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- VREF1 Data -->
+	<command name="LEPS:TEL? 12"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF2 Data -->
+	<command name="LEPS:TEL? 13"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF3 Data -->
+	<command name="LEPS:TEL? 14"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF4 Data -->
+	<command name="LEPS:TEL? 15"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF5 Data -->
+	<command name="LEPS:TEL? 16"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK -5V REF Data -->
+	<command name="LEPS:TEL? 17"   data_length='4'   data_format='uint, uint' />
+	<!-- Core 1.5V REF Data -->
+	<command name="LEPS:TEL? 18"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 3.3V REF Data -->
+	<command name="LEPS:TEL? 19"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 5V REF Data -->
+	<command name="LEPS:TEL? 20"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 10V REF Data -->
+	<command name="LEPS:TEL? 21"   data_length='4'   data_format='uint, uint' />
+	<!-- RING1 REF Data -->
+	<command name="LEPS:TEL? 22"   data_length='4'   data_format='uint, uint' />
+	<!-- RING2 REF Data -->
+	<command name="LEPS:TEL? 23"   data_length='4'   data_format='uint, uint' />
+	<!-- RING3 REF Data -->
+	<command name="LEPS:TEL? 24"   data_length='4'   data_format='uint, uint' />
+	<!-- SAI1 Temperature Data -->
+	<command name="LEPS:TEL? 25"   data_length='2'   data_format='int' />
+	<!-- SAI2 Temperature Data -->
+	<command name="LEPS:TEL? 26"   data_length='2'   data_format='int' />
+	<!-- SAI3 Temperature Data -->
+	<command name="LEPS:TEL? 27"   data_length='2'   data_format='int' />
+	<!-- SAI4 Temperature Data -->
+	<command name="LEPS:TEL? 28"   data_length='2'   data_format='int' />
+	<!-- SAI5A Temperature Data -->
+	<command name="LEPS:TEL? 29"   data_length='2'   data_format='int' />
+	<!-- SAI5B Temperature Data -->
+	<command name="LEPS:TEL? 30"   data_length='2'   data_format='int' />
+	<!-- SAI6A Temperature Data -->
+	<command name="LEPS:TEL? 31"   data_length='2'   data_format='int' />
+	<!-- SAI6B Temperature Data -->
+	<command name="LEPS:TEL? 32"   data_length='2'   data_format='int' />
+	<!-- SNS USB VREF Data -->
+	<command name="LEPS:TEL? 33"   data_length='2'   data_format='uint' />
+	<!-- SNS -RESET Data -->
+	<command name="LEPS:TEL? 34"   data_length='2'   data_format='uint' />
+	<!-- SNS 2048mV REF Data -->
+	<command name="LEPS:TEL? 35"   data_length='2'   data_format='uint' />
+	<!-- FPGA Version-->
+	<command name="LEPS:TEL? 37"   data_length='2'   data_format='hex' />
+	<!-- BAT1 Charging Status -->
+	<command name="LEPS:TEL? 38"   data_length='5'   data_format='int, uint, hex' />
+	<!-- BAT2 Charging Status -->
+	<command name="LEPS:TEL? 39"   data_length='5'   data_format='int, uint, hex' />
+	<!-- Last Register Read-->
+	<command name="LEPS:TEL? 40"   data_length='2'   data_format='hex' />
+
+	<!-- DCPS Commands -->
 	
-	<!-- Current Scale Factors-->
-	<command name="EPS:TEL? 2"   data_length='16'   data_format='float, float, float, float' />
+	<!-- SAI1 Converter Data -->
+	<command name="DCPS:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI2 Converter Data -->
+	<command name="DCPS:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI3 Converter Data -->
+	<command name="DCPS:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI4 Converter Data -->
+	<command name="DCPS:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI5 Converter Data -->
+	<command name="DCPS:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- SAI6 Converter Data -->
+	<command name="DCPS:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT1 Converter Data -->
+	<command name="DCPS:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- BAT2 Converter Data -->
+	<command name="DCPS:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 3.3V Converter Data -->
+	<command name="DCPS:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 5V Converter Data -->
+	<command name="DCPS:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- 12V Converter Data -->
+	<command name="DCPS:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- AUX Converter Data -->
+	<command name="DCPS:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<!-- VREF1 Data -->
+	<command name="DCPS:TEL? 12"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF2 Data -->
+	<command name="DCPS:TEL? 13"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF3 Data -->
+	<command name="DCPS:TEL? 14"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF4 Data -->
+	<command name="DCPS:TEL? 15"   data_length='4'   data_format='uint, uint' />
+	<!-- VREF5 Data -->
+	<command name="DCPS:TEL? 16"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK -5V REF Data -->
+	<command name="DCPS:TEL? 17"   data_length='4'   data_format='uint, uint' />
+	<!-- Core 1.5V REF Data -->
+	<command name="DCPS:TEL? 18"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 3.3V REF Data -->
+	<command name="DCPS:TEL? 19"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 5V REF Data -->
+	<command name="DCPS:TEL? 20"   data_length='4'   data_format='uint, uint' />
+	<!-- HSK 10V REF Data -->
+	<command name="DCPS:TEL? 21"   data_length='4'   data_format='uint, uint' />
+	<!-- RING1 REF Data -->
+	<command name="DCPS:TEL? 22"   data_length='4'   data_format='uint, uint' />
+	<!-- RING2 REF Data -->
+	<command name="DCPS:TEL? 23"   data_length='4'   data_format='uint, uint' />
+	<!-- RING3 REF Data -->
+	<command name="DCPS:TEL? 24"   data_length='4'   data_format='uint, uint' />
+	<!-- SAI1 Temperature Data -->
+	<command name="DCPS:TEL? 25"   data_length='2'   data_format='int' />
+	<!-- SAI2 Temperature Data -->
+	<command name="DCPS:TEL? 26"   data_length='2'   data_format='int' />
+	<!-- SAI3 Temperature Data -->
+	<command name="DCPS:TEL? 27"   data_length='2'   data_format='int' />
+	<!-- SAI4 Temperature Data -->
+	<command name="DCPS:TEL? 28"   data_length='2'   data_format='int' />
+	<!-- SAI5A Temperature Data -->
+	<command name="DCPS:TEL? 29"   data_length='2'   data_format='int' />
+	<!-- SAI5B Temperature Data -->
+	<command name="DCPS:TEL? 30"   data_length='2'   data_format='int' />
+	<!-- SAI6A Temperature Data -->
+	<command name="DCPS:TEL? 31"   data_length='2'   data_format='int' />
+	<!-- SAI6B Temperature Data -->
+	<command name="DCPS:TEL? 32"   data_length='2'   data_format='int' />
+	<!-- SNS USB VREF Data -->
+	<command name="DCPS:TEL? 33"   data_length='2'   data_format='uint' />
+	<!-- SNS -RESET Data -->
+	<command name="DCPS:TEL? 34"   data_length='2'   data_format='uint' />
+	<!-- SNS 2048mV REF Data -->
+	<command name="DCPS:TEL? 35"   data_length='2'   data_format='uint' />
+	<!-- FPGA Version-->
+	<command name="DCPS:TEL? 37"   data_length='2'   data_format='hex' />
+	<!-- BAT1 Charging Status -->
+	<command name="DCPS:TEL? 38"   data_length='5'   data_format='int, uint, hex' />
+	<!-- BAT2 Charging Status -->
+	<command name="DCPS:TEL? 39"   data_length='5'   data_format='int, uint, hex' />
+	<!-- Last Register Read-->
+	<command name="DCPS:TEL? 40"   data_length='2'   data_format='hex' />
+
 
 	<!-- AIM Commands -->
 

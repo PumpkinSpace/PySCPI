@@ -1,8 +1,0 @@
-Starting Aardvark communications
-
-Read:		BM2:TEL? 0,DATA
-Timestamp:		00:00:17:53.68
-Data:		40Z50_4cell_HG2_v1
-Hex:		01 68 A3 01 00 34 30 5A 35 30 5F 34 63 65 6C 6C 5F 48 47 32 5F 76 31
-
-Aardvark communications finished

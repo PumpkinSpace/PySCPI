@@ -204,10 +204,10 @@ def update_aardvark(command, address, Aardvark_in_use, text_queue):
     elif 'ADDRESS ' in command:
         # strip out the number
         address_list = command.split(' ')
-        address_hex = address_list[1][0:-1]
+        address_hex = address_list[1][0:-1]   
         # verify that it is a number and that the beginning of the 
         # command was correct
-        if address_hex.startswith('0x') and (len(address_hex) == 4) and \
+        if address_hex.startswith('0X') and (len(address_hex) == 4) and \
            pySCPI_config.is_hex(address_hex[2:]) and \
            (address_list[0] == '<ADDRESS'):
             # is a good address

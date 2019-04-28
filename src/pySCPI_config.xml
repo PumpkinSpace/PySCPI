@@ -23,7 +23,9 @@
 		<SIM address="0x50" />
 		<BIM address="0x52" />
 		<BSM address="0x58" />
-		<EPS address="0x54" />
+		<EPSM address="0x54" />
+		<DCPS address="0x54" />
+		<LEPS address="0x54" />
 		<RHM address="0x55" />
 		<AIM address="0x56" />
 		<!-- External interface DAC address="0x60"-->
