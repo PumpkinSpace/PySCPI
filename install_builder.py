@@ -16,7 +16,7 @@ and installer for pySCPI.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.5' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.6' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
