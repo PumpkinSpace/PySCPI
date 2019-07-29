@@ -16,7 +16,7 @@ values and declaring the dictionaries of address and commands.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.6' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.7' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #

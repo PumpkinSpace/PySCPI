@@ -74,7 +74,7 @@ A command in this context refers to the subset of SCPI commands that are not a r
 To send such a command it just needs to be typed into the 'Input Commands' box. A listing of these commands can be found in the supporting documentation for each specific module. Any command can be issued from pySCPI without altering the program configuration as no checking of command validity is done within the program.
 
 Telemetry Requests:
-Telemetry requests are SCPI commands that when recieved by a module cause it to load a certain data field into it's output buffer for the host to read. pySCPI takes care of both the sending of the command and the reading of the data. The time delay between read and write commands is defined by the Intermessage Delay and ASCII delay boxes in the GUI. The data recieved by pySCPI from the slave device is then formatted and displayed in the Output box. A listing of accepted telemetry requests can be found in the supporting documentation for each specific module.
+Telemetry requests are SCPI commands that when recieved by a module cause it to load a certain data field into it's output buffer for the host to read. pySCPI takes care of both the sending of the command and the reading of the data. The time delay between read and write commands is defined by the Intermessage Delay and ASCII delay boxes in the GUI. The data recieved by pySCPI from the slave device is then formatted and displayed in the Output box. A listing of accepted telemetry requests can be found in the supporting documentation for each specific module. Note that ascii telemetry requests will usually read more data from the slave than is displayed in pySCPI, display stops when the null terminator is reached
 
 
 ################

@@ -15,7 +15,7 @@ Module to handle the formatting of data in the pySCPI program.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.6' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.7' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -76,16 +76,17 @@ def log_time(timestamp):
 # end def
 
 
-def print_read(command, raw_data, gui):
+def print_read(command, raw_data, gui, hide_elements):
     """
     Formats the data that was returned from the AArdvark and then prints 
     it to the GUI according to the specifications of the dictionary.
     
-    @param[in]  command:   The command that was sent (string).
-    @param[in]  raw_data:  The raw data provided by the Aardvark 
-                           (list of ints).
-    @param[in]  gui:       Instance of the gui that this function is 
-                           called by (pySCPI_gui.main_gui).
+    @param[in]  command:       The command that was sent (string).
+    @param[in]  raw_data:      The raw data provided by the Aardvark 
+                               (list of ints).
+    @param[in]  gui:           Instance of the gui that this function is 
+                               called by (pySCPI_gui.main_gui).
+    @param[in]  hide_elements: Whether certain elements should be hidden (bool).
     """        
     # index to stop printing at
     stop_index = len(raw_data)  
@@ -154,9 +155,9 @@ def print_read(command, raw_data, gui):
                     # store the position of the null terminator depending 
                     # on whether there is a preamble
                     if not pySCPI_config.has_preamble(command):
-                        stop_index = data.index(0)
+                        stop_index = data.index(0) + 1
                     else:
-                        stop_index = data.index(0) + wflag_size + time_size
+                        stop_index = data.index(0) + wflag_size + time_size + 1
                     # end if
                 else:
                     # no null terminator
@@ -288,9 +289,18 @@ def print_read(command, raw_data, gui):
         #end if
     # end if
     
+    output_string_list = ['%02X' % x for x in raw_data[1:stop_index-1]]
+    null_string_list = ['<\\0>' if x == 0 else '%02X' % x for x in raw_data[stop_index-1:]]
+    
     # print the Hex data at the end, also print in hex by default
-    gui.text_queue.put('Hex:\t\t' + \
-          ' '.join(['%02X' % x for x in raw_data[0:stop_index]]))
+    if hide_elements:
+        gui.text_queue.put('Hex:\t\t' + \
+                           ' '.join(output_string_list + null_string_list))
+    
+    else:
+        gui.text_queue.put('Hex:\t\t' + ('[addr=0x%02X, R] ' % raw_data[0]) + \
+                           ' '.join(output_string_list + null_string_list))        
+    # end if
 # end def
 
 

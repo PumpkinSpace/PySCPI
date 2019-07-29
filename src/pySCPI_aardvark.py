@@ -15,7 +15,7 @@ Module to handle the aardvark aspects of pySCPI
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.6' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.7' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -182,7 +182,7 @@ def start_logging(gui):
 # end def
 
 
-def update_aardvark(command, address, Aardvark_in_use, text_queue):
+def update_aardvark(command, address, Aardvark_in_use, elements_hidden, text_queue):
     """
     Perform the configureation requested by a config command
     
@@ -192,11 +192,16 @@ def update_aardvark(command, address, Aardvark_in_use, text_queue):
                                  (int).
     @param[in]  AArdvark_in_use: The aardvark port in use 
                                  (aardvark_py.Aardvark).
+    @param[in]  elements_hidden  Current state of element hiding (bool).
     @param[out] text_queue:      The queue to write outpuit to (Queue).
     @return     (int)            The new I2C address to use 
                                  (potentially unchanged).
+    @return     (bool)           Whether hidden items should be shown
+                                 (potentially unchanged)
+
     """    
     new_address = address
+    hide_elements = elements_hidden
     # determine the appropriate action to take
     if 'DELAY ' in command:
         delay_time = query_delay_command(command, text_queue)
@@ -255,12 +260,26 @@ def update_aardvark(command, address, Aardvark_in_use, text_queue):
                   '<PULLUPS ON> or <PULLUPS OFF>***')
         #end if  
         
+    elif 'HIDDEN' in command:
+        # control display of hidden elements
+        if command == '<SHOW HIDDEN>':
+            # show hidden elements
+            hide_elements = False
+            
+        elif command == '<HIDE HIDDEN>':
+            # hide hidden elements
+            hide_elements = True           
+            
+        else:
+            text_queue.put('*** Invalid Hidden Command, use either '\
+                           '<SHOW HIDDEN> or <HIDE HIDDEN>***')
+        #end if            
     else:
         text_queue.put('*** The configuration command requested in not valid, '\
               'refer to Read Me***')
     # end if  
     
-    return new_address
+    return new_address, hide_elements
 # end def
 
 
@@ -281,6 +300,7 @@ def write_aardvark(directives, gui):
     commands = directives.command_list
     Delay = directives.delay_time
     Ascii_delay = directives.ascii_time
+    hide_elements = True
     
     # configure the progress bar
     gui.progress_queue.put(str(len([c for c in commands if not c.startswith('#')])))
@@ -308,7 +328,10 @@ def write_aardvark(directives, gui):
             # determine if the command is a configuration command
             if pySCPI_config.is_config(command):
                 # configure the system based on the config command
-                dec_addr = update_aardvark(command, dec_addr, Aardvark_in_use, gui.text_queue)
+                (dec_addr, hide_elements) = update_aardvark(command, dec_addr, 
+                                                             Aardvark_in_use, 
+                                                             hide_elements, 
+                                                             gui.text_queue)
                 
             else:
                 # Prepare the data for transmission
@@ -322,7 +345,7 @@ def write_aardvark(directives, gui):
                     
                 else:
                     # it is a normal command
-                    send_scpi_command(command, Aardvark_in_use, dec_addr, gui.text_queue)
+                    send_scpi_command(command, Aardvark_in_use, dec_addr, hide_elements, gui.text_queue)
                 # end if
             # end if
             
@@ -349,7 +372,7 @@ def write_aardvark(directives, gui):
                 
                 # print the recieved data
                 pySCPI_formatting.print_read(command, list(read_data[1]), 
-                                             gui)
+                                             gui, hide_elements)
                 # end if
             # end if
             
@@ -403,6 +426,7 @@ def log_aardvark(directives, filename, gui):
     Delay = directives.delay_time
     Ascii_delay = directives.ascii_time
     logging_p = directives.logging_p
+    hide_elements = True
     
     # configure the progress bar to be the correct length
     gui.progress_queue.put(str(logging_p*10))
@@ -454,8 +478,9 @@ def log_aardvark(directives, filename, gui):
                 # determine if the command is a configuration command
                 if pySCPI_config.is_config(command):
                     # configure the system based on the config command
-                    dec_addr = update_aardvark(command, dec_addr, 
-                                               Aardvark_in_use, gui.text_queue)
+                    (dec_addr, hide_elements) = update_aardvark(command, dec_addr, 
+                                                                Aardvark_in_use, hide_elements,
+                                                                gui.text_queue)
                     
                 else:
                     # Prepare the data for transmission
@@ -474,7 +499,7 @@ def log_aardvark(directives, filename, gui):
                     else:
                         # it is a normal command
                         send_scpi_command(command, Aardvark_in_use, 
-                                          dec_addr, gui.text_queue)
+                                          dec_addr, hide_elements, gui.text_queue)
                     # end if
                 # end if
                 
@@ -503,7 +528,7 @@ def log_aardvark(directives, filename, gui):
                     # print data
                     pySCPI_formatting.print_read(command, 
                                                  list(read_data[1]), 
-                                                 gui)
+                                                 gui, hide_elements)
                     
                     # log data
                     pySCPI_formatting.log_read(command, list(read_data[1]),
@@ -798,14 +823,15 @@ def read_raw_command(command, Aardvark_in_use, text_queue, logging = False):
 # end def
 
 
-def send_scpi_command(command, Aardvark_in_use, dec_addr, text_queue):
+def send_scpi_command(command, Aardvark_in_use, dec_addr, hide_elements, text_queue):
     """
     Function to send a SCPI command to the slave device
     
     @param[in]    command:         the command to send (string)
     @param[in]    Aardvark_in_use: The Aaardvark to use to read the data
                                    (aardvark_py.aardvark)
-    @param[in]    dec_addr:        the decimal address to write to (int)
+    @param[in]    dec_addr:        the decimal address to write to (int).
+    @param[in]    hide_elements:   Whether elements should be hidden (bool).
     @param[out]   text_queue:      The queue to write outpuit to (Queue).
     """  
     
@@ -817,6 +843,19 @@ def send_scpi_command(command, Aardvark_in_use, dec_addr, text_queue):
     # convert to an array to be compiant with the aardvark
     data = array('B', write_data)  
     
+    # package as a string for display
+    if not hide_elements:
+        data_string = ('[addr=0x%02X, W] ' % dec_addr) + ' '.join(['%02X' % x for x in write_data[0:-1]])
+        if (write_data[-1] == 0x0A):
+            #is correctly terminated
+            data_string += ' <0x0A>'
+            
+        else:
+            data_string += ' %02X' % write_data[-1]
+        # end if
+    else:
+        data_string = ' '.join(['%02X' % x for x in write_data[0:-1]])
+    #end if
     
     # Write the data to the slave device
     aardvark_py.aa_i2c_write(Aardvark_in_use, dec_addr, 
@@ -826,9 +865,11 @@ def send_scpi_command(command, Aardvark_in_use, dec_addr, text_queue):
     if 'TEL?' in command:
         # there is data to follow
         text_queue.put('Read:\t\t' + command)
+        text_queue.put('Command Hex:\t\t' + data_string)        
     else:
         # there is not
         text_queue.put('Write:\t\t' + command)
+        text_queue.put('Command Hex:\t\t' + data_string)       
     # end if   
 # end def
 

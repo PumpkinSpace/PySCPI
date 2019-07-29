@@ -1,0 +1,77 @@
+Starting Aardvark communications
+
+Read:		SUP:TEL? 0,NAME
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 4E 41 4D 45
+*** Read failed, ensure the slave device is connected and powered ***
+Hex:		01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01
+
+Read:		SUP:TEL? 0,LENGTH
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 4C 45 4E 47 54 48
+*** Read failed, ensure the slave device is connected and powered ***
+Hex:		01 01 01 01 01 01
+
+Read:		SUP:TEL? 0,DATA
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 44 41 54 41
+*** Read failed, ensure the slave device is connected and powered ***
+Hex:		01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01
+
+Read:		SUP:TEL? 0,ASCII
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 41 53 43 49 49
+*** Read failed, ensure the slave device is connected and powered ***
+Hex:		01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01 01
+
+Aardvark communications finished
+Starting Aardvark communications
+
+Read:		SUP:TEL? 0,NAME
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 4E 41 4D 45
+Timestamp:		00:07:02:31.75
+Data:		Firmware version
+Hex:		07 AF 26 00 46 69 72 6D 77 61 72 65 20 76 65 72 73 69 6F 6E <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0>
+
+Read:		SUP:TEL? 0,LENGTH
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 4C 45 4E 47 54 48
+Timestamp:		00:07:02:32.15
+Data:		77
+Hex:		2F AF 26 00 4D <\0>
+
+Read:		SUP:TEL? 0,DATA
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 44 41 54 41
+Timestamp:		00:07:02:32.57
+Data:		BM 2 Rev F1 fw v1.3.3h & SupMCU Core v1.2.8g
+Hex:		59 AF 26 00 42 4D 20 32 20 52 65 76 20 46 31 20 66 77 20 76 31 2E 33 2E 33 68 20 26 20 53 75 70 4D 43 55 20 43 6F 72 65 20 76 31 2E 32 2E 38 67 <\0> 48 <\0> <\0>
+
+Read:		SUP:TEL? 0,ASCII
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 41 53 43 49 49
+Timestamp:		00:07:02:32.98
+Data:		[1:2535298] BM 2 Rev F1 fw v1.3.3h & SupMCU Core v1.2.8g
+Hex:		31 3A 32 35 33 35 32 39 38 5D 20 42 4D 20 32 20 52 65 76 20 46 31 20 66 77 20 76 31 2E 33 2E 33 68 20 26 20 53 75 70 4D 43 55 20 43 6F 72 65 20 76 31 2E 32 2E 38 67 <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0>
+
+Aardvark communications finished
+Starting Aardvark communications
+
+Read:		SUP:TEL? 0,NAME
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 4E 41 4D 45
+Timestamp:		00:07:02:51.01
+Data:		Firmware version
+Hex:		8D B6 26 00 46 69 72 6D 77 61 72 65 20 76 65 72 73 69 6F 6E <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0>
+
+
+Read:		SUP:TEL? 0,LENGTH
+Command Hex:		[addr=0x5C, W] 53 55 50 3A 54 45 4C 3F 20 30 2C 4C 45 4E 47 54 48 <0x0A>
+Timestamp:		00:07:02:51.63
+Data:		77
+Hex:		[addr=0x01, R] CB B6 26 00 4D <\0>
+
+Read:		SUP:TEL? 0,DATA
+Command Hex:		[addr=0x5C, W] 53 55 50 3A 54 45 4C 3F 20 30 2C 44 41 54 41 <0x0A>
+Timestamp:		00:07:02:52.03
+Data:		BM 2 Rev F1 fw v1.3.3h & SupMCU Core v1.2.8g
+Hex:		[addr=0x01, R] F3 B6 26 00 42 4D 20 32 20 52 65 76 20 46 31 20 66 77 20 76 31 2E 33 2E 33 68 20 26 20 53 75 70 4D 43 55 20 43 6F 72 65 20 76 31 2E 32 2E 38 67 <\0> 48 <\0> <\0>
+
+
+Read:		SUP:TEL? 0,ASCII
+Command Hex:		53 55 50 3A 54 45 4C 3F 20 30 2C 41 53 43 49 49
+Timestamp:		00:07:02:52.66
+Data:		[1:2537266] BM 2 Rev F1 fw v1.3.3h & SupMCU Core v1.2.8g
+Hex:		31 3A 32 35 33 37 32 36 36 5D 20 42 4D 20 32 20 52 65 76 20 46 31 20 66 77 20 76 
