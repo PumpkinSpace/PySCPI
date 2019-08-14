@@ -258,29 +258,29 @@
 	<!-- EPSM Commands -->
 	
 	<!-- SAI1 Converter Data -->
-	<command name="EPSM:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 0"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI2 Converter Data -->
-	<command name="EPSM:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 1"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI3 Converter Data -->
-	<command name="EPSM:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 2"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI4 Converter Data -->
-	<command name="EPSM:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 3"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI5 Converter Data -->
-	<command name="EPSM:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 4"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI6 Converter Data -->
-	<command name="EPSM:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 5"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT1 Converter Data -->
-	<command name="EPSM:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 6"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT2 Converter Data -->
-	<command name="EPSM:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 7"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 3.3V Converter Data -->
-	<command name="EPSM:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 8"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 5V Converter Data -->
-	<command name="EPSM:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 9"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 12V Converter Data -->
-	<command name="EPSM:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 10"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- AUX Converter Data -->
-	<command name="EPSM:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="EPSM:TEL? 11"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- VREF1 Data -->
 	<command name="EPSM:TEL? 12"   data_length='4'   data_format='uint, uint' />
 	<!-- VREF2 Data -->
@@ -341,29 +341,29 @@
 	<!-- LEPS Commands -->
 	
 	<!-- SAI1 Converter Data -->
-	<command name="LEPS:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 0"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI2 Converter Data -->
-	<command name="LEPS:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 1"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI3 Converter Data -->
-	<command name="LEPS:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 2"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI4 Converter Data -->
-	<command name="LEPS:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 3"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI5 Converter Data -->
-	<command name="LEPS:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 4"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI6 Converter Data -->
-	<command name="LEPS:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 5"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT1 Converter Data -->
-	<command name="LEPS:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 6"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT2 Converter Data -->
-	<command name="LEPS:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 7"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 3.3V Converter Data -->
-	<command name="LEPS:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 8"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 5V Converter Data -->
-	<command name="LEPS:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 9"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 12V Converter Data -->
-	<command name="LEPS:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 10"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- AUX Converter Data -->
-	<command name="LEPS:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="LEPS:TEL? 11"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- VREF1 Data -->
 	<command name="LEPS:TEL? 12"   data_length='4'   data_format='uint, uint' />
 	<!-- VREF2 Data -->
@@ -424,29 +424,29 @@
 	<!-- DCPS Commands -->
 	
 	<!-- SAI1 Converter Data -->
-	<command name="DCPS:TEL? 0"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 0"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI2 Converter Data -->
-	<command name="DCPS:TEL? 1"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 1"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI3 Converter Data -->
-	<command name="DCPS:TEL? 2"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 2"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI4 Converter Data -->
-	<command name="DCPS:TEL? 3"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 3"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI5 Converter Data -->
-	<command name="DCPS:TEL? 4"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 4"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- SAI6 Converter Data -->
-	<command name="DCPS:TEL? 5"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 5"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT1 Converter Data -->
-	<command name="DCPS:TEL? 6"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 6"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- BAT2 Converter Data -->
-	<command name="DCPS:TEL? 7"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 7"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 3.3V Converter Data -->
-	<command name="DCPS:TEL? 8"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 8"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 5V Converter Data -->
-	<command name="DCPS:TEL? 9"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 9"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- 12V Converter Data -->
-	<command name="DCPS:TEL? 10"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 10"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- AUX Converter Data -->
-	<command name="DCPS:TEL? 11"   data_length='9'   data_format='uint, uint, int, int, hex' />
+	<command name="DCPS:TEL? 11"   data_length='13'   data_format='uint, uint, int, int, hex, long' />
 	<!-- VREF1 Data -->
 	<command name="DCPS:TEL? 12"   data_length='4'   data_format='uint, uint' />
 	<!-- VREF2 Data -->

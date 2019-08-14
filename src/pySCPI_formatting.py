@@ -252,6 +252,10 @@ def print_read(command, raw_data, gui, hide_elements):
                     output[i] =  unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
                     start_index += 1   
                     
+                elif spec == 'hex':
+                    output[i] = '0x%02X' % data[start_index]
+                    start_index += 1   
+                    
                 else:
                     # the format is not accepted by this code
                     gui.text_queue.put('*** No valid format at list entry ' + \
@@ -453,7 +457,12 @@ def log_read(command, raw_data, csv_row, gui):
                     
                 elif spec == 'schar':
                     csv_row.append(unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
-                    start_index += 1                    
+                    start_index += 1   
+                    
+                elif spec == 'hex':
+                    output[i] = '0x%02X' % data[start_index]
+                    start_index += 1
+                    
                 else:
                     # the format is not accepted by this code
                     csv_row.append('invalid format') 

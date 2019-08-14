@@ -171,6 +171,9 @@ This command only has two explicit options, use either <PULLUPS ON> or <PULLUPS 
 *** The configuration command requested in not valid, refer to Read Me***
 The configuration command that you issued was not supported see section 1.C for more information on supported commands.
 
+*** Invalid Hidden Command, use either <SHOW HIDDEN> or <HIDE HIDDEN>***
+This command only has two explicit options, use either <SHOW HIDDEN> or <HIDE HIDDEN>.
+
 Data is returned as Hex: 01 01 01 01 01 01 01....
 The Aardvark is not able to communicate with the module, unsure everything is connected and the module is powered.
 
