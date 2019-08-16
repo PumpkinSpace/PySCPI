@@ -157,6 +157,8 @@
 	<command name="BM2:TEL? 33"  data_length='2'   data_format='uint' />
 	<!-- Last Max Voltage-->
 	<command name="BM2:TEL? 34"  data_length='2'   data_format='uint' />
+	<!-- Approximate SOC-->
+	<command name="BM2:TEL? 36"  data_length='1'   data_format='char' />
 	<!-- Extra temperature sensor 3 -->
 	<command name="BM2:TEL? 48"  data_length='2'   data_format='uint' />
 	<!-- Extra temperature sensor 4 -->

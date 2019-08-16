@@ -1,1178 +1,169 @@
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 0,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 30 2C 44 41 54 41
-Timestamp:		00:00:31:03.66
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		FE D7 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
+Read:		BM2:TEL? 15,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 35 2C 44 41 54 41
+Timestamp:		00:00:03:28.42
+Data:		2263
+Hex:		6A 51 00 00 D7 08
 
-Read:		LEPS:TEL? 1,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 2C 44 41 54 41
-Timestamp:		00:00:31:04.06
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		26 D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
+Read:		BM2:TEL? 16,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 36 2C 44 41 54 41
+Timestamp:		00:00:03:28.82
+Data:		9256
+Hex:		92 51 00 00 28 24
 
-Read:		LEPS:TEL? 2,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 2C 44 41 54 41
-Timestamp:		00:00:31:04.47
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		4F D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 3,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 2C 44 41 54 41
-Timestamp:		00:00:31:04.88
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		78 D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 4,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 34 2C 44 41 54 41
-Timestamp:		00:00:31:05.31
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		A3 D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 5,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 35 2C 44 41 54 41
-Timestamp:		00:00:31:05.69
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		C9 D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 6,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 36 2C 44 41 54 41
-Timestamp:		00:00:31:06.09
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		F1 D8 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 7,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 37 2C 44 41 54 41
-Timestamp:		00:00:31:06.50
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		1A D9 02 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:31:06.91
-Data:		[3300, 3300, 0, 4000, 0x01, 0]
-Hex:		43 D9 02 00 E4 0C E4 0C 00 00 A0 0F 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:31:07.31
-Data:		[5000, 5000, 0, 4000, 0x01, 0]
-Hex:		6B D9 02 00 88 13 88 13 00 00 A0 0F 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 12,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 32 2C 44 41 54 41
-Timestamp:		00:00:31:08.54
-Data:		[0, 0]
-Hex:		E6 D9 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 13,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
-Timestamp:		00:00:31:08.94
-Data:		[0, 0]
-Hex:		0E DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 14,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
-Timestamp:		00:00:31:09.35
-Data:		[0, 0]
-Hex:		37 DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 15,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 35 2C 44 41 54 41
-Timestamp:		00:00:31:09.75
-Data:		[0, 0]
-Hex:		5F DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 16,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 36 2C 44 41 54 41
-Timestamp:		00:00:31:10.16
-Data:		[0, 0]
-Hex:		88 DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 17,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 37 2C 44 41 54 41
-Timestamp:		00:00:31:10.56
-Data:		[0, 0]
-Hex:		B0 DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 18,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 38 2C 44 41 54 41
-Timestamp:		00:00:31:10.97
-Data:		[0, 0]
-Hex:		D9 DA 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 19,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 39 2C 44 41 54 41
-Timestamp:		00:00:31:11.38
-Data:		[0, 0]
-Hex:		02 DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 20,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 30 2C 44 41 54 41
-Timestamp:		00:00:31:11.78
-Data:		[0, 0]
-Hex:		2A DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 21,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 31 2C 44 41 54 41
-Timestamp:		00:00:31:12.19
-Data:		[0, 0]
-Hex:		53 DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 22,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 32 2C 44 41 54 41
-Timestamp:		00:00:31:12.59
-Data:		[0, 0]
-Hex:		7B DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 23,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 33 2C 44 41 54 41
-Timestamp:		00:00:31:13.00
-Data:		[0, 0]
-Hex:		A4 DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 24,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 34 2C 44 41 54 41
-Timestamp:		00:00:31:13.41
-Data:		[0, 0]
-Hex:		CD DB 02 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 25,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 35 2C 44 41 54 41
-Timestamp:		00:00:31:13.81
-Data:		0
-Hex:		F5 DB 02 00 00 <\0>
-
-Read:		LEPS:TEL? 26,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 36 2C 44 41 54 41
-Timestamp:		00:00:31:14.31
-Data:		0
-Hex:		27 DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 27,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 37 2C 44 41 54 41
-Timestamp:		00:00:31:14.63
-Data:		0
-Hex:		47 DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 28,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 38 2C 44 41 54 41
-Timestamp:		00:00:31:15.03
-Data:		0
-Hex:		6F DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 29,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 39 2C 44 41 54 41
-Timestamp:		00:00:31:15.44
-Data:		0
-Hex:		98 DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 30,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 30 2C 44 41 54 41
-Timestamp:		00:00:31:15.84
-Data:		0
-Hex:		C0 DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 31,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 31 2C 44 41 54 41
-Timestamp:		00:00:31:16.25
-Data:		0
-Hex:		E9 DC 02 00 00 <\0>
-
-Read:		LEPS:TEL? 32,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 32 2C 44 41 54 41
-Timestamp:		00:00:31:16.65
-Data:		0
-Hex:		11 DD 02 00 00 <\0>
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:31:17.06
-Data:		0
-Hex:		3A DD 02 00 00 <\0>
-
-Read:		LEPS:TEL? 34,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 34 2C 44 41 54 41
-Timestamp:		00:00:31:17.47
-Data:		0
-Hex:		63 DD 02 00 00 <\0>
-
-Read:		LEPS:TEL? 35,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 35 2C 44 41 54 41
-Timestamp:		00:00:31:17.87
-Data:		0
-Hex:		8B DD 02 00 00 <\0>
-
-Read:		LEPS:TEL? 36,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
-*** Command "LEPS:TEL? 36,DATA" not found in dictionary, length defaults to 16 ***
-Hex:		B4 DD 02 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 37,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 37 2C 44 41 54 41
-Timestamp:		00:00:31:18.68
-Data:		00 00
-Hex:		DC DD 02 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:31:19.09
-Data:		[8, 0, 0x00]
-Hex:		05 DE 02 00 08 00 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:31:19.50
-Data:		[0, 0, 0x00]
-Hex:		2E DE 02 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 40,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 34 30 2C 44 41 54 41
-Timestamp:		00:00:31:19.90
-Data:		00 00
-Hex:		56 DE 02 00 00 <\0>
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
+Timestamp:		00:00:03:29.23
+Data:		62
+Hex:		BB 51 00 00 3E
 
 Aardvark communications finished
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 0,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 30 2C 44 41 54 41
-Timestamp:		00:00:04:29.57
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		4D 69 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
+Read:		BM2:TEL? 13,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
+Timestamp:		00:00:03:40.93
+Data:		25
+Hex:		4D 56 00 00 19
 
-Read:		LEPS:TEL? 1,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 2C 44 41 54 41
-Timestamp:		00:00:04:29.98
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		76 69 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
+Read:		BM2:TEL? 14,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
+Timestamp:		00:00:03:41.34
+Data:		23
+Hex:		76 56 00 00 17
 
-Read:		LEPS:TEL? 2,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 2C 44 41 54 41
-Timestamp:		00:00:04:30.39
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		9F 69 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 3,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 2C 44 41 54 41
-Timestamp:		00:00:04:30.79
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		C7 69 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 4,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 34 2C 44 41 54 41
-Timestamp:		00:00:04:31.20
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		F0 69 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 5,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 35 2C 44 41 54 41
-Timestamp:		00:00:04:31.61
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		19 6A 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 6,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 36 2C 44 41 54 41
-Timestamp:		00:00:04:32.01
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		41 6A 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 7,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 37 2C 44 41 54 41
-Timestamp:		00:00:04:32.42
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		6A 6A 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:04:32.83
-Data:		[0, 3300, 0, 1000, 0x00, 0]
-Hex:		93 6A 00 00 00 00 E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:04:33.23
-Data:		[9, 5000, 0, 1000, 0x00, 0]
-Hex:		BB 6A 00 00 09 00 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:04:34.05
-Data:		[4161, 8400, 214, 4000, 0x00, 53334]
-Hex:		0D 6B 00 00 41 10 D0 20 D6 00 A0 0F 00 56 D0 00 <\0>
-
-Read:		LEPS:TEL? 12,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 32 2C 44 41 54 41
-Timestamp:		00:00:04:34.45
-Data:		[0, 0]
-Hex:		35 6B 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 13,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
-Timestamp:		00:00:04:34.86
-Data:		[0, 0]
-Hex:		5E 6B 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 14,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
-Timestamp:		00:00:04:35.26
-Data:		[0, 0]
-Hex:		86 6B 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 15,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 35 2C 44 41 54 41
-Timestamp:		00:00:04:35.67
-Data:		[0, 0]
-Hex:		AF 6B 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 16,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 36 2C 44 41 54 41
-Timestamp:		00:00:04:36.08
-Data:		[0, 0]
-Hex:		D8 6B 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 17,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 37 2C 44 41 54 41
-Timestamp:		00:00:04:36.48
-Data:		[0, 0]
-Hex:		00 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 18,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 38 2C 44 41 54 41
-Timestamp:		00:00:04:36.89
-Data:		[0, 0]
-Hex:		29 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 19,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 39 2C 44 41 54 41
-Timestamp:		00:00:04:37.29
-Data:		[0, 0]
-Hex:		51 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 20,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 30 2C 44 41 54 41
-Timestamp:		00:00:04:37.70
-Data:		[0, 0]
-Hex:		7A 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 21,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 31 2C 44 41 54 41
-Timestamp:		00:00:04:38.11
-Data:		[0, 0]
-Hex:		A3 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 22,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 32 2C 44 41 54 41
-Timestamp:		00:00:04:38.51
-Data:		[0, 0]
-Hex:		CB 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 23,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 33 2C 44 41 54 41
-Timestamp:		00:00:04:38.92
-Data:		[0, 0]
-Hex:		F4 6C 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 24,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 34 2C 44 41 54 41
-Timestamp:		00:00:04:39.32
-Data:		[0, 0]
-Hex:		1C 6D 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 25,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 35 2C 44 41 54 41
-Timestamp:		00:00:04:39.73
-Data:		0
-Hex:		45 6D 00 00 00 <\0>
-
-Read:		LEPS:TEL? 26,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 36 2C 44 41 54 41
-Timestamp:		00:00:04:40.14
-Data:		0
-Hex:		6E 6D 00 00 00 <\0>
-
-Read:		LEPS:TEL? 27,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 37 2C 44 41 54 41
-Timestamp:		00:00:04:40.54
-Data:		0
-Hex:		96 6D 00 00 00 <\0>
-
-Read:		LEPS:TEL? 28,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 38 2C 44 41 54 41
-Timestamp:		00:00:04:40.95
-Data:		0
-Hex:		BF 6D 00 00 00 <\0>
-
-Read:		LEPS:TEL? 29,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 32 39 2C 44 41 54 41
-Timestamp:		00:00:04:41.35
-Data:		0
-Hex:		E7 6D 00 00 00 <\0>
-
-Read:		LEPS:TEL? 30,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 30 2C 44 41 54 41
-Timestamp:		00:00:04:41.76
-Data:		0
-Hex:		10 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 31,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 31 2C 44 41 54 41
-Timestamp:		00:00:04:42.16
-Data:		0
-Hex:		38 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 32,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 32 2C 44 41 54 41
-Timestamp:		00:00:04:42.57
-Data:		0
-Hex:		61 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:04:42.98
-Data:		0
-Hex:		8A 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 34,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 34 2C 44 41 54 41
-Timestamp:		00:00:04:43.38
-Data:		0
-Hex:		B2 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 35,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 35 2C 44 41 54 41
-Timestamp:		00:00:04:43.79
-Data:		0
-Hex:		DB 6E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 36,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
-*** Command "LEPS:TEL? 36,DATA" not found in dictionary, length defaults to 16 ***
-Hex:		03 6F 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 37,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 37 2C 44 41 54 41
-Timestamp:		00:00:04:44.60
-Data:		00 00
-Hex:		2C 6F 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:04:45.01
-Data:		[4, 0, 0x00]
-Hex:		55 6F 00 00 04 00 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:04:45.41
-Data:		[0, 0, 0x00]
-Hex:		7D 6F 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 40,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 34 30 2C 44 41 54 41
-Timestamp:		00:00:04:45.82
-Data:		00 00
-Hex:		A6 6F 00 00 00 <\0>
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
+Timestamp:		00:00:03:41.74
+Data:		62
+Hex:		9E 56 00 00 3E
 
 Aardvark communications finished
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:02:14.63
-Data:		[0, 3300, 0, 1000, 0x01, 0]
-Hex:		97 34 00 00 00 00 E4 0C 00 00 E8 03 01 00 00 00 <\0>
+Read:		BM2:TEL? 9,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 39 2C 44 41 54 41
+Timestamp:		00:00:04:10.15
+Data:		7550
+Hex:		B7 61 00 00 7E 1D
 
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:02:15.04
-Data:		[0, 5000, 0, 1000, 0x01, 0]
-Hex:		C0 34 00 00 00 00 88 13 00 00 E8 03 01 00 00 00 <\0>
+Read:		BM2:TEL? 10,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
+Timestamp:		00:00:04:10.56
+Data:		1472
+Hex:		E0 61 00 00 C0 05
 
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 13,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
+Timestamp:		00:00:04:10.96
+Data:		25
+Hex:		08 62 00 00 19
 
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:02:15.85
-Data:		[0, 8400, 8, 4000, 0x01, 0]
-Hex:		11 35 00 00 00 00 D0 20 08 00 A0 0F 01 00 00 00 <\0>
+Read:		BM2:TEL? 14,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
+Timestamp:		00:00:04:11.37
+Data:		23
+Hex:		31 62 00 00 17
 
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:02:16.26
-Data:		0
-Hex:		3A 35 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:02:16.66
-Data:		[0, 0, 0x00]
-Hex:		62 35 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:02:17.07
-Data:		[0, 0, 0x00]
-Hex:		8B 35 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
+Timestamp:		00:00:04:11.77
+Data:		63
+Hex:		59 62 00 00 3F
 
 Aardvark communications finished
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:03:18.97
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		B9 4D 00 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
+Read:		BM2:TEL? 9,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 39 2C 44 41 54 41
+Timestamp:		00:00:07:27.72
+Data:		7248
+Hex:		E4 AE 00 00 50 1C
 
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:03:19.38
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		E2 4D 00 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
+Read:		BM2:TEL? 10,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
+Timestamp:		00:00:07:28.12
+Data:		-16
+Hex:		0C AF 00 00 F0 FF
 
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 13,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
+Timestamp:		00:00:07:28.53
+Data:		25
+Hex:		35 AF 00 00 19
 
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:03:20.30
-Data:		[8274, 8400, 57, 4000, 0x00, 218640450]
-Hex:		3E 4E 00 00 52 20 D0 20 39 00 A0 0F 00 42 30 08 0D
+Read:		BM2:TEL? 14,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
+Timestamp:		00:00:07:28.93
+Data:		23
+Hex:		5D AF 00 00 17
 
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:03:20.60
-Data:		0
-Hex:		5C 4E 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:03:21.01
-Data:		[8274, 0, 0x00]
-Hex:		85 4E 00 00 52 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:03:21.41
-Data:		[0, 0, 0x00]
-Hex:		AD 4E 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
+Timestamp:		00:00:07:29.34
+Data:		47
+Hex:		86 AF 00 00 2F
 
 Aardvark communications finished
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:03:46.53
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		7D 58 00 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
+Read:		BM2:TEL? 9,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 39 2C 44 41 54 41
+Timestamp:		00:03:03:59.42
+Data:		7729
+Hex:		46 D8 10 00 31 1E
 
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:03:46.94
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		A6 58 00 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
+Read:		BM2:TEL? 10,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
+Timestamp:		00:03:03:59.82
+Data:		306
+Hex:		6E D8 10 00 32 01
 
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 13,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
+Timestamp:		00:03:04:00.23
+Data:		45
+Hex:		97 D8 10 00 2D
 
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:03:47.75
-Data:		[8264, 8400, 107, 4000, 0x00, 163784216]
-Hex:		F7 58 00 00 48 20 D0 20 6B 00 A0 0F 00 18 26 C3 09
+Read:		BM2:TEL? 14,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
+Timestamp:		00:03:04:00.63
+Data:		41
+Hex:		BF D8 10 00 29
 
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:03:48.16
-Data:		0
-Hex:		20 59 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:03:48.56
-Data:		[8264, 0, 0x00]
-Hex:		48 59 00 00 48 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:03:48.97
-Data:		[0, 0, 0x00]
-Hex:		71 59 00 00 00 00 00 00 <\0>
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 36 2C 44 41 54 41
+Timestamp:		00:03:04:01.04
+Data:		74
+Hex:		E8 D8 10 00 4A
 
 Aardvark communications finished
 Starting Aardvark communications
 
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:04:45.86
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		AA 6F 00 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:04:46.27
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		D3 6F 00 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,ASCII
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 41 53 43 49 49
-Timestamp:		00:00:04:47.08
-Data:		[1:28708] 8264,8400,82,4000,0x00,191080208
-Hex:		31 3A 32 38 37 30 38 5D 20 38 32 36 34 2C 38 34 30 30 2C 38 32 2C 34 30 30 30 2C 30 78 30 30 2C 31 39 31 30 38 30 32 30 38 <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0> <\0>
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:04:47.50
-Data:		0
-Hex:		4E 70 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:04:47.91
-Data:		[8264, 0, 0x00]
-Hex:		77 70 00 00 48 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:04:48.31
-Data:		[0, 0, 0x00]
-Hex:		9F 70 00 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:04:58.59
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		A3 74 00 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:04:59.00
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		CC 74 00 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:04:59.81
-Data:		[8264, 8400, 82, 4000, 0x00, 191080208]
-Hex:		1D 75 00 00 48 20 D0 20 52 00 A0 0F 00 10 A7 63 0B
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:05:00.22
-Data:		0
-Hex:		46 75 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:05:00.63
-Data:		[8264, 0, 0x00]
-Hex:		6F 75 00 00 48 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:05:01.03
-Data:		[0, 0, 0x00]
-Hex:		97 75 00 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:06:24.18
-Data:		[483, 3300, 0, 1000, 0x01, 0]
-Hex:		12 96 00 00 E3 01 E4 0C 00 00 E8 03 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:06:24.59
-Data:		[506, 5000, 0, 1000, 0x01, 0]
-Hex:		3B 96 00 00 FA 01 88 13 00 00 E8 03 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-*** Read failed, Write flag = 0, try increasing the message delay***
-Hex:		00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:06:25.41
-Data:		[0, 8400, 140, 4000, 0x01, 0]
-Hex:		8D 96 00 00 00 00 D0 20 8C 00 A0 0F 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:06:25.81
-Data:		0
-Hex:		B5 96 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:06:26.31
-Data:		[0, 0, 0x00]
-Hex:		E7 96 00 00 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:06:26.62
-Data:		[0, 0, 0x00]
-Hex:		06 97 00 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:00:54.78
-Data:		[0, 3300, 0, 1000, 0x01, 0]
-Hex:		66 15 00 00 00 00 E4 0C 00 00 E8 03 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:00:55.18
-Data:		[2, 5000, 0, 1000, 0x01, 0]
-Hex:		8E 15 00 00 02 00 88 13 00 00 E8 03 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:00:55.59
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		B7 15 00 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:00:56.00
-Data:		[0, 8400, 239, 4000, 0x01, 0]
-Hex:		E0 15 00 00 00 00 D0 20 EF 00 A0 0F 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:00:56.40
-Data:		0
-Hex:		08 16 00 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:00:56.81
-Data:		[4161, 0, 0x00]
-Hex:		31 16 00 00 41 10 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:00:57.21
-Data:		[0, 0, 0x00]
-Hex:		59 16 00 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:18:59.30
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		0A BD 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:18:59.56
-Data:		[4954, 5000, 0, 1000, 0x00, 0]
-Hex:		24 BD 01 00 5A 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:18:59.96
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		4C BD 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:19:00.37
-Data:		[8293, 8400, 82, 4000, 0x00, 191750746]
-Hex:		75 BD 01 00 65 20 D0 20 52 00 A0 0F 00 5A E2 6D 0B
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:19:00.78
-Data:		0
-Hex:		9E BD 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:19:01.18
-Data:		[8293, 0, 0x00]
-Hex:		C6 BD 01 00 65 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:19:01.59
-Data:		[0, 0, 0x00]
-Hex:		EF BD 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:19:03.43
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		A7 BE 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:19:03.84
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		D0 BE 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:19:04.25
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		F9 BE 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:19:04.65
-Data:		[8291, 8400, 57, 4000, 0x00, 219089675]
-Hex:		21 BF 01 00 63 20 D0 20 39 00 A0 0F 00 0B 0B 0F 0D
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:19:05.06
-Data:		0
-Hex:		4A BF 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:19:05.47
-Data:		[8291, 0, 0x00]
-Hex:		73 BF 01 00 63 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:19:05.87
-Data:		[0, 0, 0x00]
-Hex:		9B BF 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:19:07.53
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		41 C0 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:19:07.94
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		6A C0 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:19:08.34
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		92 C0 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:19:08.75
-Data:		[8286, 8400, 132, 4000, 0x00, 136851576]
-Hex:		BB C0 01 00 5E 20 D0 20 84 00 A0 0F 00 78 30 28 08
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:19:09.16
-Data:		0
-Hex:		E4 C0 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:19:09.56
-Data:		[8287, 0, 0x00]
-Hex:		0C C1 01 00 5F 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:19:09.97
-Data:		[0, 0, 0x00]
-Hex:		35 C1 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:19:11.39
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		C3 C1 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:19:11.80
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		EC C1 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:19:12.21
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		15 C2 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:19:12.61
-Data:		[8291, 8400, 82, 4000, 0x00, 191704502]
-Hex:		3D C2 01 00 63 20 D0 20 52 00 A0 0F 00 B6 2D 6D 0B
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:19:13.02
-Data:		0
-Hex:		66 C2 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:19:13.43
-Data:		[8293, 0, 0x00]
-Hex:		8F C2 01 00 65 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:19:13.83
-Data:		[0, 0, 0x00]
-Hex:		B7 C2 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:19:55.54
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		02 D3 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:19:55.95
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		2B D3 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:19:56.35
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		53 D3 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:19:56.76
-Data:		[8283, 8400, 82, 4000, 0x00, 191519526]
-Hex:		7C D3 01 00 5B 20 D0 20 52 00 A0 0F 00 26 5B 6A 0B
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:19:57.17
-Data:		0
-Hex:		A5 D3 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:19:57.57
-Data:		[8283, 0, 0x00]
-Hex:		CD D3 01 00 5B 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:19:57.98
-Data:		[0, 0, 0x00]
-Hex:		F6 D3 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:19:59.51
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		8F D4 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:19:59.92
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		B8 D4 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:20:00.33
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		E1 D4 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:20:00.74
-Data:		[8283, 8400, 107, 4000, 0x00, 164160777]
-Hex:		0A D5 01 00 5B 20 D0 20 6B 00 A0 0F 00 09 E5 C8 09
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:20:01.14
-Data:		0
-Hex:		32 D5 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:20:01.55
-Data:		[8283, 0, 0x00]
-Hex:		5B D5 01 00 5B 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:20:01.95
-Data:		[0, 0, 0x00]
-Hex:		83 D5 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:20:03.45
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		19 D6 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:20:03.86
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		42 D6 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:20:04.26
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		6A D6 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:20:04.67
-Data:		[8283, 8400, 132, 4000, 0x00, 136802028]
-Hex:		93 D6 01 00 5B 20 D0 20 84 00 A0 0F 00 EC 6E 27 08
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:20:05.08
-Data:		0
-Hex:		BC D6 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:20:05.48
-Data:		[8283, 0, 0x00]
-Hex:		E4 D6 01 00 5B 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:20:05.89
-Data:		[0, 0, 0x00]
-Hex:		0D D7 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:20:39.72
-Data:		[3300, 3300, 0, 1000, 0x00, 0]
-Hex:		44 E4 01 00 E4 0C E4 0C 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:20:40.13
-Data:		[4964, 5000, 0, 1000, 0x00, 0]
-Hex:		6D E4 01 00 64 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
-Timestamp:		00:00:20:40.53
-Data:		[0, 0, 0, 0, 0x01, 0]
-Hex:		95 E4 01 00 00 00 00 00 00 00 00 00 01 00 00 00 <\0>
-
-Read:		LEPS:TEL? 11,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 31 31 2C 44 41 54 41
-Timestamp:		00:00:20:40.94
-Data:		[8283, 8400, 82, 4000, 0x00, 191519526]
-Hex:		BE E4 01 00 5B 20 D0 20 52 00 A0 0F 00 26 5B 6A 0B
-
-Read:		LEPS:TEL? 33,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 33 2C 44 41 54 41
-Timestamp:		00:00:20:41.35
-Data:		0
-Hex:		E7 E4 01 00 00 <\0>
-
-Read:		LEPS:TEL? 38,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 38 2C 44 41 54 41
-Timestamp:		00:00:20:41.75
-Data:		[8283, 0, 0x00]
-Hex:		0F E5 01 00 5B 20 00 00 <\0>
-
-Read:		LEPS:TEL? 39,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 33 39 2C 44 41 54 41
-Timestamp:		00:00:20:42.16
-Data:		[0, 0, 0x00]
-Hex:		38 E5 01 00 00 00 00 00 <\0>
-
-Aardvark communications finished
-Starting Aardvark communications
-
-Read:		LEPS:TEL? 8,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 38 2C 44 41 54 41
-Timestamp:		00:00:21:22.82
-Data:		[3300, 3300, 149, 1000, 0x00, -93281100]
-Hex:		1A F5 01 00 E4 0C E4 0C 95 00 E8 03 00 B4 A4 70 FA
-
-Read:		LEPS:TEL? 9,DATA
-Command Hex:		4C 45 50 53 3A 54 45 4C 3F 20 39 2C 44 41 54 41
-Timestamp:		00:00:21:23.30
-Data:		[4954, 5000, 0, 1000, 0x00, 0]
-Hex:		4A F5 01 00 5A 13 88 13 00 00 E8 03 00 00 00 00 <\0>
-
-Read:		LEPS:TEL? 10,DATA
-Command Hex:		4C 45 50 53 3A 54 45
+Read:		BM2:TEL? 9,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 39 2C 44 41 54 41
+Timestamp:		00:04:19:07.57
+Data:		7765
+Hex:		45 B9 17 00 55 1E
+
+Read:		BM2:TEL? 10,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 30 2C 44 41 54 41
+Timestamp:		00:04:19:07.98
+Data:		155
+Hex:		6E B9 17 00 9B <\0>
+
+Read:		BM2:TEL? 13,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 33 2C 44 41 54 41
+Timestamp:		00:04:19:08.38
+Data:		47
+Hex:		96 B9 17 00 2F
+
+Read:		BM2:TEL? 14,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 31 34 2C 44 41 54 41
+Timestamp:		00:04:19:08.78
+Data:		43
+Hex:		BE B9 17 00 2B
+
+Read:		BM2:TEL? 36,DATA
+Command Hex:		42 4D 32 3A 54 45 4C 3F 20 33 3
