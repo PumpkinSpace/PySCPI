@@ -435,7 +435,7 @@ def is_valid_raw(command, text_queue):
         # invalid        
         valid = False
         
-    elif (len(data_list[1]) != 5) or not data_list[1].startswith('0x'):
+    elif (len(data_list[1]) != 5) or not data_list[1].startswith('0X'):
         # if the address field is not the right length and doesnt start 
         # wit the hexidecimal identifier then it is invalid
         valid = False
@@ -461,11 +461,11 @@ def is_valid_raw(command, text_queue):
     
     # print errors associated with commands if required
     if ('READ' in command) and not valid:
-        text_queue.put('*** Invalid READ command, please refer to the'\
+        text_queue.put('*** Invalid READ command, please refer to the '\
                       'Read me for proper syntax ***')          
         
     elif ('WRITE' in command) and not valid:
-        text_queue.put('*** Invalid WRITE command, please refer to the'\
+        text_queue.put('*** Invalid WRITE command, please refer to the '\
                       'Read me for proper syntax ***')           
     # end if
     
