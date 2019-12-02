@@ -16,7 +16,7 @@ values and declaring the dictionaries of address and commands.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.7' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.8' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -70,23 +70,23 @@ class command_library:
         # boolean to keep track of command updating
         self.no_commands = True
         
+        # list of errors thrown during the importing of the XML file
+        self.error_log = []            
+        
         # Default command list
         self.SCPI_Data = {}
-        self.add_command('SUP:TEL? 0', '48', 'ascii')
-        self.add_command('SUP:TEL? 1', '8',  'long long')
-        self.add_command('SUP:TEL? 2', '8',  'long long')
-        self.add_command('SUP:TEL? 3', '2',  'uint')
-        self.add_command('SUP:TEL? 4', '22', 'long, long, int, int, int')
-        self.add_command('SUP:TEL? 5', '8',  'long long')
-        self.add_command('SUP:TEL? 6', '8',  'long long')
-        self.add_command('SUP:TEL? 7', '8',  'long long')
-        self.add_command('SUP:TEL? 8', '8',  'double')
+        self.add_command('SUP:TEL? 0', '48', 'string')
+        self.add_command('SUP:TEL? 1', '8',  'uint64')
+        self.add_command('SUP:TEL? 2', '8',  'uint64')
+        self.add_command('SUP:TEL? 3', '2',  'uint16')
+        self.add_command('SUP:TEL? 4', '22', 'uint32, uint32, int16, int16, int16')
+        self.add_command('SUP:TEL? 5', '8',  'uint64')
+        self.add_command('SUP:TEL? 6', '8',  'uint64')
+        self.add_command('SUP:TEL? 7', '8',  'uint64')
+        self.add_command('SUP:TEL? 8', '8',  'float32')
         
         # Reset flag after initial updating
-        self.no_commands = True
-       
-        # list of errors thrown during the importing of the XML file
-        self.error_log = []        
+        self.no_commands = True    
     # end def
     
     def update_size(self, target, new_size):
@@ -170,7 +170,7 @@ class command_library:
                 keys = [command + ',NAME', command + ',DATA',
                         command + ',LENGTH', command + ',ASCII']
                 
-                # define list of bbyte lengths to use
+                # define list of byte lengths to use
                 key_bytes = [# name length
                              self.wflag_size + self.time_size + \
                              self.name_size + self.chksum_size,
@@ -185,7 +185,7 @@ class command_library:
                              self.chksum_size + self.ascii_size]
                 
                 # define list of formats
-                formats = ['ascii', format_string, 'uint', 'ascii']
+                formats = ['string', format_string, 'uint16', 'string']
                 
                 # construct the four scpi commands for each command
                 for i in range(0,4):
@@ -490,8 +490,11 @@ def is_valid_format(format_string):
     is_valid = True
     
     # list of valid formats
-    valid_formats = ['hex', 'char', 'schar','uint', 'int', 'double', 
-                     'ascii', 'long', 'long long', 'float']
+    valid_formats = ['hex', 
+                     'string',
+                     'uint8', 'uint16', 'uint32', 'uint64',
+                     'int8', 'int16', 'int32', 'int64', 
+                     'float32', 'float64']
     
     # list of formats provided (may be a single format)
     format_list = format_string.split(', ')

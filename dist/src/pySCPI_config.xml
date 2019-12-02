@@ -28,6 +28,7 @@
 		<LEPS address="0x54" />
 		<RHM address="0x55" />
 		<AIM address="0x56" />
+		<MPT address="0x5E" />
 		<!-- External interface DAC address="0x60"-->
 		<!-- RTC address="0x68"-->
 	</addresses>

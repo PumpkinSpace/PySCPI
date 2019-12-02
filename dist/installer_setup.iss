@@ -6,7 +6,7 @@
 AppId={{8C27620E-EEDD-49FD-9D68-775CC81BDDC1}
 ; Application info
 AppName=pySCPI
-AppVersion=0.3.7
+AppVersion=0.3.8
 AppPublisher=Pumpkin Inc.
 AppPublisherURL=http://www.pumpkinspace.com/
 AppSupportURL=http://www.pumpkinspace.com/
@@ -20,7 +20,7 @@ DisableProgramGroupPage=yes
 DisableDirPage=no
 AlwaysShowDirOnReadyPage=yes
 ; Installer filename
-OutputBaseFilename=pySCPI v0.3.7 setup
+OutputBaseFilename=pySCPI v0.3.8 setup
 ; Installer location
 OutputDir=Installer
 ; Compression specifiers

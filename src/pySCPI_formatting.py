@@ -15,7 +15,7 @@ Module to handle the formatting of data in the pySCPI program.
 """
 
 __author__ = 'David Wright (david@pumpkininc.com)'
-__version__ = '0.3.7' #Versioning: http://www.python.org/dev/peps/pep-0386/
+__version__ = '0.3.8' #Versioning: http://www.python.org/dev/peps/pep-0386/
 
 
 #
@@ -140,13 +140,13 @@ def print_read(command, raw_data, gui, hide_elements):
             if pySCPI_config.has_preamble(command):
                 gui.text_queue.put('Timestamp:\t\t' + get_time(timestamp))
 
-            elif print_format == 'ascii':
+            elif print_format == 'string':
                 gui.text_queue.put('Timestamp:\t\t' + get_ascii_time(data))
             # end if               
  
             # print the data in the appropriate format 
             # given by the dictionary
-            if print_format == 'ascii':
+            if print_format == 'string':
                 if 0 in data:
                     # terminate printing at the null terminator 
                     # of the string
@@ -164,32 +164,36 @@ def print_read(command, raw_data, gui, hide_elements):
                     gui.text_queue.put('Data:\t\t' + ''.join([chr(x) for x in data]))
                 # end if
                 
-            elif print_format == 'int':
+            elif print_format == 'int8':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<b', ''.join([chr(x) for x in data]))[0]))                  
+                
+            elif print_format == 'int16':
                 gui.text_queue.put('Data:\t\t' + str(unpack('<h', ''.join([chr(x) for x in data]))[0]))
                 
-            elif print_format == 'long':
+            elif print_format == 'int32':
                 gui.text_queue.put('Data:\t\t' + str(unpack('<l', ''.join([chr(x) for x in data]))[0]))
                 
-            elif print_format == 'long long':
-                gui.text_queue.put('Data:\t\t' + str(unpack('<q', ''.join([chr(x) for x in data]))[0]))        
+            elif print_format == 'int64':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<q', ''.join([chr(x) for x in data]))[0]))   
                 
-            elif print_format == 'uint':
-                gui.text_queue.put('Data:\t\t' + str(unpack('<H', ''.join([chr(x) for x in data]))[0])) 
+            elif print_format == 'uint8':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0]))                 
                 
-            elif print_format == 'double':
+            elif print_format == 'uint16':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<H', ''.join([chr(x) for x in data]))[0]))                 
+                
+            elif print_format == 'uint32':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<L', ''.join([chr(x) for x in data]))[0]))
+                
+            elif print_format == 'uint64':
+                gui.text_queue.put('Data:\t\t' + str(unpack('<Q', ''.join([chr(x) for x in data]))[0]))        
+                
+            elif print_format == 'float64':
                 gui.text_queue.put('Data:\t\t' + '{:.{dp}f}'.format(unpack('<d', ''.join([chr(x) for x in data]))[0], 
-                                                       dp=gui.float_var.get())) 
-                
-            elif print_format == 'float':
+                                                       dp=gui.float_var.get()))      
+            elif print_format == 'float32':
                 gui.text_queue.put('Data:\t\t' + '{:.{dp}f}'.format(unpack('<f', ''.join([chr(x) for x in data]))[0], 
-                                                       dp=gui.float_var.get()))                 
-                
-            elif print_format == 'char':
-                gui.text_queue.put('Data:\t\t' + str(unpack('<B', ''.join([chr(x) for x in data]))[0])) 
-                
-            elif print_format == 'schar':
-                gui.text_queue.put('Data:\t\t' + str(unpack('<b', ''.join([chr(x) for x in data]))[0]))               
-            
+                                                       dp=gui.float_var.get()))                          
             elif print_format == 'hex':
                 gui.text_queue.put('Data:\t\t' + ' '.join(['%02X' % x for x in data]))
             
@@ -220,37 +224,45 @@ def print_read(command, raw_data, gui, hide_elements):
             # for each item in the list print it according to the 
             # associated specification and then shift the pointer
             for spec in formats:
-                if spec == 'int':
+                if spec == 'int8':
+                    output[i] =  unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
+                    start_index += 1     
+                    
+                elif spec == 'int16':
                     output[i] =  unpack('<h', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0]
                     start_index += 2
                     
-                elif spec == 'long':
+                elif spec == 'int32':
                     output[i] =  unpack('<l', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0]
                     start_index += 4
                     
-                elif spec == 'long long':
+                elif spec == 'int64':
                     output[i] =  unpack('<q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
                     start_index += 8
+    
+                elif spec == 'uint8':
+                    output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
+                    start_index += 1                    
                     
-                elif spec == 'uint':
+                elif spec == 'uint16':
                     output[i] =  unpack('<H', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0]  
                     start_index += 2
                     
-                elif spec == 'double':
+                elif spec == 'uint32':
+                    output[i] =  unpack('<L', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0]
+                    start_index += 4
+                    
+                elif spec == 'uint64':
+                    output[i] =  unpack('<Q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
+                    start_index += 8                    
+                    
+                elif spec == 'float64':
                     output[i] =  unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0]
                     start_index += 8
                     
-                elif spec == 'float':
+                elif spec == 'float32':
                     output[i] =  unpack('<f', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0]
                     start_index += 4                    
-                    
-                elif spec == 'char':
-                    output[i] =  unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
-                    start_index += 1
-                    
-                elif spec == 'schar':
-                    output[i] =  unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0]
-                    start_index += 1   
                     
                 elif spec == 'hex':
                     output[i] = '0x%02X' % data[start_index]
@@ -373,36 +385,42 @@ def log_read(command, raw_data, csv_row, gui):
  
             # print the data in the appropriate format given by 
             # the dictionary
-            if print_format == 'ascii':
+            if print_format == 'string':
                 if 0 in data:
                     csv_row.append(''.join([chr(x) for x in data[0:data.index(0)]]))
                 else:
                     csv_row.append(''.join([chr(x) for x in data]))
                 # end if
                 
-            elif print_format == 'int':
+            elif print_format == 'int8':
+                csv_row.append(unpack('<b', ''.join([chr(x) for x in data]))[0])                  
+                
+            elif print_format == 'int16':
                 csv_row.append(unpack('<h', ''.join([chr(x) for x in data]))[0])
                 
-            elif print_format == 'long':
+            elif print_format == 'int32':
                 csv_row.append(unpack('<l', ''.join([chr(x) for x in data]))[0])
                 
-            elif print_format == 'long long':
-                csv_row.append(unpack('<q', ''.join([chr(x) for x in data]))[0])        
+            elif print_format == 'int64':
+                csv_row.append(unpack('<q', ''.join([chr(x) for x in data]))[0])      
+    
+            elif print_format == 'uint8':
+                csv_row.append(unpack('<B', ''.join([chr(x) for x in data]))[0])                 
                 
-            elif print_format == 'uint':
+            elif print_format == 'uint16':
                 csv_row.append(unpack('<H', ''.join([chr(x) for x in data]))[0])
                 
-            elif print_format == 'double':
+            elif print_format == 'uint32':
+                csv_row.append(unpack('<L', ''.join([chr(x) for x in data]))[0])
+                
+            elif print_format == 'uint64':
+                csv_row.append(unpack('<Q', ''.join([chr(x) for x in data]))[0])                  
+                
+            elif print_format == 'float64':
                 csv_row.append(unpack('<d', ''.join([chr(x) for x in data]))[0])
                 
-            elif print_format == 'float':
-                csv_row.append(unpack('<f', ''.join([chr(x) for x in data]))[0])                
-                
-            elif print_format == 'char':
-                csv_row.append(unpack('<B', ''.join([chr(x) for x in data]))[0]) 
-                
-            elif print_format == 'schar':
-                csv_row.append(unpack('<b', ''.join([chr(x) for x in data]))[0])                 
+            elif print_format == 'float32':
+                csv_row.append(unpack('<f', ''.join([chr(x) for x in data]))[0])                              
             
             elif print_format == 'hex':
                 csv_row.append(' '.join(['%02X' % x for x in data]))
@@ -427,37 +445,45 @@ def log_read(command, raw_data, csv_row, gui):
             # for each item in the list print it according 
             # to the associated specification
             for spec in formats:
-                if spec == 'int':
+                if spec == 'int8':
+                    csv_row.append(unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
+                    start_index += 1   
+                    
+                elif spec == 'int16':
                     csv_row.append(unpack('<h', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0])
                     start_index += 2
                     
-                elif spec == 'long':
+                elif spec == 'int32':
                     csv_row.append(unpack('<l', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0])
                     start_index += 4
                     
-                elif spec == 'long long':
+                elif spec == 'int64':
                     csv_row.append(unpack('<q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
                     start_index += 8
                     
-                elif spec == 'uint':
+                elif spec == 'uint8':
+                    csv_row.append(unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
+                    start_index += 1                    
+                    
+                elif spec == 'uint16':
                     csv_row.append(unpack('<H', ''.join([chr(x) for x in data[start_index:start_index+2]]))[0])  
                     start_index += 2
                     
-                elif spec == 'double':
+                elif spec == 'uint32':
+                    csv_row.append(unpack('<L', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0])
+                    start_index += 4
+                    
+                elif spec == 'uint64':
+                    csv_row.append(unpack('<Q', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
+                    start_index += 8                    
+                    
+                elif spec == 'float64':
                     csv_row.append(unpack('<d', ''.join([chr(x) for x in data[start_index:start_index+8]]))[0])
                     start_index += 8
                     
-                elif spec == 'float':
+                elif spec == 'float32':
                     csv_row.append(unpack('<f', ''.join([chr(x) for x in data[start_index:start_index+4]]))[0])
                     start_index += 4                
-                    
-                elif spec == 'char':
-                    csv_row.append(unpack('<B', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
-                    start_index += 1
-                    
-                elif spec == 'schar':
-                    csv_row.append(unpack('<b', ''.join([chr(x) for x in data[start_index:start_index+1]]))[0])
-                    start_index += 1   
                     
                 elif spec == 'hex':
                     output[i] = '0x%02X' % data[start_index]
